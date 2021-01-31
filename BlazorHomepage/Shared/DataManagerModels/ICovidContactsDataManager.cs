@@ -9,13 +9,13 @@ namespace BlazorHomepage.Shared.DataManagerModels
 {
     public interface ICovidContactsDataManager
     {
-        List<OneCovidContact> GetAllContactsFromUser(string userId);
-        List<OneCovidContact> GetAllContactsFromUser(string userId, int nDays);
-        List<OneCovidContact> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate);
+        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId);
+        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId, int nDays);
+        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate);
 
-        void UpdateContact(OneCovidContact contact);
-        void AddContact(OneCovidContact contact);
-        void DeleteContact(int id);
+        Task<OneCovidContact> UpdateContact(OneCovidContact contact);
+        Task<OneCovidContact> AddContact(OneCovidContact contact);
+        Task DeleteContact(int id);
 
     }
 }

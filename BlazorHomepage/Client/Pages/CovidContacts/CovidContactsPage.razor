@@ -1,52 +1,79 @@
 ﻿@page "/covidcontacts"
-<h3>CovidContacts</h3>
-@if (@Contacts != null && Contacts.Any())
-{
-    <Blazorise.Table>
-        <Blazorise.TableHeader>
-            <Blazorise.TableRow>
-                <Blazorise.TableHeaderCell>#</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Navn</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Sted</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Kontakt type</Blazorise.TableHeaderCell>
-                <Blazorise.TableHeaderCell>Dato</Blazorise.TableHeaderCell>
-            </Blazorise.TableRow>
-        </Blazorise.TableHeader>
-        <Blazorise.TableBody>
+<div class="container-fluid">
+    <h3>Nærkontakter for @SelectedUserName</h3>
+    <div class="row align-items-start">
+        <div class="col-lg">
+            @if (@Contacts != null && Contacts.Any())
+            {
+                <Blazorise.Table>
+                    <Blazorise.TableHeader>
+                        <Blazorise.TableRow>
+                            <Blazorise.TableHeaderCell>#</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Navn</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Sted</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Kontakt type</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Dato</Blazorise.TableHeaderCell>
+                        </Blazorise.TableRow>
+                    </Blazorise.TableHeader>
+                    <Blazorise.TableBody>
 
-            @foreach (var contact in Contacts)
-            {<Blazorise.TableRow>
-                    <TableRowHeader>@contact.Id</TableRowHeader>
-                    <TableRowCell>@contact.Name</TableRowCell>
-                    <TableRowCell>@contact.Sted</TableRowCell>
-                    <TableRowCell>@contact.CategoryId</TableRowCell>
-                    <TableRowCell>@contact.ContactDate.ToString("dd.MM.yyyy")</TableRowCell>
-                </Blazorise.TableRow>
+                        @foreach (var contact in Contacts)
+                        {
+                            <Blazorise.TableRow>
+                                <OneCovidContactComponent OneContact="contact"></OneCovidContactComponent>
+                            </Blazorise.TableRow>
+                        }
+
+                    </Blazorise.TableBody>
+                </Blazorise.Table>
+            }
+            else
+            {
+                <h4>Ingen kontakter registrert for deg..  </h4>
             }
 
-        </Blazorise.TableBody>
-    </Blazorise.Table>
-}
-else
-{
-    <h4>Ingen kontakter registrert for deg..  </h4>
-}
+        </div>
+        <div class="col-sm">
+            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUserName"></AddNewCovidContactForm>
+
+        </div>
+    </div>
+</div>
 
 
 @code {
+
+    public string SelectedUserName { get; set; }
+
     [Parameter]
     public List<OneCovidContact> Contacts { get; set; }
 
     private ICovidContactsDataManager _dataManager;
-    protected override void OnParametersSet()
+    protected async override Task OnParametersSetAsync()
     {
         if (_dataManager == null)
             _dataManager = new BlazorHomepage.Client.DataManagers.CovidContactsLocalDataManager();
-
+        SelectedUserName = "Daniel";
         if (Contacts == null)
         {
             var previsous = new DateTime(2021, 1, 20);
-            Contacts = _dataManager.GetAllContactsFromUser("daniel");
+
+            Contacts = await _dataManager.GetAllContactsFromUser(SelectedUserName.ToLower());
         }
+
     }
+
+
+    private async Task NewContactedUpdated(OneCovidContact newContact)
+    {
+        
+        await _dataManager.AddContact(newContact).ContinueWith(f =>
+        {
+            if (f.Result != null)
+            {
+                Contacts.Add(newContact);
+            }
+        });
+    }
+
 }

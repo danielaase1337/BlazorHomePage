@@ -1,11 +1,10 @@
-﻿@if (@OneContact != null){
-    <span>
-        <p>@OneContact.Name </p>
-        <p>@OneContact.Sted </p>
-        <p>@OneContact.ContactDate</p>
-        <p>@OneContact.CategoryId</p>
-        <p>@OneContact.OwnerId</p>
-    </span>
+﻿@if (@OneContact != null)
+{
+<TableRowHeader>@OneContact.Id</TableRowHeader>
+<TableRowCell>@OneContact.Name</TableRowCell>
+<TableRowCell>@OneContact.Sted</TableRowCell>
+<TableRowCell>@OneContact.CategoryId</TableRowCell>
+<TableRowCell>@OneContact.ContactDate.ToString("dd.MM.yyyy")</TableRowCell>
 
 }
 
@@ -13,8 +12,6 @@
 
     [Parameter]
     public OneCovidContact OneContact { get; set; }
-
-
 
 }
 
