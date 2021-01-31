@@ -1,0 +1,22 @@
+﻿@page "/covidcontacts"
+<h3>CovidContacts</h3>
+<ul>
+    @foreach (var contact in Contacts)
+    {
+        <li>@contact.Name</li>
+    }
+</ul>
+
+
+@code {
+    [Parameter]
+    public List<OneCovidContact> Contacts { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        if(Contacts == null)
+        {
+            Contacts = new List<OneCovidContact>() { new OneCovidContact() { Name = "Daniel" } }; 
+        }
+    }
+}
