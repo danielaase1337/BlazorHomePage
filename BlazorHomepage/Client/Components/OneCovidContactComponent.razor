@@ -1,0 +1,20 @@
+﻿@if (@OneContact != null){
+    <span>
+        <p>@OneContact.Name </p>
+        <p>@OneContact.Sted </p>
+        <p>@OneContact.ContactDate</p>
+        <p>@OneContact.CategoryId</p>
+        <p>@OneContact.OwnerId</p>
+    </span>
+
+}
+
+@code {
+
+    [Parameter]
+    public OneCovidContact OneContact { get; set; }
+
+
+
+}
+

@@ -1,22 +1,52 @@
 ﻿@page "/covidcontacts"
 <h3>CovidContacts</h3>
-<ul>
-    @foreach (var contact in Contacts)
-    {
-        <li>@contact.Name</li>
-    }
-</ul>
+@if (@Contacts != null && Contacts.Any())
+{
+    <Blazorise.Table>
+        <Blazorise.TableHeader>
+            <Blazorise.TableRow>
+                <Blazorise.TableHeaderCell>#</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Navn</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Sted</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Kontakt type</Blazorise.TableHeaderCell>
+                <Blazorise.TableHeaderCell>Dato</Blazorise.TableHeaderCell>
+            </Blazorise.TableRow>
+        </Blazorise.TableHeader>
+        <Blazorise.TableBody>
+
+            @foreach (var contact in Contacts)
+            {<Blazorise.TableRow>
+                    <TableRowHeader>@contact.Id</TableRowHeader>
+                    <TableRowCell>@contact.Name</TableRowCell>
+                    <TableRowCell>@contact.Sted</TableRowCell>
+                    <TableRowCell>@contact.CategoryId</TableRowCell>
+                    <TableRowCell>@contact.ContactDate.ToString("dd.MM.yyyy")</TableRowCell>
+                </Blazorise.TableRow>
+            }
+
+        </Blazorise.TableBody>
+    </Blazorise.Table>
+}
+else
+{
+    <h4>Ingen kontakter registrert for deg..  </h4>
+}
 
 
 @code {
     [Parameter]
     public List<OneCovidContact> Contacts { get; set; }
 
+    private ICovidContactsDataManager _dataManager;
     protected override void OnParametersSet()
     {
-        if(Contacts == null)
+        if (_dataManager == null)
+            _dataManager = new BlazorHomepage.Client.DataManagers.CovidContactsLocalDataManager();
+
+        if (Contacts == null)
         {
-            Contacts = new List<OneCovidContact>() { new OneCovidContact() { Name = "Daniel" } }; 
+            var previsous = new DateTime(2021, 1, 20);
+            Contacts = _dataManager.GetAllContactsFromUser("daniel");
         }
     }
 }
