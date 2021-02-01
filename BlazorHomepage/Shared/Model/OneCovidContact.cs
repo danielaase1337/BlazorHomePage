@@ -15,10 +15,12 @@ namespace BlazorHomepage.Shared.Model
         public string Name { get; set; }
         [Required]
         public DateTime ContactDate { get; set; }
+        
         public string Sted { get; set; }
         public string CategoryId { get; set; }
-        
         public string OwnerId { get; set; }
+
+
 
     }
 }

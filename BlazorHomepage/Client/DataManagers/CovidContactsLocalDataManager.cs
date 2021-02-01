@@ -44,9 +44,13 @@ namespace BlazorHomepage.Client.DataManagers
         public async Task DeleteContact(int id)
         {
             await Task.Delay(1);
-            var toDelete = _privateTempData.FirstOrDefault(f => f.Id == id);
+            var toDelete = _privateTempData.Where(f => f.Id == id);
             if (toDelete != null)
-                _privateTempData.Remove(toDelete);
+                foreach (var item in toDelete)
+                {
+                    _privateTempData.Remove(item);
+
+                }
         }
 
         public async Task<List<OneCovidContact>> GetAllContactsFromUser(string ownerId)

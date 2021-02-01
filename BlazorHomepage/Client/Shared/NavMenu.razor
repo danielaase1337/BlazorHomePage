@@ -12,11 +12,23 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        <li class="nav-item px-3">
-            <NavLink class="nav-link" href="covidcontacts">
-                <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter
-            </NavLink>
-        </li>
+        @if (Daniel != null)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="covidcontacts/1">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Daniel
+                </NavLink>
+            </li>
+        }
+        @if (Emilie != null)
+        {
+            <li class="nav-item px-3">
+                <NavLink class="nav-link" href="covidcontacts/2">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Emilie
+                </NavLink>
+            </li>
+        }
+
     </ul>
 </div>
 
@@ -29,4 +41,26 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+
+    private IUserDataManager _localUserManager;
+    private List<User> _availableUsers;
+
+    private User Emilie;
+    private User Daniel;
+
+    protected override void OnInitialized()
+    {
+        if (_localUserManager == null)
+            _localUserManager = new LocalUserDataManager();
+
+        if (_availableUsers == null)
+        {
+            _availableUsers = _localUserManager.GetAllUsers();
+            Emilie = _availableUsers.FirstOrDefault(f => f.UserName == "superwoman");
+            Daniel = _availableUsers.FirstOrDefault(f => f.UserName == "supergnisten");
+        }
+
+    }
+
 }

@@ -1,0 +1,44 @@
+﻿
+
+<Dropdown>
+    <Button>@SelectedUser.ToString()</Button>
+    <DropdownToggle Split="true" />
+    <DropdownMenu>
+        @foreach (var user in AvailableUsers)
+        {
+            if (user != null)
+            {
+                <DropdownItem Clicked="@(f=> NewUserClicked(f as User))" Value="@user">@user.ToString()</DropdownItem>
+            }
+        }
+        <DropdownDivider />
+    </DropdownMenu>
+</Dropdown>
+@code {
+
+    [Parameter]
+    public List<User> AvailableUsers { get; set; }
+
+
+    [Parameter]
+    public EventCallback<User> SelectedUserChanged { get; set; }
+
+    [Parameter]
+    public User SelectedUser { get; set; }
+
+    protected async override Task OnInitializedAsync()
+    {
+        if (SelectedUser == null && AvailableUsers != null)
+        {
+            SelectedUser = AvailableUsers.First();
+            await NewUserClicked(SelectedUser);
+        }
+    }
+
+
+    private async Task NewUserClicked(User user)
+    {
+        SelectedUser = user;
+        await SelectedUserChanged.InvokeAsync(SelectedUser);
+    }
+}

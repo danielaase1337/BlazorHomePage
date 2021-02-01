@@ -10,6 +10,9 @@ using System.Threading.Tasks;
 using Blazorise;
 using Blazorise.Bootstrap;
 using Blazorise.Icons.FontAwesome;
+using BlazorHomepage.Client.DataManagers;
+using BlazorHomepage.Shared.DataManagerModels;
+
 namespace BlazorHomepage.Client
 {
     public class Program
@@ -25,6 +28,8 @@ namespace BlazorHomepage.Client
       .AddBootstrapProviders()
       .AddFontAwesomeIcons();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddScoped<ICovidContactsDataManager, CovidContactsLocalDataManager>(); 
+            builder.Services.AddScoped<IUserDataManager, LocalUserDataManager>();
             var host = builder.Build();
             host.Services
       .UseBootstrapProviders()

@@ -1,79 +1,121 @@
 ﻿@page "/covidcontacts"
-<div class="container-fluid">
+@page "/covidcontacts/{id}"
 
+<div class="container-fluid">
     <div class="row align-items-start">
         <div class="col-3">
-            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUserName"></AddNewCovidContactForm>
-
+            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUser.FirstName.ToLower()"></AddNewCovidContactForm>
         </div>
-        <div class="col-lg">
-            <h5>Nærkontakter for @SelectedUserName</h5>
-            @if (@Contacts != null && Contacts.Any())
-            {
-                <Blazorise.Table>
-                    <Blazorise.TableHeader>
-                        <Blazorise.TableRow>
-                            <Blazorise.TableHeaderCell>#</Blazorise.TableHeaderCell>
-                            <Blazorise.TableHeaderCell>Navn</Blazorise.TableHeaderCell>
-                            <Blazorise.TableHeaderCell>Sted</Blazorise.TableHeaderCell>
-                            <Blazorise.TableHeaderCell>Kontakt type</Blazorise.TableHeaderCell>
-                            <Blazorise.TableHeaderCell>Dato</Blazorise.TableHeaderCell>
-                            <Blazorise.TableHeaderCell>Slett</Blazorise.TableHeaderCell>
+        @if (SelectedUser != null)
+        {
+            <div class="col-lg">
+                <h5>Nærkontakter for @SelectedUser.ToString()</h5>
+                @if (SelectedCovidContact != null)
+                {
+                    <Button class="btn btn-outline-danger"  @onclick="@(f=> DeleteSelectedContact(f))"><i class="fa fa-times" style="color:red"></i></Button>
+                    <Button class="btn btn-outline-warning" @onclick="@(f=> EditSelectedContact())"><i class="fas fa-edit"></i></Button>
+                }
+                @if (Contacts != null && Contacts.Any())
+                {
 
-                        </Blazorise.TableRow>
-                    </Blazorise.TableHeader>
-                    <Blazorise.TableBody>
+                    <DataGrid TItem="OneCovidContact"
+                              Data="@Contacts"
+                              @bind-SelectedRow="@SelectedCovidContact"
+                              Editable="true" EditMode="DataGridEditMode.Form" >
+                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true"/>
+                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Name)" Caption="Navn" Editable="false" />
+                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Sted)" Caption="Sted" Editable="false" />
+                        <DataGridDateColumn TItem="OneCovidContact" Field="@nameof(SelectedCovidContact.ContactDate)" Caption="Dato" Editable="true">
+                            <DisplayTemplate>
+                                @{
+                                    var date = (context as OneCovidContact)?.ContactDate;
+                                    if (date != null)
+                                    {
+                                        @($"{date.Value.ToString("dd.MM.yyyy")}")
+                                    }
+                                }
+                            </DisplayTemplate>
+                        </DataGridDateColumn>
 
-                        @foreach (var contact in Contacts)
-                        {
-                            <Blazorise.TableRow>
-                                <OneCovidContactComponent OneContact="contact" DeleteContact="@(f => DeleteSelectedContact(f))"></OneCovidContactComponent>
-                            </Blazorise.TableRow>
-                        }
 
-                    </Blazorise.TableBody>
-                </Blazorise.Table>
-            }
-            else
-            {
-                <h4>Ingen kontakter registrert for deg..  </h4>
-            }
 
-        </div>
+                    </DataGrid>
 
+                }
+                else
+                {
+                    <h4>Ingen kontakter registrert for deg..  </h4>
+                }
+
+            </div>
+        }
     </div>
 </div>
 
 
 @code {
 
-    public string SelectedUserName { get; set; }
 
+    [Parameter]
+    public string Id { get; set; }
+    [Parameter]
+    public User SelectedUser { get; set; }
     [Parameter]
     public List<OneCovidContact> Contacts { get; set; }
 
+    private List<User> _availableUsers;
+    private OneCovidContact SelectedCovidContact;
+    private IUserDataManager _localUserManager;
     private ICovidContactsDataManager _dataManager;
+
+
     protected async override Task OnParametersSetAsync()
     {
-        if (_dataManager == null)
-            _dataManager = new BlazorHomepage.Client.DataManagers.CovidContactsLocalDataManager();
-        SelectedUserName = "Daniel";
-        if (Contacts == null)
-        {
-            var previsous = new DateTime(2021, 1, 20);
+        if (_localUserManager == null)
+            _localUserManager = new LocalUserDataManager();
 
-            Contacts = await _dataManager.GetAllContactsFromUser(SelectedUserName.ToLower());
+        if (_availableUsers == null)
+        {
+            _availableUsers = _localUserManager.GetAllUsers();
+        }
+        Id = Id ?? "1";
+        SelectedUser = _availableUsers.FirstOrDefault(f => f.UserId.ToString().Equals(Id));
+
+        if (_dataManager == null)
+            _dataManager = new CovidContactsLocalDataManager();
+
+
+        if (SelectedUser != null)
+        {
+            Contacts = await _dataManager.GetAllContactsFromUser(SelectedUser.FirstName.ToLower());
         }
 
     }
 
-    private async Task DeleteSelectedContact(OneCovidContact toDelete)
-    {
-        await _dataManager.DeleteContact(toDelete.Id).ContinueWith(f=> {
-            if(f.IsCompletedSuccessfully)
-                    Contacts.Remove(toDelete);
-        });
 
+    private async Task DeleteSelectedContact(MouseEventArgs args)
+    {
+        if (SelectedCovidContact != null)
+        {
+            await _dataManager.DeleteContact(SelectedCovidContact.Id).ContinueWith(f =>
+            {
+                if (f.IsCompleted)
+                {
+                    Contacts.Remove(SelectedCovidContact);
+                    SelectedCovidContact = null;
+                }
+
+            });
+
+        }
+
+    }
+    private async Task EditSelectedContact()
+    {
+        if(SelectedCovidContact != null)
+        {
+            //set en paramter for å vise edit vindu.. on save.. save.. 
+        }
     }
 
     private async Task NewContactedUpdated(OneCovidContact newContact)
@@ -87,5 +129,8 @@
             }
         });
     }
+
+
+
 
 }
