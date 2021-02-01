@@ -1,10 +1,11 @@
 ﻿@if (@OneContact != null)
 {
-<TableRowHeader>@OneContact.Id</TableRowHeader>
-<TableRowCell>@OneContact.Name</TableRowCell>
-<TableRowCell>@OneContact.Sted</TableRowCell>
-<TableRowCell>@OneContact.CategoryId</TableRowCell>
-<TableRowCell>@OneContact.ContactDate.ToString("dd.MM.yyyy")</TableRowCell>
+    <TableRowHeader>@OneContact.Id</TableRowHeader>
+    <TableRowCell>@OneContact.Name</TableRowCell>
+    <TableRowCell>@OneContact.Sted</TableRowCell>
+    <TableRowCell>@OneContact.CategoryId</TableRowCell>
+    <TableRowCell>@OneContact.ContactDate.ToString("dd.MM.yyyy")</TableRowCell>
+    <TableRowCell><i class="fas fa-cross" onclick="@DeleteContact.InvokeAsync(OneContact)"></i></TableRowCell>
 
 }
 
@@ -12,6 +13,8 @@
 
     [Parameter]
     public OneCovidContact OneContact { get; set; }
-
+    [Parameter]
+    public EventCallback<OneCovidContact> DeleteContact { get; set; }
+    
 }
 

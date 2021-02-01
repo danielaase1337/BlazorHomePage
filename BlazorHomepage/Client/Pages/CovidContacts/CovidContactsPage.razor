@@ -1,8 +1,13 @@
 ﻿@page "/covidcontacts"
 <div class="container-fluid">
-    <h3>Nærkontakter for @SelectedUserName</h3>
+
     <div class="row align-items-start">
+        <div class="col-3">
+            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUserName"></AddNewCovidContactForm>
+
+        </div>
         <div class="col-lg">
+            <h5>Nærkontakter for @SelectedUserName</h5>
             @if (@Contacts != null && Contacts.Any())
             {
                 <Blazorise.Table>
@@ -13,6 +18,8 @@
                             <Blazorise.TableHeaderCell>Sted</Blazorise.TableHeaderCell>
                             <Blazorise.TableHeaderCell>Kontakt type</Blazorise.TableHeaderCell>
                             <Blazorise.TableHeaderCell>Dato</Blazorise.TableHeaderCell>
+                            <Blazorise.TableHeaderCell>Slett</Blazorise.TableHeaderCell>
+
                         </Blazorise.TableRow>
                     </Blazorise.TableHeader>
                     <Blazorise.TableBody>
@@ -20,7 +27,7 @@
                         @foreach (var contact in Contacts)
                         {
                             <Blazorise.TableRow>
-                                <OneCovidContactComponent OneContact="contact"></OneCovidContactComponent>
+                                <OneCovidContactComponent OneContact="contact" DeleteContact="@(f => DeleteSelectedContact(f))"></OneCovidContactComponent>
                             </Blazorise.TableRow>
                         }
 
@@ -33,10 +40,7 @@
             }
 
         </div>
-        <div class="col-sm">
-            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUserName"></AddNewCovidContactForm>
 
-        </div>
     </div>
 </div>
 
@@ -63,10 +67,18 @@
 
     }
 
+    private async Task DeleteSelectedContact(OneCovidContact toDelete)
+    {
+        await _dataManager.DeleteContact(toDelete.Id).ContinueWith(f=> {
+            if(f.IsCompletedSuccessfully)
+                    Contacts.Remove(toDelete);
+        });
+
+    }
 
     private async Task NewContactedUpdated(OneCovidContact newContact)
     {
-        
+
         await _dataManager.AddContact(newContact).ContinueWith(f =>
         {
             if (f.Result != null)
