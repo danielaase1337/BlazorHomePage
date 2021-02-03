@@ -1,6 +1,41 @@
 ﻿@page "/covidcontacts"
 @page "/covidcontacts/{id}"
 
+@if (_tempContact != null && _tempContactDate != null)
+{
+    <Modal @ref="_modalRef">
+        <ModalBackdrop />
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Oppdater kontakt</ModalTitle>
+                <CloseButton Clicked="@HideModal" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit @bind-Text="@_tempContact.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>Sted</FieldLabel>
+                    <TextEdit @bind-Text="@_tempContact.Sted" />
+                </Field>
+                <Field>
+                    <FieldLabel>Dato</FieldLabel>
+                    <DateEdit TValue="DateTime?" @bind-Date="@_tempContactDate" />
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@HideModalAndSave">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+}
+
+
+
+
 <div class="container-fluid">
     <div class="row align-items-start">
         <div class="col-3">
@@ -12,7 +47,7 @@
                 <h5>Nærkontakter for @SelectedUser.ToString()</h5>
                 @if (SelectedCovidContact != null)
                 {
-                    <Button class="btn btn-outline-danger"  @onclick="@(f=> DeleteSelectedContact(f))"><i class="fa fa-times" style="color:red"></i></Button>
+                    <Button class="btn btn-outline-danger" @onclick="@(f=> DeleteSelectedContact(f))"><i class="fa fa-times" style="color:red"></i></Button>
                     <Button class="btn btn-outline-warning" @onclick="@(f=> EditSelectedContact())"><i class="fas fa-edit"></i></Button>
                 }
                 @if (Contacts != null && Contacts.Any())
@@ -21,8 +56,8 @@
                     <DataGrid TItem="OneCovidContact"
                               Data="@Contacts"
                               @bind-SelectedRow="@SelectedCovidContact"
-                              Editable="true" EditMode="DataGridEditMode.Form" >
-                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true"/>
+                              Editable="true" EditMode="DataGridEditMode.Form">
+                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true" />
                         <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Name)" Caption="Navn" Editable="false" />
                         <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Sted)" Caption="Sted" Editable="false" />
                         <DataGridDateColumn TItem="OneCovidContact" Field="@nameof(SelectedCovidContact.ContactDate)" Caption="Dato" Editable="true">
@@ -62,6 +97,11 @@
     public User SelectedUser { get; set; }
     [Parameter]
     public List<OneCovidContact> Contacts { get; set; }
+
+    private Modal _modalRef;
+    DateTime? _tempContactDate = DateTime.MinValue;
+    private OneCovidContact _tempContact = new OneCovidContact();
+
 
     private List<User> _availableUsers;
     private OneCovidContact SelectedCovidContact;
@@ -110,13 +150,17 @@
         }
 
     }
-    private async Task EditSelectedContact()
+    private void EditSelectedContact()
     {
-        if(SelectedCovidContact != null)
+        if (SelectedCovidContact != null)
         {
-            //set en paramter for å vise edit vindu.. on save.. save.. 
+            _tempContact = new OneCovidContact(SelectedCovidContact);
+            _tempContactDate = _tempContact.ContactDate;
+            _modalRef.Show();
         }
     }
+
+
 
     private async Task NewContactedUpdated(OneCovidContact newContact)
     {
@@ -130,6 +174,24 @@
         });
     }
 
+
+    private void HideModalAndSave()
+    {
+        SelectedCovidContact.Name = _tempContact.Name;
+        SelectedCovidContact.Sted = _tempContact.Sted;
+        var updatedDate = _tempContactDate.GetValueOrDefault();
+        if (updatedDate != SelectedCovidContact.ContactDate && updatedDate != DateTime.MinValue)
+            SelectedCovidContact.ContactDate = updatedDate;
+        SelectedCovidContact = null;
+
+        _modalRef.Hide();
+    }
+    private void HideModal()
+    {
+        SelectedCovidContact = null;
+
+        _modalRef.Hide();
+    }
 
 
 

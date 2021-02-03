@@ -9,6 +9,21 @@ namespace BlazorHomepage.Shared.Model
 {
     public class OneCovidContact
     {
+        public OneCovidContact()
+        {
+
+
+        }
+        public OneCovidContact(OneCovidContact existing)
+        {
+            if (existing == null) return;
+            Id = existing.Id;
+            Name = existing.Name;
+            ContactDate = existing.ContactDate;
+            Sted = existing.Sted;
+            CategoryId = existing.CategoryId;
+            OwnerId = existing.OwnerId; 
+        }
         public int Id { get; set; }
 
         [Required]
