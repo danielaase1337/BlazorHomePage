@@ -35,14 +35,14 @@
 
 
 
-
 <div class="container-fluid">
     <div class="row align-items-start">
-        <div class="col-3">
-            <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUser.FirstName.ToLower()"></AddNewCovidContactForm>
-        </div>
+
         @if (SelectedUser != null)
         {
+            <div class="col-3">
+                <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUser.FirstName.ToLower()"></AddNewCovidContactForm>
+            </div>
             <div class="col-lg">
                 <h5>Nærkontakter for @SelectedUser.ToString()</h5>
                 @if (SelectedCovidContact != null)
@@ -53,17 +53,17 @@
                 @if (Contacts != null && Contacts.Any())
                 {
 
-                    <DataGrid TItem="OneCovidContact"
+                    <DataGrid TItem="OneContactModel"
                               Data="@Contacts"
                               @bind-SelectedRow="@SelectedCovidContact"
                               Editable="true" EditMode="DataGridEditMode.Form">
-                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true" />
-                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Name)" Caption="Navn" Editable="false" />
-                        <DataGridColumn TItem="OneCovidContact" Field="@nameof( SelectedCovidContact.Sted)" Caption="Sted" Editable="false" />
-                        <DataGridDateColumn TItem="OneCovidContact" Field="@nameof(SelectedCovidContact.ContactDate)" Caption="Dato" Editable="true">
+                        <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true" />
+                        <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Name)" Caption="Navn" Editable="false" />
+                        <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Sted)" Caption="Sted" Editable="false" />
+                        <DataGridDateColumn TItem="OneContactModel" Field="@nameof(SelectedCovidContact.ContactDate)" Caption="Dato" Editable="true">
                             <DisplayTemplate>
                                 @{
-                                    var date = (context as OneCovidContact)?.ContactDate;
+                                    var date = (context as OneContactModel)?.ContactDate;
                                     if (date != null)
                                     {
                                         @($"{date.Value.ToString("dd.MM.yyyy")}")
@@ -96,33 +96,34 @@
     [Parameter]
     public User SelectedUser { get; set; }
     [Parameter]
-    public List<OneCovidContact> Contacts { get; set; }
+    public List<OneContactModel> Contacts { get; set; }
 
     private Modal _modalRef;
     DateTime? _tempContactDate = DateTime.MinValue;
-    private OneCovidContact _tempContact = new OneCovidContact();
+    private OneContactModel _tempContact = new OneContactModel();
 
 
-    private List<User> _availableUsers;
-    private OneCovidContact SelectedCovidContact;
-    private IUserDataManager _localUserManager;
-    private ICovidContactsDataManager _dataManager;
+    private User[] _availableUsers;
+    private OneContactModel SelectedCovidContact;
+
+    [Inject]
+    public ICovidContactsDataManager _dataManager { get; set; }
+
+    [Inject]
+    public IUserDataManager<User> _localUserManager { get; set; }
 
 
     protected async override Task OnParametersSetAsync()
     {
-        if (_localUserManager == null)
-            _localUserManager = new LocalUserDataManager();
+        //if (_localUserManager == null)
+        //    _localUserManager = new LocalUserDataManager();
 
         if (_availableUsers == null)
         {
-            _availableUsers = _localUserManager.GetAllUsers();
+            _availableUsers = await _localUserManager.GetAllUsersAsync();
         }
         Id = Id ?? "1";
         SelectedUser = _availableUsers.FirstOrDefault(f => f.UserId.ToString().Equals(Id));
-
-        if (_dataManager == null)
-            _dataManager = new CovidContactsLocalDataManager();
 
 
         if (SelectedUser != null)
@@ -137,24 +138,19 @@
     {
         if (SelectedCovidContact != null)
         {
-            await _dataManager.DeleteContact(SelectedCovidContact.Id).ContinueWith(f =>
+            _dataManager.Delete(SelectedCovidContact);
+            if (await _dataManager.SaveChangesAsync())
             {
-                if (f.IsCompleted)
-                {
-                    Contacts.Remove(SelectedCovidContact);
-                    SelectedCovidContact = null;
-                }
-
-            });
-
+                Contacts.Remove(SelectedCovidContact);
+                SelectedCovidContact = null;
+            }
         }
-
     }
     private void EditSelectedContact()
     {
         if (SelectedCovidContact != null)
         {
-            _tempContact = new OneCovidContact(SelectedCovidContact);
+            _tempContact = new OneContactModel(SelectedCovidContact);
             _tempContactDate = _tempContact.ContactDate;
             _modalRef.Show();
         }
@@ -162,16 +158,20 @@
 
 
 
-    private async Task NewContactedUpdated(OneCovidContact newContact)
+    private async Task NewContactedUpdated(OneContactModel newContact)
     {
-
-        await _dataManager.AddContact(newContact).ContinueWith(f =>
+        try
         {
-            if (f.Result != null)
-            {
-                Contacts.Add(newContact);
-            }
-        });
+            _dataManager.Add<OneContactModel>(newContact);
+            var saveResult = await _dataManager.SaveChangesAsync();
+            if (saveResult)
+                Contacts.Add(newContact); //kan også hente kontakter fra api.
+        }
+        catch (Exception e)
+        {
+
+            throw e;
+        }
     }
 
 

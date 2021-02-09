@@ -1,4 +1,5 @@
-﻿using BlazorHomepage.Shared.Model;
+﻿using BlazorHomepage.Shared.CovidHandlerData.Entities;
+using BlazorHomepage.Shared.Model.CovidModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,13 +10,15 @@ namespace BlazorHomepage.Shared.DataManagerModels
 {
     public interface ICovidContactsDataManager
     {
-        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId);
-        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId, int nDays);
-        Task<List<OneCovidContact>> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate);
+        void Add<T>(T entity) where T : class;
+        void Delete<T>(T entity) where T : class;
+        void Update<T>(T entity) where T : class; 
 
-        Task<OneCovidContact> UpdateContact(OneCovidContact contact);
-        Task<OneCovidContact> AddContact(OneCovidContact contact);
-        Task DeleteContact(int id);
+        Task<bool> SaveChangesAsync(); 
+
+        Task<List<OneContactModel>> GetAllContactsFromUser(string userId);
+        Task<List<OneContactModel>> GetAllContactsFromUser(string userId, int nDays);
+        Task<List<OneContactModel>> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate);
 
     }
 }

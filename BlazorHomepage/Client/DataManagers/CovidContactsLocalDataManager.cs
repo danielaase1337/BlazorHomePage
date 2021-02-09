@@ -1,5 +1,8 @@
-﻿using BlazorHomepage.Shared.DataManagerModels;
-using BlazorHomepage.Shared.Model;
+﻿using AutoMapper;
+using BlazorHomepage.Shared.CovidHandlerData;
+using BlazorHomepage.Shared.CovidHandlerData.Entities;
+using BlazorHomepage.Shared.DataManagerModels;
+using BlazorHomepage.Shared.Model.CovidModels;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,87 +13,92 @@ namespace BlazorHomepage.Client.DataManagers
 {
     public class CovidContactsLocalDataManager : ICovidContactsDataManager
     {
+        private readonly IMapper _mapper;
+        private readonly ICovidStorageContext<OneCovidContact> _context;
         private int _nextId;
-        private List<OneCovidContact> _privateTempData = new List<OneCovidContact>();
-        public CovidContactsLocalDataManager()
+        public CovidContactsLocalDataManager(IMapper mapper, ICovidStorageContext<OneCovidContact> context)
         {
-            _privateTempData.Add(new OneCovidContact() { Id = 1, Name = "Emilie", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 30), OwnerId = "daniel", Sted = "Hjemme" });
-            _privateTempData.Add(new OneCovidContact() { Id = 2, Name = "Greger", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 20), OwnerId = "daniel", Sted = "Hjemme" });
-            _privateTempData.Add(new OneCovidContact() { Id = 3, Name = "Una", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 25), OwnerId = "daniel", Sted = "Hjemme" });
-            _privateTempData.Add(new OneCovidContact() { Id = 4, Name = "Ukjent", CategoryId = "Kontakt", ContactDate = new DateTime(2021, 01, 28), OwnerId = "emilie", Sted = "Butikken" });
-            _nextId = _privateTempData.Last().Id + 1;
+            _mapper = mapper;
+            _context = context;
         }
 
-
-        public async Task<OneCovidContact> AddContact(OneCovidContact contact)
+        public void Add<T>(T entity) where T : class
         {
             try
             {
-                await Task.Delay(1);
-                contact.Id = _nextId;
-                _nextId += 1;
-
-                _privateTempData.Add(contact);
-                return contact;
-            }
-            catch (Exception e)
-            {
-                Debug.Write(e); 
-                return null;
-            }
-
-        }
-
-        public async Task DeleteContact(int id)
-        {
-            await Task.Delay(1);
-            var toDelete = _privateTempData.Where(f => f.Id == id);
-            if (toDelete != null)
-                foreach (var item in toDelete)
+                if (entity is OneContactModel model)
                 {
-                    _privateTempData.Remove(item);
-
+                    model.Id = _nextId;
+                    _nextId += 1;
+                    var covidContact = _mapper.Map<OneCovidContact>(model);
+                    covidContact.OwnerId = model.Name.ToLower(); //finnes ikke på modell objektet.. just for testing.. 
+                    _context.Add(covidContact);
                 }
-        }
 
-        public async Task<List<OneCovidContact>> GetAllContactsFromUser(string ownerId)
-        {
-            await Task.Delay(1);
-
-            return _privateTempData.Where(f => f.OwnerId.Equals(ownerId))?.ToList() ?? new List<OneCovidContact>();
-        }
-
-        public async Task<List<OneCovidContact>> GetAllContactsFromUser(string ownerId, int nDays)
-        {
-            await Task.Delay(1);
-
-            var allfromUser = _privateTempData.Where(f => f.OwnerId == ownerId).Where(a => (DateTime.Now - a.ContactDate).Days <= nDays);
-            return allfromUser.ToList();
-        }
-
-        public async Task<List<OneCovidContact>> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate)
-        {
-            await Task.Delay(1);
-
-            var res = _privateTempData.Where(f => f.ContactDate < toDate && f.ContactDate > fromDate);
-            return res.ToList();
-        }
-
-        public async Task<OneCovidContact> UpdateContact(OneCovidContact contact)
-        {
-            await Task.Delay(1);
-            try
-            {
-                var existing = _privateTempData.FirstOrDefault(f => f.Id == contact.Id);
-                if (existing != null)
-                    existing = contact;
-                return contact;
+                //return contact;
             }
             catch (Exception e)
             {
                 Debug.Write(e);
-                return null;
+                //return null;
             }
         }
+
+
+        public void Delete<T>(T entity) where T : class
+        {
+            _context.Delete(entity as OneCovidContact);
+        }
+
+        public async Task<List<OneContactModel>> GetAllContactsFromUser(string ownerId)
+        {
+            await Task.Delay(1);
+            var res = _context.Contacts.Where(f => f.OwnerId.Equals(ownerId));
+            if (res == null) return new List<OneContactModel>();
+            var mappedObjects = _mapper.Map<OneContactModel[]>(res);
+            return mappedObjects.ToList();
+        }
+
+        public async Task<List<OneContactModel>> GetAllContactsFromUser(string ownerId, int nDays)
+        {
+            await Task.Delay(1);
+
+            var allfromUser = _context.Contacts.Where(f => f.OwnerId == ownerId).Where(a => (DateTime.Now - a.ContactDate).Days <= nDays);
+            var mappedOBjects = _mapper.Map<OneContactModel[]>(allfromUser);
+            return mappedOBjects.ToList();
+        }
+
+        public async Task<List<OneContactModel>> GetAllContactsFromUser(string userId, DateTime fromDate, DateTime toDate)
+        {
+            await Task.Delay(1);
+            var res = _context.Contacts.Where(f => f.ContactDate < toDate && f.ContactDate > fromDate);
+            var mapped = _mapper.Map<OneContactModel[]>(res);
+            return mapped.ToList();
+        }
+
+        public async Task<bool> SaveChangesAsync()
+        {
+            await Task.Delay(1);
+            var res = true;
+            return res;
+        }
+
+        public void Update<T>(T entity) where T : class
+        {
+            if (entity is OneContactModel contact)
+            {
+                try
+                {
+                    var mappedContact = _mapper.Map<OneCovidContact>(contact);
+                    var updated = _context.Update(mappedContact);
+                }
+                catch (Exception e)
+                {
+                    Debug.Write(e);
+
+                }
+            }
+        }
+
     }
 }

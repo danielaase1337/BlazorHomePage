@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace BlazorHomepage.Shared.DataManagerModels
+{
+    public interface IStorageBase<T>
+    {
+        void Add(T contact);
+        void Delete(T contact);
+        T Update(T updatedContact);
+
+        abstract void OnInitiliazing();
+    }
+}
