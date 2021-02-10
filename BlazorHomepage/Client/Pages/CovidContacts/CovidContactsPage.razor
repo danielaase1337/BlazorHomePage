@@ -40,7 +40,7 @@
 
         @if (SelectedUser != null)
         {
-            <div class="col-3">
+            <div class="col-5">
                 <AddNewCovidContactForm NewContactAdded="@(f=> NewContactedUpdated(f))" OwnerName="@SelectedUser.FirstName.ToLower()"></AddNewCovidContactForm>
             </div>
             <div class="col-lg">
@@ -57,7 +57,6 @@
                               Data="@Contacts"
                               @bind-SelectedRow="@SelectedCovidContact"
                               Editable="true" EditMode="DataGridEditMode.Form">
-                        <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Id)" Caption="#" Editable="true" />
                         <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Name)" Caption="Navn" Editable="false" />
                         <DataGridColumn TItem="OneContactModel" Field="@nameof( SelectedCovidContact.Sted)" Caption="Sted" Editable="false" />
                         <DataGridDateColumn TItem="OneContactModel" Field="@nameof(SelectedCovidContact.ContactDate)" Caption="Dato" Editable="true">

@@ -7,12 +7,14 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.DataManagerModels
 {
-    interface IHandlelisteDataManager
+    interface IHandlelisteDataManager 
     {
 		//Generic
 		void Add<T>(T entity)  where T : class;
 
 		void Delete<T>(T enitity)  where T : class;
+
+		void Update<T>(T entity) where T : class; 
 
 		Task<bool> SaveChangesAsync();
 

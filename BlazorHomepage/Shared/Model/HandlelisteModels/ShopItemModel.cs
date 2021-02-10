@@ -4,14 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorHomepage.Shared.Model
+namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class VareModel
+    public class ShopItemModel
     {
 
         public string Name { get; set; }
         public int Antall { get; set; }
-
+        public bool Done { get; set; }
 
     }
 }
