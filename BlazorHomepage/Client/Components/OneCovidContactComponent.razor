@@ -1,7 +1,6 @@
 ﻿@if (@OneContact != null)
 {
 
-    <TableRowHeader>@OneContact.Id</TableRowHeader>
     <TableRowCell>@OneContact.Name</TableRowCell>
     <TableRowCell>@OneContact.Sted</TableRowCell>
     <TableRowCell>@OneContact.CategoryId</TableRowCell>
@@ -17,10 +16,10 @@
 @code {
 
     [Parameter]
-    public OneCovidContact OneContact { get; set; }
+    public OneContactModel OneContact { get; set; }
 
     [Parameter]
-    public EventCallback<OneCovidContact> DeleteContact { get; set; }
+    public EventCallback<OneContactModel> DeleteContact { get; set; }
 
     private async Task delete()
     {

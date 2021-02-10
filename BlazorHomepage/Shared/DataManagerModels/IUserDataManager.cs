@@ -7,15 +7,9 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.DataManagerModels
 {
-    public interface IUserDataManager
+    public interface IUserDataManager<T> : IStorageBase<T>
     {
-        Task<User> AddUser(User newUser);
-
-        Task DeleteUser(User toDelet);
-
-        Task<User> UpdateUser(User updated); 
-
-        List<User> GetAllUsers(); 
-
+        Task<T[]> GetAllUsersAsync(); 
+        Task<T> GetUsersAsync(string id);
     }
 }

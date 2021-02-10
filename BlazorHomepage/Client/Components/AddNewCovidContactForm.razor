@@ -117,29 +117,28 @@
     
     DateTime? selectedDate;
 
-    public OneCovidContact NewContact { get; set; }
+    public OneContactModel NewContact { get; set; }
 
     [Parameter]
-    public EventCallback<OneCovidContact> NewContactAdded { get; set; }
+    public EventCallback<OneContactModel> NewContactAdded { get; set; }
     
     [Parameter]
     public string OwnerName { get; set; }
 
     protected override void OnParametersSet()
     {
-        NewContact = new OneCovidContact(); 
+        NewContact = new OneContactModel(); 
         selectedDate = DateTime.Now;
     }
 
     private void HandleValidSubmit()
     {
         if (NewContact == null)
-            NewContact = new OneCovidContact();
+            NewContact = new OneContactModel();
         if (selectedDate == null)
             selectedDate = DateTime.Now;
         NewContact.ContactDate = selectedDate.GetValueOrDefault();
         NewContact.CategoryId = "Kontakt";
-        NewContact.OwnerId = OwnerName.ToLower();
         NewContactAdded.InvokeAsync(NewContact);
     }
 

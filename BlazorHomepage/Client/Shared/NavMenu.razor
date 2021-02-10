@@ -42,25 +42,23 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
+    [Inject]
+    public IUserDataManager<User> _localUserManager { get; set; }
 
-    private IUserDataManager _localUserManager;
-    private List<User> _availableUsers;
-
+    private User[] _availableUsers;
     private User Emilie;
     private User Daniel;
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        if (_localUserManager == null)
-            _localUserManager = new LocalUserDataManager();
+        //if(_localUserManager  == null)
+        //    _localUserManager = new LocalUserDataManager();
 
         if (_availableUsers == null)
         {
-            _availableUsers = _localUserManager.GetAllUsers();
+            _availableUsers = await _localUserManager.GetAllUsersAsync();
             Emilie = _availableUsers.FirstOrDefault(f => f.UserName == "superwoman");
             Daniel = _availableUsers.FirstOrDefault(f => f.UserName == "supergnisten");
         }
-
     }
 
 }
