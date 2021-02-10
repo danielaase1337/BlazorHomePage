@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Client.DataManagers
 {
-    public class CovidContactStorageContext<T> : ICovidStorageContext<OneCovidContact>
+    public class CovidContactStorageContext : ICovidStorageContext<OneCovidContact>
     {
         private int _nextId;
         public CovidContactStorageContext()

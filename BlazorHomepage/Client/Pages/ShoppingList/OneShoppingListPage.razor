@@ -1,0 +1,43 @@
+﻿@page "/shoppinglist/{id}"
+@if(ThisShoppingList != null)
+{
+<h4>@ThisShoppingList.Name</h4>
+@if (ThisShoppingList.IsDone)
+{
+    <p>Ferdig handlet</p>
+}
+
+<div>
+    <ul>
+        @foreach (var vare in ThisShoppingList.ShoppingItems)
+        {
+            <li>
+                <div>
+                    <span>
+                        @vare.Varen.Name
+                    </span>
+                </div>
+            </li>
+        }
+    </ul>
+</div>
+}
+else
+{
+    <p>loading...</p>
+}
+@code{
+
+        [Parameter]
+        public string Id { get; set; }
+
+    public ShoppingListModel ThisShoppingList { get; set; }
+    [Inject]
+    public IShoppingListDataManager ShoppingListDataManager { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ShoppingListDataManager.GetOneShoppingListAsync(Id).ContinueWith(f => ThisShoppingList = f.Result) ;
+    }
+
+}

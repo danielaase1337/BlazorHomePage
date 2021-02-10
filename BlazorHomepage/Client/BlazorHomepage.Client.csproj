@@ -18,8 +18,4 @@
     <ProjectReference Include="..\Shared\BlazorHomepage.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="DataManagers\HandlelisteApp\" />
-  </ItemGroup>
-
 </Project>

@@ -15,5 +15,16 @@ namespace BlazorHomepage.Shared.Data.Entities
 
         public ItemCategory ItemCategory { get; set; }
 
+        public static List<ShopItem> GetDefault()
+        {
+            var res = new List<ShopItem>()
+            {
+                new ShopItem(){Id = 1, ItemCategory = new ItemCategory("Meieri", 1), Name = "Melk", Unit = "Liter", Done = false },
+                new ShopItem(){Id = 1, ItemCategory = new ItemCategory("Meieri", 1), Name = "Smør", Unit = "stk", Done = false },
+                new ShopItem(){Id = 1, ItemCategory = new ItemCategory("Brød", 1), Name = "Brød", Unit = "stk", Done = false },
+                new ShopItem(){Id = 1, ItemCategory = new ItemCategory("Drikke", 1), Name = "Øl", Unit = "stk", Done = false }
+            };
+            return res; 
+        }
     }
 }

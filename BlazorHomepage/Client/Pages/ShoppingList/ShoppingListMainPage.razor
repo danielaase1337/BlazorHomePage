@@ -1,0 +1,37 @@
+﻿@page "/shoppinglist"
+
+<h3>Handlelister</h3>
+@if (_sLists != null)
+{
+    <ul>
+        @foreach (var l in _sLists)
+        {
+        <li>
+            <NavLink class="nav-link" href="shoppinglist/HU1">@l.Name</NavLink>
+        </li>
+        }
+    </ul>
+
+}
+else
+{
+    <p>Ingen lister</p>
+}
+
+@code {
+
+    public int MyProperty { get; set; }
+    [Inject]
+    public IUserDataManager<User> UserDataManager { get; set; }
+
+    [Inject]
+    public IShoppingListDataManager ShoppingListDataManager { get; set; }
+
+    private ShoppingListModel[] _sLists;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
+    }
+}

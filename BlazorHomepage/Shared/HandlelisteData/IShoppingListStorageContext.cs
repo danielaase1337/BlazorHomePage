@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.HandlelisteData
 {
-    public interface IHandlelisteStorageContext<T> : IStorageBase<T> where T: class
+    public interface IShoppingListStorageContext<T> : IStorageBase<T> where T: class
     {
         
         ICollection<T> StoredShoppingLists { get; set; }

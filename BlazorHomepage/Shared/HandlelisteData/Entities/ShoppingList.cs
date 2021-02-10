@@ -11,7 +11,7 @@ namespace BlazorHomepage.Shared.Data.Entities
         public int DbId { get; set; }
         public string ListId { get; set; } //public available.. 
         public string Name { get; set; }
-        public ICollection<ShopingListItem> ShoppingItems { get; set; }
+        public ICollection<ShoppingListItem> ShoppingItems { get; set; }
         public bool IsDone { get; set; }
 
     }
