@@ -8,11 +8,12 @@ namespace BlazorHomepage.Client.DataManagers
     {
         public ShoppingListProfile()
         {
-            this.CreateMap<ShoppingList, ShoppingListModel>();
-            this.CreateMap<ShoppingListItem, ShoppingListItemModel>();
-            this.CreateMap<ShopItem, ShopItemModel>();
-            this.CreateMap<Shelf, ShelfModel>();
-            this.CreateMap<ItemCategory, ItemCategoryModel>();
+            this.CreateMap<ShoppingList, ShoppingListModel>().ReverseMap();
+            
+            this.CreateMap<ShoppingListItem, ShoppingListItemModel>().ReverseMap(); 
+            this.CreateMap<ShopItem, ShopItemModel>().ReverseMap(); 
+            this.CreateMap<ItemCategory, ItemCategoryModel>().ReverseMap(); 
+            this.CreateMap<Shelf, ShelfModel>().ReverseMap(); 
         }
     }
 }

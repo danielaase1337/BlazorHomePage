@@ -30,11 +30,16 @@ namespace BlazorHomepage.Client.DataManagers
             }
         }
 
-        public void Delete(User toDelet)
+        public bool Delete(User toDelet)
         {
             var exist = _localUsers.FirstOrDefault(f => f.UserId == toDelet.UserId);
             if (exist != null)
+            {
                 _localUsers.Remove(exist);
+                return true;
+            }
+            else
+                return false; 
         }
 
         public async Task<User[]> GetAllUsersAsync()

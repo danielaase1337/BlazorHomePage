@@ -9,7 +9,7 @@ namespace BlazorHomepage.Shared.DataManagerModels
     public interface IStorageBase<T>
     {
         void Add(T contact);
-        void Delete(T contact);
+        bool Delete(T contact);
         T Update(T updatedContact);
 
         abstract void OnInitiliazing();

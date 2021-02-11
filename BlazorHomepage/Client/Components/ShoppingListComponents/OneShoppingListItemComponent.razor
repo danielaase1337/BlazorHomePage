@@ -1,0 +1,16 @@
+﻿
+
+
+@code
+{
+
+
+    [Parameter]
+    public ShoppingListModel OneShoppingList { get; set; }
+
+    private string GetItemNavLink(string listeId)
+    {
+        return $"shoppinglist/{listeId}";
+    }
+
+}

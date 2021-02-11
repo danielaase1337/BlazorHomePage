@@ -41,10 +41,14 @@ namespace BlazorHomepage.Client.DataManagers
             Contacts.Add(contact);
         }
 
-        public void Delete(OneCovidContact contact)
+        public bool Delete(OneCovidContact contact)
         {
             if (Contacts.Contains(contact))
+            { 
                 Contacts.Remove(contact);
+                return true; 
+            }
+            return false;
         }
 
         public OneCovidContact Update(OneCovidContact updatedContact)

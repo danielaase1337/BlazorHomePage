@@ -1,22 +1,37 @@
 ﻿@page "/shoppinglist"
 
 <h3>Handlelister</h3>
+@*<div class="container-fluid">
+    <div class="row align-items-start">*@
 @if (_sLists != null)
 {
     <ul>
         @foreach (var l in _sLists)
         {
-        <li>
-            <NavLink class="nav-link" href="shoppinglist/HU1">@l.Name</NavLink>
-        </li>
+            <li>
+                <div style="display:inline-flex; align-content:center; align-items:center">
+                    <Check TValue="bool" Checked="@l.IsDone"></Check><NavLink class="nav-link" href="@(GetItemNavLink(l.ListId))">@l.Name</NavLink>
+                    @if (_deleteClicked)
+                    {
+                        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = false)"><i class="fas fa-times"></i></button>
+                        <button class="btn btn-sm btn-outline-success" @onclick="@(e => DeleteList(l))"><i class="fas fa-check"></i></button>
+                    }
+                    else
+                    {
+                        <button class="btn  btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = true)"><i class="fas fa-times"></i></button>
+
+                    }
+                </div>
+            </li>
         }
     </ul>
-
 }
 else
 {
-    <p>Ingen lister</p>
+    <p>Ingen lister eller laster</p>
 }
+@*</div>
+    </div>*@
 
 @code {
 
@@ -29,9 +44,38 @@ else
 
     private ShoppingListModel[] _sLists;
 
-
+    private string GetItemNavLink(int listeId)
+    {
+        return $"shoppinglist/{listeId}";
+    }
     protected override async Task OnInitializedAsync()
     {
         _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
+
     }
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
+    //}
+
+
+
+    private bool _deleteClicked = false;
+
+
+
+    [Parameter]
+    public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
+
+
+    private async Task DeleteList(ShoppingListModel l)
+    {
+        await ShoppingListDataManager.Delete(l).ContinueWith(f =>
+        {
+            if (f.Result)
+                _sLists = _sLists.Where(f => f.ListId != l.ListId).ToArray();
+        });
+
+    }
+
 }

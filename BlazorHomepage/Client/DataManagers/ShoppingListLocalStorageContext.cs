@@ -26,33 +26,40 @@ namespace BlazorHomepage.Client.DataManagers
                 StoredShoppingLists.Add(list); 
         }
 
-        public void Delete(ShoppingList contact)
+        public bool Delete(ShoppingList contact)
         {
-            var exist = StoredShoppingLists.FirstOrDefault(f => f.DbId == contact.DbId);
-            if (exist == null) return;
-            else StoredShoppingLists.Remove(contact); 
+            var exist = StoredShoppingLists.FirstOrDefault(f => f.ListId == contact.ListId);
+            if (exist == null) return false;
+            else
+            {
+                StoredShoppingLists.Remove(exist);
+                return true; 
+            }
         }
 
         public void OnInitiliazing()
         {
-            AvailableItemCategories = ItemCategory.GetDefaults();
-            AvailableShopItems = ShopItem.GetDefault();
-
-            var shopitemList = AvailableShopItems.Select(f => new ShoppingListItem() { Id = f.Id, IsDone = f.Done, Mengde = 1, Varen = f }); 
-
-            StoredShoppingLists = new List<ShoppingList>()
+            if(StoredShoppingLists == null)
             {
-                new ShoppingList(){Name = "Handleliste Uke 1", DbId = 1, ListId = "HU1", IsDone = false,
+                AvailableItemCategories = ItemCategory.GetDefaults();
+                AvailableShopItems = ShopItem.GetDefault();
+
+                var shopitemList = AvailableShopItems.Select(f => new ShoppingListItem() { Id = f.Id, IsDone = f.Done, Mengde = 1, Varen = f });
+                StoredShoppingLists = new List<ShoppingList>()
+            {
+                new ShoppingList(){Name = "Handleliste Uke 1", ListId = 1, IsDone = false,
                     ShoppingItems = shopitemList.ToList(),
                 }
             };
-            _nextId = StoredShoppingLists.Last().DbId + 1;
+                _nextId = StoredShoppingLists.Last().ListId + 1;
+
+            }
 
         }
 
         public ShoppingList Update(ShoppingList updatedContact)
         {
-            var exisitng = StoredShoppingLists.FirstOrDefault(a => a.DbId == updatedContact.DbId);
+            var exisitng = StoredShoppingLists.FirstOrDefault(a => a.ListId == updatedContact.ListId);
             if (exisitng == null) return null;
             exisitng = updatedContact;
             return updatedContact; 

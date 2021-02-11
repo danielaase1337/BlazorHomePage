@@ -11,22 +11,22 @@ namespace BlazorHomepage.Shared.DataManagerModels
    public  interface IShoppingListDataManager 
     {
 		//Generic
-		void Add<T>(T entity)  where T : class;
+		Task<bool> Add<T>(T entity)  where T : class;
 
-		void Delete<T>(T enitity)  where T : class;
+		Task<bool> Delete<T>(T enitity)  where T : class;
 
-		T Update<T>(T entity) where T : class; 
+		Task<T> Update<T>(T entity) where T : class; 
 
 		Task<bool> SaveChangesAsync();
 
 		//Handlelister
 		Task<ShoppingListModel[]> GetAllShoppingListsAsync();
-		Task<ShoppingListModel> GetOneShoppingListAsync(string listId);
+		Task<ShoppingListModel> GetOneShoppingListAsync(int listId);
 
-		Task<ShoppingListModel> GetSortedHandlelisteAsync(string shopId);
+		Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId);
 
 		//ShopItems
-		Task<ShopItemModel[]> GetAllShowItemsByShopIdAsync(string shopId);
+		Task<ShopItemModel[]> GetAllShowItemsByShopIdAsync(int shopId);
 		
 		//shelfs
 		Task<ShelfModel[]> GetShelfByShowId(string shopId);
