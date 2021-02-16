@@ -18,15 +18,16 @@ namespace BlazorHomepage.Client.DataManagers
         }
 
 
-        public void Add(User newUser)
+        public User Add(User newUser)
         {
             var exising = _localUsers.FirstOrDefault(f => f.EMail.Equals(newUser.EMail));
-            if (exising != null) return;
+            if (exising != null) return exising;
             else
             {
                 newUser.UserId = _nextUserId;
                 _nextUserId++;
                 _localUsers.Add(newUser);
+                return newUser; 
             }
         }
 

@@ -127,6 +127,7 @@
 
         if (SelectedUser != null)
         {
+            
             Contacts = await _dataManager.GetAllContactsFromUser(SelectedUser.FirstName.ToLower());
         }
 
@@ -161,6 +162,7 @@
     {
         try
         {
+            newContact.OwnerId = SelectedUser.FirstName.ToLower();
             _dataManager.Add<OneContactModel>(newContact);
             var saveResult = await _dataManager.SaveChangesAsync();
             if (saveResult)

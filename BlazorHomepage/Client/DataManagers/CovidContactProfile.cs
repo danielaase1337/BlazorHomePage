@@ -8,7 +8,7 @@ namespace BlazorHomepage.Client.DataManagers
     {
         public CovidContactProfile()
         {
-            this.CreateMap<OneCovidContact, OneContactModel>();
+            this.CreateMap<OneCovidContact, OneContactModel>().ReverseMap();
         }
     }
 }

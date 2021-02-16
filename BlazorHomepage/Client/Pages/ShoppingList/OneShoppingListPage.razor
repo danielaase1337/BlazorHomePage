@@ -7,16 +7,12 @@
         <p>Ferdig handlet</p>
     }
 
-    <div>
-        <ul>
+    <div class="todoapp">
+        <ul class="todo-list">
             @foreach (var vare in ThisShoppingList.ShoppingItems)
             {
                 <li>
-                    <div>
-                        <span>
-                            @vare.Varen.Name
-                        </span>
-                    </div>
+                   <OneShoppingListItemComponent OneShoppingListItem="vare" DeleteVareCallback="@(f=> DeleteVare(vare))" />
                 </li>
             }
         </ul>
@@ -45,6 +41,14 @@ else
             if(f.Result != null)
                 ThisShoppingList = f.Result;
         });
+    }
+    public async Task DeleteVare(ShoppingListItemModel m)
+    {
+        ThisShoppingList.ShoppingItems.Remove(m);
+
+        var updated = await ShoppingListDataManager.Update<ShoppingListModel>(ThisShoppingList);
+        ThisShoppingList = updated; 
+
     }
 
 }

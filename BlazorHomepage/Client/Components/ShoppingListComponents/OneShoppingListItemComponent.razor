@@ -1,16 +1,34 @@
 ﻿
-
+<div class="new-todo"  style="display:inline-flex; align-content:center; align-items:center">
+    <div style="display:inline-flex; align-content:center; align-items:center">
+        <Check TValue="bool" Checked="@OneShoppingListItem.IsDone"></Check>
+        <p>@OneShoppingListItem.Varen.Name</p>
+        <input @bind-value="OneShoppingListItem.Mengde" style="width:100px"/>
+        @if (_deleteClicked)
+        {
+            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = false)"><i class="fas fa-times"></i></button>
+            <button class="btn btn-sm btn-outline-success" @onclick="@(e => DeleteVare(OneShoppingListItem))"><i class="fas fa-check"></i></button>
+        }
+        else
+        {
+            <button class="btn  btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = true)"><i class="fas fa-times"></i></button>
+        }
+    </div>
+</div>
 
 @code
 {
 
+    private bool _deleteClicked = false;
 
     [Parameter]
-    public ShoppingListModel OneShoppingList { get; set; }
+    public ShoppingListItemModel OneShoppingListItem { get; set; }
 
-    private string GetItemNavLink(string listeId)
+    [Parameter]
+    public EventCallback DeleteVareCallback { get; set; }
+
+    public async Task DeleteVare(ShoppingListItemModel shoppingListItem)
     {
-        return $"shoppinglist/{listeId}";
+        await DeleteVareCallback.InvokeAsync(shoppingListItem);
     }
-
 }

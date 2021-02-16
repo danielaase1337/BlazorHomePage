@@ -34,11 +34,12 @@ namespace BlazorHomepage.Client.DataManagers
             }
         }
 
-        public void Add(OneCovidContact contact)
+        public OneCovidContact Add(OneCovidContact contact)
         {
             contact.Id = _nextId;
             _nextId += 1;
             Contacts.Add(contact);
+            return contact;
         }
 
         public bool Delete(OneCovidContact contact)

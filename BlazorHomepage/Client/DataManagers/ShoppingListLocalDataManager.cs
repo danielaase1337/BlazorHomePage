@@ -22,7 +22,7 @@ namespace BlazorHomepage.Client.DataManagers
             this.mapper = mapper;
             this.context = context;
         }
-        public async Task<bool> Add<T>(T entity) where T : class
+        public async Task<T> Add<T>(T entity) where T : class
         {
             await Task.Delay(1);
             try
@@ -30,16 +30,17 @@ namespace BlazorHomepage.Client.DataManagers
                 if (entity is ShoppingListModel list)
                 {
                     var shoppingList = mapper.Map<ShoppingList>(list);
-                    context.Add(shoppingList);
-                    return true;
+                    var res = context.Add(shoppingList);
+                    list.ListId = res.ListId;
+                    return list as T;
                 }
             }
             catch (Exception e)
             {
                 Debug.Write(e);
-                return false;
+                return null;
             }
-            return false;
+            return null;
         }
 
         public async Task<bool> Delete<T>(T enitity) where T : class
@@ -65,7 +66,7 @@ namespace BlazorHomepage.Client.DataManagers
         public async Task<T> Update<T>(T entity) where T : class
         {
             await Task.Delay(1);
-            if (entity is ShoppingList list)
+            if (entity is ShoppingListModel list)
             {
 
                 var shoppingList = mapper.Map<ShoppingList>(list);

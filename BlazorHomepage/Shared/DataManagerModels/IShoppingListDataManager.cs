@@ -11,7 +11,7 @@ namespace BlazorHomepage.Shared.DataManagerModels
    public  interface IShoppingListDataManager 
     {
 		//Generic
-		Task<bool> Add<T>(T entity)  where T : class;
+		Task<T> Add<T>(T entity)  where T : class;
 
 		Task<bool> Delete<T>(T enitity)  where T : class;
 

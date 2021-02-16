@@ -20,10 +20,15 @@ namespace BlazorHomepage.Client.DataManagers
         public  ICollection<ItemCategory> AvailableItemCategories { get; set; }
         public ICollection<ShopItem> AvailableShopItems { get; set; }
         private int _nextId; 
-        public void Add(ShoppingList list)
+        public ShoppingList Add(ShoppingList list)
         {
-            if(!StoredShoppingLists.Contains(list))
-                StoredShoppingLists.Add(list); 
+            if (!StoredShoppingLists.Contains(list))
+            {
+                list.ListId = _nextId;
+                _nextId++; 
+                StoredShoppingLists.Add(list);
+            }
+            return list; 
         }
 
         public bool Delete(ShoppingList contact)
