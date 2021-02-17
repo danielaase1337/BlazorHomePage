@@ -44,7 +44,7 @@ namespace BlazorHomepage.Client
             
             //StorageContextes Page handlers.. 
             builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
-            builder.Services.AddScoped<IShoppingListStorageContext<ShoppingList>, ShoppingListLocalStorageContext>(); 
+            builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
             
             //Datamangere AKA API handlers. 
             builder.Services.AddScoped<ICovidContactsDataManager, CovidContactsLocalDataManager>();

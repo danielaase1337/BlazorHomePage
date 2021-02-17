@@ -71,7 +71,7 @@
     public IShoppingListDataManager ShoppingListDataManager { get; set; }
 
     private List<ShoppingListModel> _sLists;
-
+    private List<ShopItemModel> _tilgjengeligeVarer;
     public string _newListName { get; set; }
 
     private string GetItemNavLink(int listeId)
@@ -82,13 +82,13 @@
     {
         var res = await ShoppingListDataManager.GetAllShoppingListsAsync();
         _sLists = res.ToList();
+        _tilgjengeligeVarer = await ShoppingListDataManager.GetAllShopItemsAsync();
     }
     //protected override async Task OnParametersSetAsync()
     //{
     //    _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
     //}
 
-    private string cssClassChanger = "";
 
 
     private bool _editClicked = false;
@@ -141,7 +141,7 @@
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
         if (args.Code.Equals("Enter"))
-             await AddList(); 
+            await AddList();
     }
 
 }

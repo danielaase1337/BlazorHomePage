@@ -1,22 +1,37 @@
 ﻿@page "/shoppinglist/{id}"
 @if (ThisShoppingList != null)
 {
-    <h4>@ThisShoppingList.Name</h4>
+
+
+
+    <div class="header">
+        <h2>@ThisShoppingList.Name</h2>
+        @*<span>
+                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@NewVareName" @onkeyup="OnKeyUpNewListItemHandler">
+                <Button class="btn btn-outline-success" Clicked="@(f=> AddVare())"><span><i class="fas fa-plus-circle"></i></span></Button>
+            </span>*@
+       
+           <Autocomplete Data="@Varer" 
+                         TextField="@((item) => item.Name)"
+                         ValueField="@((item) => item.Name)"
+                         Placeholder="navn?"/>
+    </div>
+
     @if (ThisShoppingList.IsDone)
     {
         <p>Ferdig handlet</p>
     }
-
-    <div class="todoapp">
+    else
+    {
         <ul class="todo-list">
             @foreach (var vare in ThisShoppingList.ShoppingItems)
             {
                 <li>
-                   <OneShoppingListItemComponent OneShoppingListItem="vare" DeleteVareCallback="@(f=> DeleteVare(vare))" />
+                    <OneShoppingListItemComponent OneShoppingListItem="vare" DeleteVareCallback="@(f=> DeleteVare(vare))" />
                 </li>
             }
         </ul>
-    </div>
+    }
 }
 else
 {
@@ -24,10 +39,17 @@ else
 }
 @code{
 
+    void handleChange(ShopItemModel value) => SelectedShopItem = value;
+
     [Parameter]
     public string Id { get; set; }
 
+    public ShopItemModel SelectedShopItem { get; set; }
+
     public ShoppingListModel ThisShoppingList { get; set; }
+
+    public List<ShopItemModel> Varer { get; set; }
+
     [Inject]
     public IShoppingListDataManager ShoppingListDataManager { get; set; }
 
@@ -38,17 +60,32 @@ else
             return;
         await ShoppingListDataManager.GetOneShoppingListAsync(idAsInt).ContinueWith(f =>
         {
-            if(f.Result != null)
+            if (f.Result != null)
                 ThisShoppingList = f.Result;
         });
+        Varer = await ShoppingListDataManager.GetAllShopItemsAsync();
+
     }
     public async Task DeleteVare(ShoppingListItemModel m)
     {
         ThisShoppingList.ShoppingItems.Remove(m);
 
         var updated = await ShoppingListDataManager.Update<ShoppingListModel>(ThisShoppingList);
-        ThisShoppingList = updated; 
+        ThisShoppingList = updated;
+    }
 
+    private string NewVareName { get; set; }
+
+    private async Task AddVare()
+    {
+        if (string.IsNullOrEmpty(NewVareName)) return;
+        var newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = new ShopItemModel() { Name = NewVareName } };
+
+    }
+    private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
+    {
+        if (args.Code.Equals("Enter"))
+            await AddVare();
     }
 
 }

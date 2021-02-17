@@ -13,15 +13,15 @@ namespace BlazorHomepage.Client.DataManagers
         private int _nextId;
         public CovidContactStorageContext()
         {
-            OnInitiliazing(); 
+            OnInitiliazing();
         }
-        
+
         public ICollection<OneCovidContact> Contacts { get; set; }
-        
-        
+
+
         public void OnInitiliazing()
         {
-            if (Contacts == null || !Contacts.Any()) 
+            if (Contacts == null || !Contacts.Any())
             {
                 Contacts = new List<OneCovidContact>
                 {
@@ -34,30 +34,42 @@ namespace BlazorHomepage.Client.DataManagers
             }
         }
 
-        public OneCovidContact Add(OneCovidContact contact)
+        public T Add<T>(T entity) where T : class
         {
-            contact.Id = _nextId;
-            _nextId += 1;
-            Contacts.Add(contact);
-            return contact;
+            if(entity is OneCovidContact contact)
+            {
+                contact.Id = _nextId;
+                _nextId += 1;
+                Contacts.Add(contact);
+                return contact as T;
+            }
+            return null; 
         }
 
-        public bool Delete(OneCovidContact contact)
+        public bool Delete<T>(T entity) where T : class
         {
-            if (Contacts.Contains(contact))
-            { 
-                Contacts.Remove(contact);
-                return true; 
+            if(entity is OneCovidContact contact)
+            {
+                if (Contacts.Contains(contact))
+                {
+                    Contacts.Remove(contact);
+                    return true;
+                }
             }
             return false;
         }
 
-        public OneCovidContact Update(OneCovidContact updatedContact)
+        public T Update<T>(T entity ) where T : class
         {
-            var exisiting = Contacts.FirstOrDefault(f => f.Id == updatedContact.Id);
-            if (exisiting != null)
-                exisiting = updatedContact;
-            return exisiting;
+            if(entity is OneCovidContact updatedContact)
+            {
+                var exisiting = Contacts.FirstOrDefault(f => f.Id == updatedContact.Id);
+                if (exisiting != null)
+                    exisiting = updatedContact;
+                return exisiting as T;
+            }
+            return null;
         }
+        
     }
 }

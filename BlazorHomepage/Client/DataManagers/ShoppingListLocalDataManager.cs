@@ -15,12 +15,22 @@ namespace BlazorHomepage.Client.DataManagers
     public class ShoppingListLocalDataManager : IShoppingListDataManager
     {
         private readonly IMapper mapper;
-        private readonly IShoppingListStorageContext<ShoppingList> context;
+        private readonly IStorageContext _storeContext;
+        private readonly ShoppingList shopListTypeSelector;
+        private readonly ItemCategory itemCategoryTypeSelector;
+        private readonly ShopItem shopItemTypeSelector;
+        public IMapper Mapper => mapper;
 
-        public ShoppingListLocalDataManager(IMapper mapper, IShoppingListStorageContext<ShoppingList> context)
+        public IStorageContext StoreContext => _storeContext;
+
+        public ShoppingListLocalDataManager(IMapper mapper, IStorageContext context)
         {
+            shopListTypeSelector = new ShoppingList();
+            itemCategoryTypeSelector = new ItemCategory();
+            shopItemTypeSelector = new ShopItem(); 
+            
             this.mapper = mapper;
-            this.context = context;
+            this._storeContext = context;
         }
         public async Task<T> Add<T>(T entity) where T : class
         {
@@ -29,10 +39,22 @@ namespace BlazorHomepage.Client.DataManagers
             {
                 if (entity is ShoppingListModel list)
                 {
-                    var shoppingList = mapper.Map<ShoppingList>(list);
-                    var res = context.Add(shoppingList);
+                    var shoppingList = Mapper.Map<ShoppingList>(list);
+                    var res = StoreContext.Add(shoppingList);
                     list.ListId = res.ListId;
                     return list as T;
+                }
+                if(entity is ShopItemModel item)
+                {
+                    var shopItem = Mapper.Map<ShopItem>(item);
+                    var res = StoreContext.Add(shopItem);
+                    return item as T; 
+                }
+                if(entity is ItemCategoryModel itemCat)
+                {
+                    var category = Mapper.Map<ItemCategory>(itemCat);
+                    var res = StoreContext.Add(category);
+                    return itemCat as T; 
                 }
             }
             catch (Exception e)
@@ -51,8 +73,8 @@ namespace BlazorHomepage.Client.DataManagers
             {
                 try
                 {
-                    var shoppingList = mapper.Map<ShoppingList>(list);
-                   var res = context.Delete(shoppingList);
+                    var shoppingList = Mapper.Map<ShoppingList>(list);
+                   var res = StoreContext.Delete(shoppingList);
                    return res; 
                 }
                 catch (Exception e)
@@ -69,36 +91,33 @@ namespace BlazorHomepage.Client.DataManagers
             if (entity is ShoppingListModel list)
             {
 
-                var shoppingList = mapper.Map<ShoppingList>(list);
-                var res = context.Update(shoppingList);
-                return mapper.Map<T>(res);
+                var shoppingList = Mapper.Map<ShoppingList>(list);
+                var res = StoreContext.Update(shoppingList);
+                return Mapper.Map<T>(res);
             }
             return null;
         }
 
-        public async Task<ShoppingListModel[]> GetAllShoppingListsAsync()
+        public async Task<List<ShoppingListModel>> GetAllShoppingListsAsync()
         {
             await Task.Delay(1);
-            var res = mapper.Map<ShoppingListModel[]>(context.StoredShoppingLists);
-            return res;
+            var storedItems = StoreContext.GetStoredItems(shopListTypeSelector);
+            var res = Mapper.Map<ShoppingListModel[]>(storedItems);
+            return res.ToList();
         }
 
-        public Task<ShopItemModel[]> GetAllShowItemsByShopIdAsync(int shopId)
-        {
-            throw new NotImplementedException();
-
-        }
 
         public async Task<ShoppingListModel> GetOneShoppingListAsync(int listId)
         {
             await Task.Delay(1);
-            var shoppingList = context.StoredShoppingLists.FirstOrDefault(f => f.ListId.Equals(listId));
+            var res = StoreContext.GetStoredItems(shopListTypeSelector);
+            var shoppingList = res.FirstOrDefault(f => f.ListId.Equals(listId));
             if (shoppingList == null) return null;
             else
-                return mapper.Map<ShoppingListModel>(shoppingList);
+                return Mapper.Map<ShoppingListModel>(shoppingList);
         }
 
-        public Task<ShelfModel[]> GetShelfByShowId(string shopId)
+        public Task<List<ShelfModel>> GetShelfByShowId(string shopId)
         {
             throw new NotImplementedException();
         }
@@ -106,10 +125,10 @@ namespace BlazorHomepage.Client.DataManagers
         public async Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId)
         {
             await Task.Delay(1);
-            var listen = context.StoredShoppingLists.First();
+            var listen = StoreContext.GetStoredItems(shopListTypeSelector).First();
             var r = listen.ShoppingItems.OrderBy(f => f.Varen.ItemCategory.Name);
             listen.ShoppingItems = r.ToList();
-            var result = mapper.Map<ShoppingListModel>(listen);
+            var result = Mapper.Map<ShoppingListModel>(listen);
             return result;
         }
 
@@ -119,6 +138,19 @@ namespace BlazorHomepage.Client.DataManagers
             return true;
         }
 
+       
+        public async Task<List<ShopItemModel>> GetAllShopItemsAsync()
+        {
+            await Task.Delay(1);
+            var items = StoreContext.GetStoredItems(shopItemTypeSelector);
+            return mapper.Map<ShopItemModel[]>(items).ToList();
+        }
 
+        public async Task<List<ItemCategoryModel>> GetAllItemCategories()
+        {
+            await Task.Delay(1);
+            var items = StoreContext.GetStoredItems(itemCategoryTypeSelector);
+            return mapper.Map<ItemCategoryModel[]>(items).ToList(); 
+        }
     }
 }

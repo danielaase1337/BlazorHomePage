@@ -8,28 +8,29 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.DataManagerModels
 {
-   public  interface IShoppingListDataManager 
+    public interface IShoppingListDataManager
     {
-		//Generic
-		Task<T> Add<T>(T entity)  where T : class;
+        //Generic
+        Task<T> Add<T>(T entity) where T : class;
 
-		Task<bool> Delete<T>(T enitity)  where T : class;
+        Task<bool> Delete<T>(T enitity) where T : class;
 
-		Task<T> Update<T>(T entity) where T : class; 
+        Task<T> Update<T>(T entity) where T : class;
 
-		Task<bool> SaveChangesAsync();
+        Task<bool> SaveChangesAsync();
 
-		//Handlelister
-		Task<ShoppingListModel[]> GetAllShoppingListsAsync();
-		Task<ShoppingListModel> GetOneShoppingListAsync(int listId);
+        //Handlelister
+        Task<List<ShoppingListModel>> GetAllShoppingListsAsync();
+        Task<ShoppingListModel> GetOneShoppingListAsync(int listId);
+        Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId);
 
-		Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId);
+        //ShopItems
+        Task<List<ShopItemModel>> GetAllShopItemsAsync();
+        Task<List<ItemCategoryModel>> GetAllItemCategories();
 
-		//ShopItems
-		Task<ShopItemModel[]> GetAllShowItemsByShopIdAsync(int shopId);
-		
-		//shelfs
-		Task<ShelfModel[]> GetShelfByShowId(string shopId);
 
-	}
+        //shelfs
+        Task<List<ShelfModel>> GetShelfByShowId(string shopId);
+
+    }
 }
