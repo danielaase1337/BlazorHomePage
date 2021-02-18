@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.DataManagerModels
 {
-    public interface IUserDataManager<T> : IStorageBase<T>
+    public interface IUserDataManager<T> : IStorageBase
     {
         Task<T[]> GetAllUsersAsync(); 
         Task<T> GetUsersAsync(string id);

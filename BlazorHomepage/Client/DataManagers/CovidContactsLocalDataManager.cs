@@ -15,24 +15,22 @@ namespace BlazorHomepage.Client.DataManagers
     {
         private readonly IMapper _mapper;
         private readonly ICovidStorageContext<OneCovidContact> _context;
-        private int _nextId;
         public CovidContactsLocalDataManager(IMapper mapper, ICovidStorageContext<OneCovidContact> context)
         {
             _mapper = mapper;
             _context = context;
         }
 
-        public void Add<T>(T entity) where T : class
+        public T Add<T>(T entity) where T : class
         {
             try
             {
                 if (entity is OneContactModel model)
                 {
-                    model.Id = _nextId;
-                    _nextId += 1;
                     var covidContact = _mapper.Map<OneCovidContact>(model);
-                    covidContact.OwnerId = model.Name.ToLower(); //finnes ikke på modell objektet.. just for testing.. 
-                    _context.Add(covidContact);
+                    var res = _context.Add(covidContact);
+                    model.Id = res.Id;
+                    return model as T;
                 }
 
                 //return contact;
@@ -40,14 +38,16 @@ namespace BlazorHomepage.Client.DataManagers
             catch (Exception e)
             {
                 Debug.Write(e);
-                //return null;
+                return null;
             }
+            return null; 
         }
 
 
-        public void Delete<T>(T entity) where T : class
+        public bool Delete<T>(T entity) where T : class
         {
-            _context.Delete(entity as OneCovidContact);
+            var res = _context.Delete(entity as OneCovidContact);
+            return res; 
         }
 
         public async Task<List<OneContactModel>> GetAllContactsFromUser(string ownerId)
@@ -83,7 +83,7 @@ namespace BlazorHomepage.Client.DataManagers
             return res;
         }
 
-        public void Update<T>(T entity) where T : class
+        public T Update<T>(T entity) where T : class
         {
             if (entity is OneContactModel contact)
             {
@@ -91,13 +91,16 @@ namespace BlazorHomepage.Client.DataManagers
                 {
                     var mappedContact = _mapper.Map<OneCovidContact>(contact);
                     var updated = _context.Update(mappedContact);
+                    var remap = _mapper.Map<OneContactModel>(updated);
+                    return remap as T; 
                 }
                 catch (Exception e)
                 {
                     Debug.Write(e);
-
+                    return null; 
                 }
             }
+            return null; 
         }
 
     }

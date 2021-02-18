@@ -1,0 +1,62 @@
+﻿
+<div class="@OneShoppingListItem.CssEditClassName">
+    <input class="toggle" type="checkbox" value="@OneShoppingListItem.IsDone" @onchange="@(f => VareCheckd(OneShoppingListItem, f))" />
+    @if (@OneShoppingListItem.EditClicked)
+    {
+        <input class="editing" @bind-value="@(OneShoppingListItem.Varen.Name)" />
+    }
+    else
+    {
+        <label>
+            @OneShoppingListItem.Varen.Name
+        </label>
+    }
+    <input @bind-value="OneShoppingListItem.Mengde" />
+    @if (OneShoppingListItem.EditClicked)
+    {
+        <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(OneShoppingListItem))"><i class="fas fa-check"></i></button>
+        <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { OneShoppingListItem.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteVare(OneShoppingListItem))"><i class="fas fa-ban"> </i></button>
+    }
+    else
+    {
+        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { OneShoppingListItem.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+    }
+    
+</div>
+
+@code
+{
+
+    private bool _deleteClicked = false;
+
+    [Parameter]
+    public ShoppingListItemModel OneShoppingListItem { get; set; }
+
+    [Parameter]
+    public EventCallback DeleteVareCallback { get; set; }
+
+    public async Task DeleteVare(ShoppingListItemModel shoppingListItem)
+    {
+        await DeleteVareCallback.InvokeAsync(shoppingListItem);
+    }
+    
+    [Parameter]
+    public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
+    private async Task StoreChange(ShoppingListItemModel item)
+    {
+        item.EditClicked = false;
+        await StoreChangeCallback.InvokeAsync(item); 
+    }
+
+    private void VareCheckd(ShoppingListItemModel l, ChangeEventArgs value)
+    {
+        if (value?.Value != null && value.Value is bool bValue)
+            l.IsDone = bValue;
+    }
+    private void toogelAllClicked()
+    {
+
+    }
+
+}

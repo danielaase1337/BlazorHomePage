@@ -14,6 +14,8 @@ namespace BlazorHomepage.Shared.Model.CovidModels
         public string Name { get; set; }
         [Required]
         public DateTime ContactDate { get; set; }
+        public string OwnerId { get; set; }
+
         public string Sted { get; set; }
         public string CategoryId { get; set; }
 
@@ -27,8 +29,8 @@ namespace BlazorHomepage.Shared.Model.CovidModels
             Name = exisitng.Name;
             ContactDate = exisitng.ContactDate;
             Sted = exisitng.Sted;
-            CategoryId = exisitng.CategoryId; 
-
+            CategoryId = exisitng.CategoryId;
+            OwnerId = exisitng.OwnerId;
         }
     }
 }

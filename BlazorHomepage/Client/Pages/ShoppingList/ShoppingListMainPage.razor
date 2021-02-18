@@ -1,0 +1,147 @@
+﻿@page "/shoppinglist"
+<div class="container-fluid">
+    <div class="todomvc-wrapper">
+        <section class="todoapp">
+            <div class="row">
+                <div class="col">
+                    <div class="commonviews">
+                        @if (_sLists != null)
+                        {
+                            <div class="header">
+                                <h2>Handlelister</h2>
+                                <span>
+                                    <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+                                    <Button class="btn btn-outline-success" Clicked="@(f=> AddList())"><span><i class="fas fa-plus-circle"></i></span></Button>
+                                </span>
+                            </div>
+
+                            <div class="main">
+                                <input class="toggle-all" type="checkbox" />
+                                <label for="toggle-all">Mark all as complete</label>
+                            </div>
+                            <ul class="todo-list">
+                                @foreach (var l in _sLists)
+                                {
+                                    <li class="@l.CssEditClassName">
+                                        <input class="toggle" type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
+                                        @if (l.EditClicked)
+                                        {
+                                            <input class="editing" @bind-value="@(l.Name)" />
+                                        }
+                                        else
+                                        {
+                                            <label>
+                                                <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
+                                            </label>
+                                        }
+                                        @*<Check TValue="bool" Checked="@l.IsDone"></Check>*@
+                                        @* <NavLink class="nav-link" href="@(GetItemNavLink(l.ListId))">@l.Name</NavLink>*@
+                                        @if (l.EditClicked)
+                                        {
+                                            <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                            <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                        }
+
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            <p>Ingen lister eller laster</p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@code {
+
+    [Inject]
+    public IUserDataManager<User> UserDataManager { get; set; }
+
+    [Inject]
+    public IShoppingListDataManager ShoppingListDataManager { get; set; }
+
+    private List<ShoppingListModel> _sLists;
+    private List<ShopItemModel> _tilgjengeligeVarer;
+    public string _newListName { get; set; }
+
+    private string GetItemNavLink(int listeId)
+    {
+        return $"shoppinglist/{listeId}";
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await ShoppingListDataManager.GetAllShoppingListsAsync();
+        _sLists = res.ToList();
+        _tilgjengeligeVarer = await ShoppingListDataManager.GetAllShopItemsAsync();
+    }
+    //protected override async Task OnParametersSetAsync()
+    //{
+    //    _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
+    //}
+
+
+
+    private bool _editClicked = false;
+    private bool _deleteClicked = false;
+
+    [Parameter]
+    public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
+    private async Task StoreChange(ShoppingListModel item)
+    {
+        item.EditClicked = false;
+        await ShoppingListDataManager.Update<ShoppingListModel>(item);
+    }
+
+    [Parameter]
+    public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
+    private async Task DeleteList(ShoppingListModel l)
+    {
+        await ShoppingListDataManager.Delete(l).ContinueWith(f =>
+        {
+            if (f.Result)
+                _sLists = _sLists.Where(f => f.ListId != l.ListId).ToList();
+        });
+
+    }
+    private async Task AddList()
+    {
+        if (string.IsNullOrWhiteSpace(_newListName)) return;
+        var newItem = new ShoppingListModel() { Name = _newListName };
+        await ShoppingListDataManager.Add<ShoppingListModel>(newItem).ContinueWith(f =>
+        {
+            if (f.Result != null)
+            {
+                _sLists.Add(f.Result);
+                _newListName = string.Empty;
+            }
+        });
+    }
+
+
+    private void ListeChecked(ShoppingListModel l, ChangeEventArgs value)
+    {
+        if (value?.Value != null && value.Value is bool bValue)
+            l.IsDone = bValue;
+    }
+    private void toogelAllClicked()
+    {
+
+    }
+
+    private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
+    {
+        if (args.Code.Equals("Enter"))
+            await AddList();
+    }
+
+}

@@ -16,6 +16,11 @@ using System.Reflection;
 using BlazorHomepage.Shared.Model;
 using BlazorHomepage.Shared.CovidHandlerData.Entities;
 using BlazorHomepage.Shared.CovidHandlerData;
+using BlazorHomepage.Shared.HandlelisteData;
+using BlazorHomepage.Shared.Data.Entities;
+using AutoMapper;
+using BlazorHomepage.Shared.Model.CovidModels;
+using BlazorHomepage.Shared.Model.HandlelisteModels;
 
 namespace BlazorHomepage.Client
 {
@@ -23,6 +28,9 @@ namespace BlazorHomepage.Client
     {
         public static async Task Main(string[] args)
         {
+            
+
+
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.Services.AddBlazorise(options =>
@@ -31,14 +39,20 @@ namespace BlazorHomepage.Client
              })
       .AddBootstrapProviders()
       .AddFontAwesomeIcons();
-            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly()); 
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             
-            builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext<OneCovidContact>>(); 
+            //StorageContextes Page handlers.. 
+            builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
+            builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
+            
+            //Datamangere AKA API handlers. 
             builder.Services.AddScoped<ICovidContactsDataManager, CovidContactsLocalDataManager>();
             builder.Services.AddScoped<IUserDataManager<User>, LocalUserDataManager>();
+            builder.Services.AddScoped<IShoppingListDataManager, ShoppingListLocalDataManager>(); 
             
             var host = builder.Build();
+
             host.Services
       .UseBootstrapProviders()
       .UseFontAwesomeIcons();

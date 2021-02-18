@@ -13,28 +13,40 @@ namespace BlazorHomepage.Client.DataManagers
         private int _nextUserId;
         public LocalUserDataManager()
         {
-            OnInitiliazing(); 
+            OnInitiliazing();
 
         }
 
 
-        public void Add(User newUser)
+        public T Add<T>(T entity) where T : class
         {
-            var exising = _localUsers.FirstOrDefault(f => f.EMail.Equals(newUser.EMail));
-            if (exising != null) return;
-            else
+            if(entity is User newUser)
             {
-                newUser.UserId = _nextUserId;
-                _nextUserId++;
-                _localUsers.Add(newUser);
+                var exising = _localUsers.FirstOrDefault(f => f.EMail.Equals(newUser.EMail));
+                if (exising != null) return exising as T;
+                else
+                {
+                    newUser.UserId = _nextUserId;
+                    _nextUserId++;
+                    _localUsers.Add(newUser);
+                    return newUser as T;
+                }
             }
+            return null; 
         }
 
-        public void Delete(User toDelet)
+        public bool Delete<T>(T entity) where T : class
         {
-            var exist = _localUsers.FirstOrDefault(f => f.UserId == toDelet.UserId);
-            if (exist != null)
-                _localUsers.Remove(exist);
+            if (entity is User user)
+            {
+                var exist = _localUsers.FirstOrDefault(f => f.UserId == user.UserId);
+                if (exist != null)
+                {
+                    _localUsers.Remove(exist);
+                    return true;
+                }
+            }
+            return false;
         }
 
         public async Task<User[]> GetAllUsersAsync()
@@ -46,10 +58,10 @@ namespace BlazorHomepage.Client.DataManagers
         public async Task<User> GetUsersAsync(string id)
         {
             await Task.Delay(1);
-            var ok  = int.TryParse(id, out int thisId);
-            if (!ok) return null; 
+            var ok = int.TryParse(id, out int thisId);
+            if (!ok) return null;
             var existing = _localUsers.FirstOrDefault(f => f.UserId == thisId);
-            return existing; 
+            return existing;
         }
 
         public void OnInitiliazing()
@@ -69,15 +81,18 @@ namespace BlazorHomepage.Client.DataManagers
             return true;
         }
 
-        public User Update(User updated)
+        public T Update<T>(T entity) where T : class
         {
-            var exiting = _localUsers.Find(f => f.UserId.Equals(updated.UserId));
-            if (exiting != null)
+            if (entity is User updated)
             {
-                exiting = updated;
-                return exiting;
+                var exiting = _localUsers.Find(f => f.UserId.Equals(updated.UserId));
+                if (exiting != null)
+                {
+                    exiting = updated;
+                    return exiting as T;
+                }
             }
-            return updated;
+            return entity as T;
         }
 
     }

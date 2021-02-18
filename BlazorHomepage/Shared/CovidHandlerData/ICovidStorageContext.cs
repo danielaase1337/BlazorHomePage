@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.CovidHandlerData
 {
-    public interface ICovidStorageContext<T> : IStorageBase<T> where T : class 
+    public interface ICovidStorageContext<T> : IStorageBase where T : class 
     {
 
         ICollection<T> Contacts { get; set; }

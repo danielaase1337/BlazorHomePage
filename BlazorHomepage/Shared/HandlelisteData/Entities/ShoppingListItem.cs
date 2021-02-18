@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Data.Entities
 {
-    public class ShopingListItem
+    public class ShoppingListItem
     {
         public int Id { get; set; }
         public ShopItem Varen { get; set; }

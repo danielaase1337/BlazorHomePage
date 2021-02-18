@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ShopItemModel
+    public class ShoppingListItemModel : ShoppingListBaseModel
     {
-
-        public string Name { get; set; }
-        public string Unit { get; set; } = "stk";
-        public ItemCategoryModel ItemCategory { get; set; }
+        public ShopItemModel Varen { get; set; }
+        public int Mengde { get; set; } = 1; 
 
     }
 }

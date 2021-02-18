@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ShoppingListModel
+    public class ShoppingListModel : ShoppingListBaseModel
     {
-        public string ListId { get; set; } //public available.. 
+        public int ListId { get; set; } //public available.. 
         public string Name { get; set; }
-        public ICollection<ShopItemModel> ShoppingItems { get; set; }
-        public bool IsDone { get; set; }
+        public ICollection<ShoppingListItemModel> ShoppingItems { get; set; } = new List<ShoppingListItemModel>();
+
+
+
+
     }
 }
