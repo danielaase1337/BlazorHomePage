@@ -55,12 +55,12 @@ child-horizontal-stack {
     z-index: 1000;
 }
 
-#blazor-error-ui .dismiss {
+    #blazor-error-ui .dismiss {
         cursor: pointer;
         position: absolute;
         right: 0.75rem;
         top: 0.5rem;
-}
+    }
 
 
 /*html,
@@ -162,6 +162,7 @@ input[type="checkbox"] {
     -moz-text-rendering: optimizeLegibility;
     text-rendering: optimizeLegibility;
 }
+
 .todoapp .todoapp-horizontalWrapping {
     margin-left: 60px;
     margin-bottom: 10px;
@@ -209,7 +210,7 @@ input[type="checkbox"] {
 .main {
     position: relative;
     z-index: 2;
-    border-top: 1px solid #e6e6e6;
+    
 }
 
 label[for='toggle-all'] {
@@ -218,8 +219,8 @@ label[for='toggle-all'] {
 
 .toggle-all {
     position: absolute;
-    top: -50px;
-    left: -12px;
+    /*top: -50px;
+    left: -12px;*/
     width: 60px;
     height: 34px;
     text-align: center;
@@ -241,6 +242,11 @@ label[for='toggle-all'] {
     list-style: none
 }
 
+
+.varePage {
+}
+
+
 .todo-list {
     margin: 0;
     padding: 0;
@@ -251,7 +257,7 @@ label[for='toggle-all'] {
         position: relative;
         font-size: 18px;
         border-bottom: 1px solid #ededed;
-        vertical-align:central
+        vertical-align: central
     }
 
         .todo-list li:last-child {
@@ -559,5 +565,3 @@ html .clear-completed:active {
         bottom: 20px;
     }
 }
-
-

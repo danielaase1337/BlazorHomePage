@@ -1,67 +1,132 @@
 ﻿@page "/shoppinglist/{id}"
 @if (ThisShoppingList != null)
 {
-    <div class="container-sm">
-        <div class="todomvc-wrapper">
-            <section class="todoapp">
-                <div class="commonviews">
-                    <div class="header">
-                        <h2>@ThisShoppingList.Name</h2>
-                        <div class="todoapp-horizontalWrapping ">
-                            <Autocomplete Data="@Varer"
-                                          TextField="@((item) => item.Name)"
-                                          ValueField="@((item) => item)"
-                                          Placeholder="navn?"
-                                          @onkeyup="OnKeyUpNewListItemHandler"
-                                          SelectedValue="@SelectedShopItem"
-                                          SelectedValueChanged="@((item) => SelectedShopItemChanged(item))"></Autocomplete>
-                            <Button class="btn btn-outline-success" Clicked="@(f => AddVare())">
-                                <span><i class="fas fa-plus-circle"></i></span>
-                            </Button>
+
+    <div class="container">
+        <h2>@ThisShoppingList.Name</h2>
+        <div class="row" style="flex-wrap:nowrap">
+            <div class="col-1">
+                <Check TValue="bool" CheckedChanged="@(f => CheckAllItems(f))"></Check>
+            </div>
+            <div class="col" style="flex-wrap:nowrap">
+                @*<div class="main">
+                    <input class="toggle-all" type="checkbox" @onchange="CheckAllItems" />
+                    <label for="toggle-all">Mark all as complete</label>
+                </div>*@
+                <Autocomplete Data="@Varer"
+                              TextField="@((item) => item.Name)"
+                              ValueField="@((item) => item)"
+                              Placeholder="navn?"
+                              @onkeyup="OnKeyUpNewListItemHandler"
+                              SelectedValue="@SelectedShopItem"
+                              SelectedValueChanged="@((item) => SelectedShopItemChanged(item))"></Autocomplete>
+            </div>
+            <div class="col -1">
+                <Button class="btn btn-outline-success" Clicked="@(f => AddVare())">
+                    <span><i class="fas fa-plus-circle"></i></span>
+                </Button>
+            </div>
+        </div>
+        <div class="row">
+            <ul class="todo-list" >
+                @foreach (var vare in ThisShoppingList.ShoppingItems)
+                {
+                    <li class="@vare.CssEditClassName">
+                        <div class="parent-horizontal-stack">
+                            <input class="toggle" type="checkbox" value="@vare.IsDone" @onchange="@(f => VareCheckd(vare, f))" />
+                            @if (vare.EditClicked)
+                            {
+                                <input class="editing" @bind-value="@(vare.Varen.Name)" />
+                                <input class="editing" @bind-value="vare.Mengde" />
+                            }
+                            else
+                            {
+                                <label>
+                                    @vare.Varen.Name
+                                </label>
+                                <input class="vareInputEdit" @bind-value="vare.Mengde" />
+                            }
+
+
+                            @if (vare.EditClicked)
+                            {
+                                <button class="btn btn-sm btn-outline-success btnSuccess" @onclick="@(e => StoreVareChanged(vare))"><i class="fas fa-check"></i></button>
+                                <button class="btn btn-sm btn-outline-warning abort" @onclick="@(e => { vare.EditClicked = false; })"><i class="fas fa-times"> </i></button>
+                                <button class="btn btn-sm btn-outline-danger destroy" @onclick="@(e => DeleteVare(vare))"><i class="fas fa-ban"> </i></button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { vare.EditClicked = true; })"><i class="fas fa-edit"></i></button>
+                            }
                         </div>
-                    </div>
-                    <div class="main">
-                        <input class="toggle-all" type="checkbox" />
-                        <label for="toggle-all">Mark all as complete</label>
-                    </div>
-                    <ul class="todo-list">
-                        @foreach (var vare in ThisShoppingList.ShoppingItems)
-                        {
-                            <li class="@vare.CssEditClassName">
-                                <div class="todoapp-horizontalWrapping">
-                                    <input class="toggle" type="checkbox" value="@vare.IsDone" @onchange="@(f => VareCheckd(vare, f))" />
-                                    @if (vare.EditClicked)
-                                    {
-                                        <input class="editing" @bind-value="@(vare.Varen.Name)" />
-                                        <input class="editing" @bind-value="vare.Mengde" />
-                                    }
-                                    else
-                                    {
-                                        <label>
-                                            @vare.Varen.Name
-                                        </label>
-                                        <input class="vareInputEdit" @bind-value="vare.Mengde" />
-                                    }
-
-
-                                    @if (vare.EditClicked)
-                                    {
-                                        <button class="btn btn-sm btn-outline-success btnSuccess" @onclick="@(e => StoreVareChanged(vare))"><i class="fas fa-check"></i></button>
-                                        <button class="btn btn-sm btn-outline-warning abort" @onclick="@(e => { vare.EditClicked = false; })"><i class="fas fa-times"> </i></button>
-                                        <button class="btn btn-sm btn-outline-danger destroy" @onclick="@(e => DeleteVare(vare))"><i class="fas fa-ban"> </i></button>
-                                    }
-                                    else
-                                    {
-                                        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { vare.EditClicked = true; })"><i class="fas fa-edit"></i></button>
-                                    }
-                                </div>
-                            </li>
-                        }
-                    </ul>
-                </div>
-            </section>
+                    </li>
+                }
+            </ul>
         </div>
     </div>
+
+    @*<div class="container-sm">
+            <div class="todomvc-wrapper">
+                <section class="todoapp">
+                    <div class="commonviews">
+
+                        <div class="header">
+                            <h2>@ThisShoppingList.Name</h2>
+                            <div class="todoapp-horizontalWrapping ">
+                                <Autocomplete Data="@Varer"
+                                              TextField="@((item) => item.Name)"
+                                              ValueField="@((item) => item)"
+                                              Placeholder="navn?"
+                                              @onkeyup="OnKeyUpNewListItemHandler"
+                                              SelectedValue="@SelectedShopItem"
+                                              SelectedValueChanged="@((item) => SelectedShopItemChanged(item))"></Autocomplete>
+                                <Button class="btn btn-outline-success" Clicked="@(f => AddVare())">
+                                    <span><i class="fas fa-plus-circle"></i></span>
+                                </Button>
+                            </div>
+                        </div>
+                        <div class="main">
+                            <input class="toggle-all" type="checkbox" />
+                            <label for="toggle-all">Mark all as complete</label>
+                        </div>
+                        <ul class="todo-list">
+                            @foreach (var vare in ThisShoppingList.ShoppingItems)
+                            {
+                                <li class="@vare.CssEditClassName">
+                                    <div class="todoapp-horizontalWrapping">
+                                        <input class="toggle" type="checkbox" value="@vare.IsDone" @onchange="@(f => VareCheckd(vare, f))" />
+                                        @if (vare.EditClicked)
+                                        {
+                                            <input class="editing" @bind-value="@(vare.Varen.Name)" />
+                                            <input class="editing" @bind-value="vare.Mengde" />
+                                        }
+                                        else
+                                        {
+                                            <label>
+                                                @vare.Varen.Name
+                                            </label>
+                                            <input class="vareInputEdit" @bind-value="vare.Mengde" />
+                                        }
+
+
+                                        @if (vare.EditClicked)
+                                        {
+                                            <button class="btn btn-sm btn-outline-success btnSuccess" @onclick="@(e => StoreVareChanged(vare))"><i class="fas fa-check"></i></button>
+                                            <button class="btn btn-sm btn-outline-warning abort" @onclick="@(e => { vare.EditClicked = false; })"><i class="fas fa-times"> </i></button>
+                                            <button class="btn btn-sm btn-outline-danger destroy" @onclick="@(e => DeleteVare(vare))"><i class="fas fa-ban"> </i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { vare.EditClicked = true; })"><i class="fas fa-edit"></i></button>
+                                        }
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </section>
+            </div>
+        </div>*@
 }
 else
 {
@@ -143,9 +208,24 @@ else
         if (value?.Value != null && value.Value is bool bValue)
             l.IsDone = bValue;
     }
-    private void toogelAllClicked()
+
+    private bool _lastCheckAllState = false;
+    private void CheckAllItems(bool f)
     {
+        foreach (var vare in ThisShoppingList.ShoppingItems)
+        {
+            vare.IsDone = f;
+        }
 
     }
+    //private void CheckAllItems()
+    //{
+    //    _lastCheckAllState = !_lastCheckAllState; 
+    //    foreach (var vare in ThisShoppingList.ShoppingItems)
+    //    {
+    //        vare.IsDone = _lastCheckAllState;
+    //    }
+
+    //}
 
 }
