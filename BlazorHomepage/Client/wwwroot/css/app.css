@@ -30,6 +30,19 @@ a, .btn-link {
     color: red;
 }
 
+.parent-horizontal-stack {
+    display: flex;
+    flex-wrap: wrap;
+    /* for horizontal aligning of child divs */
+    justify-content: center;
+    /* for vertical aligning */
+    align-items: center;
+}
+
+child-horizontal-stack {
+    width: 100px;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;
@@ -149,6 +162,17 @@ input[type="checkbox"] {
     -moz-text-rendering: optimizeLegibility;
     text-rendering: optimizeLegibility;
 }
+.todoapp .todoapp-horizontalWrapping {
+    margin-left: 60px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start;
+    justify-content: left
+}
+
+
 
 .new-todo,
 .edit {
@@ -227,6 +251,7 @@ label[for='toggle-all'] {
         position: relative;
         font-size: 18px;
         border-bottom: 1px solid #ededed;
+        vertical-align:central
     }
 
         .todo-list li:last-child {
@@ -306,12 +331,27 @@ label[for='toggle-all'] {
             text-decoration: line-through;
         }
 
+        .todo-list li .vareInputEdit {
+            margin: 10px 10px;
+            padding: 5px;
+            width: 70px;
+        }
 
         .todo-list li .destroy {
             position: absolute;
             float: right;
             top: 0;
             right: 85px;
+            height: 30px;
+            bottom: 0;
+            margin: auto 0;
+        }
+
+        .todo-list li .btnSuccess {
+            position: absolute;
+            float: right;
+            top: 0;
+            right: 10px;
             height: 30px;
             bottom: 0;
             margin: auto 0;

@@ -1,37 +1,67 @@
 ﻿@page "/shoppinglist/{id}"
 @if (ThisShoppingList != null)
 {
+    <div class="container-sm">
+        <div class="todomvc-wrapper">
+            <section class="todoapp">
+                <div class="commonviews">
+                    <div class="header">
+                        <h2>@ThisShoppingList.Name</h2>
+                        <div class="todoapp-horizontalWrapping ">
+                            <Autocomplete Data="@Varer"
+                                          TextField="@((item) => item.Name)"
+                                          ValueField="@((item) => item)"
+                                          Placeholder="navn?"
+                                          @onkeyup="OnKeyUpNewListItemHandler"
+                                          SelectedValue="@SelectedShopItem"
+                                          SelectedValueChanged="@((item) => SelectedShopItemChanged(item))"></Autocomplete>
+                            <Button class="btn btn-outline-success" Clicked="@(f => AddVare())">
+                                <span><i class="fas fa-plus-circle"></i></span>
+                            </Button>
+                        </div>
+                    </div>
+                    <div class="main">
+                        <input class="toggle-all" type="checkbox" />
+                        <label for="toggle-all">Mark all as complete</label>
+                    </div>
+                    <ul class="todo-list">
+                        @foreach (var vare in ThisShoppingList.ShoppingItems)
+                        {
+                            <li class="@vare.CssEditClassName">
+                                <div class="todoapp-horizontalWrapping">
+                                    <input class="toggle" type="checkbox" value="@vare.IsDone" @onchange="@(f => VareCheckd(vare, f))" />
+                                    @if (vare.EditClicked)
+                                    {
+                                        <input class="editing" @bind-value="@(vare.Varen.Name)" />
+                                        <input class="editing" @bind-value="vare.Mengde" />
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            @vare.Varen.Name
+                                        </label>
+                                        <input class="vareInputEdit" @bind-value="vare.Mengde" />
+                                    }
 
 
-
-    <div class="header">
-        <h2>@ThisShoppingList.Name</h2>
-        @*<span>
-                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@NewVareName" @onkeyup="OnKeyUpNewListItemHandler">
-                <Button class="btn btn-outline-success" Clicked="@(f=> AddVare())"><span><i class="fas fa-plus-circle"></i></span></Button>
-            </span>*@
-       
-           <Autocomplete Data="@Varer" 
-                         TextField="@((item) => item.Name)"
-                         ValueField="@((item) => item.Name)"
-                         Placeholder="navn?"/>
+                                    @if (vare.EditClicked)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success btnSuccess" @onclick="@(e => StoreVareChanged(vare))"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning abort" @onclick="@(e => { vare.EditClicked = false; })"><i class="fas fa-times"> </i></button>
+                                        <button class="btn btn-sm btn-outline-danger destroy" @onclick="@(e => DeleteVare(vare))"><i class="fas fa-ban"> </i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { vare.EditClicked = true; })"><i class="fas fa-edit"></i></button>
+                                    }
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </section>
+        </div>
     </div>
-
-    @if (ThisShoppingList.IsDone)
-    {
-        <p>Ferdig handlet</p>
-    }
-    else
-    {
-        <ul class="todo-list">
-            @foreach (var vare in ThisShoppingList.ShoppingItems)
-            {
-                <li>
-                    <OneShoppingListItemComponent OneShoppingListItem="vare" DeleteVareCallback="@(f=> DeleteVare(vare))" />
-                </li>
-            }
-        </ul>
-    }
 }
 else
 {
@@ -78,14 +108,44 @@ else
 
     private async Task AddVare()
     {
-        if (string.IsNullOrEmpty(NewVareName)) return;
-        var newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = new ShopItemModel() { Name = NewVareName } };
+        if (SelectedShopItem == null) return;
+        var newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = SelectedShopItem };
+        ThisShoppingList.ShoppingItems.Add(newItem);
+        await ShoppingListDataManager.Update<ShoppingListModel>(ThisShoppingList);
+        SelectedShopItem = null;
+    }
+
+    private async Task StoreVareChanged(ShoppingListItemModel model)
+
+    {
+        model.EditClicked = false;
+        await Task.Delay(1);
 
     }
+
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
         if (args.Code.Equals("Enter"))
             await AddVare();
+    }
+
+    void SelectedShopItemChanged(object newValue)
+    {
+        if (newValue is ShopItemModel item)
+            SelectedShopItem = item;
+
+    }
+
+
+
+    private void VareCheckd(ShoppingListItemModel l, ChangeEventArgs value)
+    {
+        if (value?.Value != null && value.Value is bool bValue)
+            l.IsDone = bValue;
+    }
+    private void toogelAllClicked()
+    {
+
     }
 
 }

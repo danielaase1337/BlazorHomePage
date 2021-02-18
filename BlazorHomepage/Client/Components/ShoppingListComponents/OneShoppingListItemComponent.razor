@@ -1,19 +1,28 @@
 ﻿
-<div class="new-todo"  style="display:inline-flex; align-content:center; align-items:center">
-    <div style="display:inline-flex; align-content:center; align-items:center">
-        <Check TValue="bool" Checked="@OneShoppingListItem.IsDone"></Check>
-        <p>@OneShoppingListItem.Varen.Name</p>
-        <input @bind-value="OneShoppingListItem.Mengde" style="width:100px"/>
-        @if (_deleteClicked)
-        {
-            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = false)"><i class="fas fa-times"></i></button>
-            <button class="btn btn-sm btn-outline-success" @onclick="@(e => DeleteVare(OneShoppingListItem))"><i class="fas fa-check"></i></button>
-        }
-        else
-        {
-            <button class="btn  btn-sm btn-outline-danger" @onclick="@(e => _deleteClicked = true)"><i class="fas fa-times"></i></button>
-        }
-    </div>
+<div class="@OneShoppingListItem.CssEditClassName">
+    <input class="toggle" type="checkbox" value="@OneShoppingListItem.IsDone" @onchange="@(f => VareCheckd(OneShoppingListItem, f))" />
+    @if (@OneShoppingListItem.EditClicked)
+    {
+        <input class="editing" @bind-value="@(OneShoppingListItem.Varen.Name)" />
+    }
+    else
+    {
+        <label>
+            @OneShoppingListItem.Varen.Name
+        </label>
+    }
+    <input @bind-value="OneShoppingListItem.Mengde" />
+    @if (OneShoppingListItem.EditClicked)
+    {
+        <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(OneShoppingListItem))"><i class="fas fa-check"></i></button>
+        <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { OneShoppingListItem.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteVare(OneShoppingListItem))"><i class="fas fa-ban"> </i></button>
+    }
+    else
+    {
+        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { OneShoppingListItem.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+    }
+    
 </div>
 
 @code
@@ -31,4 +40,23 @@
     {
         await DeleteVareCallback.InvokeAsync(shoppingListItem);
     }
+    
+    [Parameter]
+    public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
+    private async Task StoreChange(ShoppingListItemModel item)
+    {
+        item.EditClicked = false;
+        await StoreChangeCallback.InvokeAsync(item); 
+    }
+
+    private void VareCheckd(ShoppingListItemModel l, ChangeEventArgs value)
+    {
+        if (value?.Value != null && value.Value is bool bValue)
+            l.IsDone = bValue;
+    }
+    private void toogelAllClicked()
+    {
+
+    }
+
 }
