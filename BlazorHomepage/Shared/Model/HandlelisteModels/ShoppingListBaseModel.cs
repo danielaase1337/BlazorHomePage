@@ -10,7 +10,7 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
     {
         public bool IsDone { get; set; } = false;
 
-        public string CssEditClassName
+        public string CssComleteEditClassName
         {
             get
             {
@@ -21,6 +21,7 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
                 else return "";
             }
         }
+        
         public bool EditClicked { get; set; }
     }
 }

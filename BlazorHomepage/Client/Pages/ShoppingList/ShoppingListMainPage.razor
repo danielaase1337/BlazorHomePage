@@ -1,65 +1,51 @@
 ﻿@page "/shoppinglist"
-<div class="container-fluid">
-    <div class="todomvc-wrapper">
-        <section class="todoapp">
-            <div class="row">
-                <div class="col">
-                    <div class="commonviews">
-                        @if (_sLists != null)
-                        {
-                            <div class="header">
-                                <h2>Handlelister</h2>
-                                <span>
-                                    <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
-                                    <Button class="btn btn-outline-success" Clicked="@(f=> AddList())"><span><i class="fas fa-plus-circle"></i></span></Button>
-                                </span>
-                            </div>
-
-                            <div class="main">
-                                <input class="toggle-all" type="checkbox" />
-                                <label for="toggle-all">Mark all as complete</label>
-                            </div>
-                            <ul class="todo-list">
-                                @foreach (var l in _sLists)
-                                {
-                                    <li class="@l.CssEditClassName">
-                                        <input class="toggle" type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
-                                        @if (l.EditClicked)
-                                        {
-                                            <input class="editing" @bind-value="@(l.Name)" />
-                                        }
-                                        else
-                                        {
-                                            <label>
-                                                <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
-                                            </label>
-                                        }
-                                        @*<Check TValue="bool" Checked="@l.IsDone"></Check>*@
-                                        @* <NavLink class="nav-link" href="@(GetItemNavLink(l.ListId))">@l.Name</NavLink>*@
-                                        @if (l.EditClicked)
-                                        {
-                                            <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
-                                            <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
-                                            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
-                                        }
-                                        else
-                                        {
-                                            <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
-                                        }
-
-                                    </li>
-                                }
-                            </ul>
-                        }
-                        else
-                        {
-                            <p>Ingen lister eller laster</p>
-                        }
+<div class="container">
+    @if (_sLists != null)
+    {
+        <h2>Handlelister</h2>
+        <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+        <ul class="todo-list">
+            @foreach (var l in _sLists)
+            {
+                <li class="@l.CssComleteEditClassName">
+                    <div class="parent-horizontal-stack">
+                        <div class="col-1">
+                            <input type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
+                        </div>
+                        <div class="col">
+                            @if (l.EditClicked)
+                            {
+                                <input class="editing" @bind-value="@(l.Name)" />
+                            }
+                            else
+                            {
+                                <label>
+                                    <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
+                                </label>
+                            }
+                        </div>
+                        <div class="col-3 parent-horizontal-stack">
+                            @if (l.EditClicked)
+                            {
+                                <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                            }
+                            else
+                            {
+                                <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                            }
+                        </div>
                     </div>
-                </div>
-            </div>
-        </section>
-    </div>
+                </li>
+            }
+
+        </ul>
+    }
+    else
+    {
+        <p>Ingen lister eller laster</p>
+    }
 </div>
 
 @code {
@@ -84,10 +70,8 @@
         _sLists = res.ToList();
         _tilgjengeligeVarer = await ShoppingListDataManager.GetAllShopItemsAsync();
     }
-    //protected override async Task OnParametersSetAsync()
-    //{
-    //    _sLists = await ShoppingListDataManager.GetAllShoppingListsAsync();
-    //}
+
+    
 
 
 
@@ -98,7 +82,7 @@
     public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
     private async Task StoreChange(ShoppingListModel item)
     {
-        item.EditClicked = false;
+        item.EditClicked = false; 
         await ShoppingListDataManager.Update<ShoppingListModel>(item);
     }
 

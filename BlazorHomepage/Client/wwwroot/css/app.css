@@ -34,7 +34,7 @@ a, .btn-link {
     display: flex;
     flex-wrap: wrap;
     /* for horizontal aligning of child divs */
-    justify-content: center;
+    justify-content: flex-start;
     /* for vertical aligning */
     align-items: center;
 }
@@ -267,6 +267,7 @@ label[for='toggle-all'] {
         .todo-list li.editing {
             border-bottom: none;
             padding: 0;
+           
         }
 
             .todo-list li.editing .edit {
@@ -293,35 +294,39 @@ label[for='toggle-all'] {
             opacity: 0;
         }
 
-            .todo-list li .toggle + label {
+            /*.todo-list li .toggle + label {*/
                 /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
                 /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
-                background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
+                /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
                 background-repeat: no-repeat;
                 background-position: center left;
             }
 
-            .todo-list li .toggle:checked + label {
+            .todo-list li .toggle:checked + label {*/
                 /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
                 /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
-                background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
-            }
+                /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
+            }*/
 
 
         .todo-list li label {
             white-space: pre-line;
             word-break: break-all;
-            padding: 15px 15px 15px 60px;
+            padding: 15px 5px 5px 10px;
             display: block;
             line-height: 1.2;
             transition: color 0.4s;
+            width: 100%;
+            width: -moz-available; /* WebKit-based browsers will ignore this. */
+            width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
+            width: fill-available;
         }
 
         .todo-list li.completed label {
             color: #d9d9d9;
             text-decoration: line-through;
         }
-
+        
 
         .todo-list li a {
             white-space: pre-line;
@@ -338,11 +343,29 @@ label[for='toggle-all'] {
         }
 
         .todo-list li .vareInputEdit {
-            margin: 10px 10px;
-            padding: 5px;
-            width: 70px;
+            /*margin: 10px 10px;
+            padding: 5px;*/
+            width: 100%;
+            width: -moz-available; /* WebKit-based browsers will ignore this. */
+            width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
+            width: fill-available;
         }
-
+        
+        .todo-list li checkInput{
+            align-content:flex-start;
+            
+        }
+        .todo-list li .commandBtns {
+            float: right;
+            align-items:flex-start;
+            top: 0;
+            bottom: 0;
+            margin: 2px;
+            height:30px;
+            padding:2px;
+            width:30px;
+        }
+      
         .todo-list li .destroy {
             position: absolute;
             float: right;
@@ -364,7 +387,7 @@ label[for='toggle-all'] {
         }
 
         .todo-list li .endre {
-            position: absolute;
+            /*position: absolute;*/
             float: right;
             top: 0;
             right: 10px;
