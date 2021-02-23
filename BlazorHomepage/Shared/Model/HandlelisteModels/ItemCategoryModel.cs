@@ -8,7 +8,7 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
     public class ItemCategoryModel
     {
-        public string Name { get; set; }
+        public string Name { get; set; } = ""; 
 
     }
 }
