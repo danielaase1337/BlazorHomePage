@@ -11,7 +11,7 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
 
         public string Name { get; set; }
         public string Unit { get; set; } = "stk";
-        public ItemCategoryModel ItemCategory { get; set; }
+        public ItemCategoryModel ItemCategory { get; set; } = new ItemCategoryModel(); 
 
     }
 }

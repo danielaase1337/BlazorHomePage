@@ -8,7 +8,7 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
     public class ShoppingListItemModel : ShoppingListBaseModel
     {
-        public ShopItemModel Varen { get; set; }
+        public ShopItemModel Varen { get; set; } = new ShopItemModel(); 
         public int Mengde { get; set; } = 1; 
 
     }
