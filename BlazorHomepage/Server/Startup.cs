@@ -1,3 +1,6 @@
+using BlazorHomepage.Server.StorageContextHandler;
+using BlazorHomepage.Shared.Data.Entities;
+using BlazorHomepage.Shared.HandlelisteData;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -6,6 +9,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Linq;
+using System.Reflection;
+using Grpc.Core;
+using Grpc.Core.Logging;
 
 namespace BlazorHomepage.Server
 {
@@ -25,11 +31,20 @@ namespace BlazorHomepage.Server
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddScoped<IStorageContext<ShoppingList>, ShoppingListStorageHandler>();
+            services.AddScoped<IStorageContext<ShopItem>, ShopItemStorageHandler>();
+            //GoogleServices
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
+            //app.UseCors(options => options.WithOrigins("http://handleliste.aase-broen.net").AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(options => options.WithOrigins("*").AllowAnyMethod().AllowAnyHeader());
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -41,7 +56,7 @@ namespace BlazorHomepage.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

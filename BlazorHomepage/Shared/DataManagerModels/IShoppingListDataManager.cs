@@ -21,8 +21,8 @@ namespace BlazorHomepage.Shared.DataManagerModels
 
         //Handlelister
         Task<List<ShoppingListModel>> GetAllShoppingListsAsync();
-        Task<ShoppingListModel> GetOneShoppingListAsync(int listId);
-        Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId);
+        Task<ShoppingListModel> GetOneShoppingListAsync(string listId);
+        Task<ShoppingListModel> GetSortedHandlelisteAsync(string shopId);
 
         //ShopItems
         Task<List<ShopItemModel>> GetAllShopItemsAsync();

@@ -38,7 +38,14 @@ a, .btn-link {
     /* for vertical aligning */
     align-items: center;
 }
-
+.parent-horizontal-stack-end {
+    display: flex;
+    flex-wrap: wrap;
+    /* for horizontal aligning of child divs */
+    justify-content: flex-end;
+    /* for vertical aligning */
+    align-items: center;
+}
 child-horizontal-stack {
     width: 100px;
 }
@@ -200,6 +207,7 @@ input[type="checkbox"] {
     border: none;
     background: rgba(0, 0, 0, 0.003);
     box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
+    width:inherit;
 }
 
 .header .btn-add {
