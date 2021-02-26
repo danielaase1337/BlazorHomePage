@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorHomepage.Shared.Repository;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,9 +7,8 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model
 {
-    public class User
+    public class User : EntityBase
     {
-        public int UserId { get; set; }
         public string UserName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

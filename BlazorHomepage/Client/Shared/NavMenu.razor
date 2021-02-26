@@ -47,19 +47,23 @@
     }
 
     [Inject]
-    public IUserDataManager<User> _localUserManager { get; set; }
+    public IGenericRepository<User> _localUserManager { get; set; }
 
-    private User[] _availableUsers;
+    private IEnumerable<User> _availableUsers;
     private User Emilie;
     private User Daniel;
     protected override async Task OnInitializedAsync()
     {
-        //if(_localUserManager  == null)
-        //    _localUserManager = new LocalUserDataManager();
-
         if (_availableUsers == null)
         {
-            _availableUsers = await _localUserManager.GetAllUsersAsync();
+            _availableUsers = await _localUserManager.Get();
+            if (!_availableUsers.Any())//to be deleted.. only mock Data.. 
+            {
+                await _localUserManager.Insert(new User() { FirstName = "Daniel", LastName = "Aase", EMail = "aase.daniel@gmail.com", UserName = "supergnisten", Id = "1" });
+                await _localUserManager.Insert(new User() { FirstName = "Emilie", LastName = "Broen", EMail = "emilie.broen@gmail.com", UserName = "superwoman", Id = "2" });
+                _availableUsers = await _localUserManager.Get(); 
+            }
+
             Emilie = _availableUsers.FirstOrDefault(f => f.UserName == "superwoman");
             Daniel = _availableUsers.FirstOrDefault(f => f.UserName == "supergnisten");
         }

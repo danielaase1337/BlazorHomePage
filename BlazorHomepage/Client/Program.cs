@@ -21,6 +21,7 @@ using BlazorHomepage.Shared.Data.Entities;
 using AutoMapper;
 using BlazorHomepage.Shared.Model.CovidModels;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
+using BlazorHomepage.Shared.Repository;
 
 namespace BlazorHomepage.Client
 {
@@ -48,7 +49,12 @@ namespace BlazorHomepage.Client
             
             //Datamangere AKA API handlers. 
             builder.Services.AddScoped<ICovidContactsDataManager, CovidContactsLocalDataManager>();
-            builder.Services.AddScoped<IUserDataManager<User>, LocalUserDataManager>();
+            
+            builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
+            builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, MemoryGenericRepository<ShoppingListModel>>(); 
+            builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>(); 
+            builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>(); 
+
             builder.Services.AddScoped<IShoppingListDataManager, ShoppingListLocalDataManager>(); 
             
             var host = builder.Build();

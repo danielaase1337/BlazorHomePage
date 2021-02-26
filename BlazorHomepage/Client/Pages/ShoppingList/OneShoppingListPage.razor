@@ -45,11 +45,12 @@
 
 @if (ThisShoppingList != null)
 {
-    <div class="container">
-        <h2>@ThisShoppingList.Name</h2>
-        <div class="row" style="flex-wrap:nowrap">
-
-            <div class="col" style="flex-wrap:nowrap">
+    <div class="container todoapp commonviews">
+        <h2 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler" >@ThisShoppingList.Name</h2>
+        <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" /> 
+        
+        <div class="row">
+            <div class="col">
                 <Autocomplete Data="@Varer"
                               TextField="@(f => f.Name)"
                               ValueField="@((item) => item)"
@@ -58,7 +59,7 @@
                               SelectedValue="@SelectedShopItem"
                               SearchChanged="@searchChangeHandler"
                               SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
-                              </Autocomplete>
+                </Autocomplete>
             </div>
         </div>
         <div class="row">
@@ -68,7 +69,7 @@
                     {
                         <li class="@vare.CssComleteEditClassName">
                             <div class="parent-horizontal-stack">
-                                <div class="col-1" style="width:40px">
+                                <div class="col-1">
                                     <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
                                 </div>
                                 <div class="col">
@@ -110,8 +111,10 @@ else
 }
 @code{
 
-    string activeListFiler = "all";
-    string showAddBtn = "hidden";
+        string activeListFiler = "all";
+        string showAddBtn = "hidden";
+        string showEditHeader = "hidden";
+        string showH2LabelStyle = "";
     //void handleChange(ShopItemModel value) => SelectedShopItem = value;
     private Modal _modalRef;
     ShopItemModel newVareModel = new ShopItemModel();
@@ -133,15 +136,16 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-        var ok = int.TryParse(Id, out int idAsInt);
+        var ok = !string.IsNullOrEmpty(Id);
         if (!ok)
             return;
-        await ShoppingListDataManager.GetOneShoppingListAsync(idAsInt).ContinueWith(f =>
+        await ShoppingListDataManager.GetOneShoppingListAsync(Id).ContinueWith(f =>
         {
             if (f.Result != null)
             {
                 ThisShoppingList = f.Result;
                 ThisShoppingListItems = ThisShoppingList.ShoppingItems;
+                FilterList(activeListFiler);
             };
         });
         Varer = await ShoppingListDataManager.GetAllShopItemsAsync();
@@ -181,7 +185,7 @@ else
         _tempVareName = string.Empty;
         FilterList(activeListFiler);
     }
-   
+
 
 
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
@@ -204,6 +208,22 @@ else
         }
     }
 
+
+    void ListHeaderKeyUpEventHandler()
+    {
+        showH2LabelStyle= "hidden";
+        showEditHeader = "";
+    }
+    async Task ListHeaderClickEventHandler(KeyboardEventArgs args)
+    {
+
+        if (args.Code.Equals("Enter"))
+        {
+            showH2LabelStyle = "";
+            showEditHeader = "hidden";
+            await ShoppingListDataManager.Update(ThisShoppingList); 
+        }
+    }
     void SelectedShopItemChanged(object newValue)
     {
         if (newValue is ShopItemModel item)
@@ -214,15 +234,16 @@ else
             newVareModel.ItemCategory = itemCat;
         }
     }
+
     void searchChangeHandlerItemCat(string value)
     {
         _tempItemCatName = value;
     }
+
     void searchChangeHandler(string value)
     {
         _tempVareName = value;
     }
-
 
     private void CheckAllItems(bool f)
     {
@@ -234,7 +255,7 @@ else
     }
     private void VareCheckChanged(object f, ShoppingListItemModel vare)
     {
-        if(f is bool bValue)
+        if (f is bool bValue)
         {
             vare.IsDone = bValue;
             FilterList(activeListFiler);

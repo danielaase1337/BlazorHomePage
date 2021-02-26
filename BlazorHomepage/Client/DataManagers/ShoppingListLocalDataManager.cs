@@ -107,7 +107,7 @@ namespace BlazorHomepage.Client.DataManagers
         }
 
 
-        public async Task<ShoppingListModel> GetOneShoppingListAsync(int listId)
+        public async Task<ShoppingListModel> GetOneShoppingListAsync(string listId)
         {
             await Task.Delay(1);
             var res = StoreContext.GetStoredItems(shopListTypeSelector);
@@ -122,7 +122,7 @@ namespace BlazorHomepage.Client.DataManagers
             throw new NotImplementedException();
         }
 
-        public async Task<ShoppingListModel> GetSortedHandlelisteAsync(int shopId)
+        public async Task<ShoppingListModel> GetSortedHandlelisteAsync(string shopId)
         {
             await Task.Delay(1);
             var listen = StoreContext.GetStoredItems(shopListTypeSelector).First();

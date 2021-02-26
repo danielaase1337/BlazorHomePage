@@ -1,46 +1,54 @@
 ﻿@page "/shoppinglist"
-<div class="container">
+<div class="container todoapp commonviews">
     @if (_sLists != null)
     {
-        <h2>Handlelister</h2>
-        <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
-        <ul class="todo-list">
-            @foreach (var l in _sLists)
-            {
-                <li class="@l.CssComleteEditClassName">
-                    <div class="parent-horizontal-stack">
-                        <div class="col-1">
-                            <input type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
-                        </div>
-                        <div class="col">
-                            @if (l.EditClicked)
-                            {
-                                <input class="editing" @bind-value="@(l.Name)" />
-                            }
-                            else
-                            {
-                                <label>
-                                    <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
-                                </label>
-                            }
-                        </div>
-                        <div class="col-3 parent-horizontal-stack">
-                            @if (l.EditClicked)
-                            {
-                                <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
-                                <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
-                                <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
-                            }
-                            else
-                            {
-                                <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
-                            }
-                        </div>
-                    </div>
-                </li>
-            }
+        <div class="row header">
+            <div class="col">
+                <h2>Handlelister</h2>
+                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <ul class="todo-list">
+                    @foreach (var l in _sLists)
+                    {
+                        <li class="@l.CssComleteEditClassName">
+                            <div class="parent-horizontal-stack">
+                                <div class="col-1">
+                                    <input type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
+                                </div>
+                                <div class="col">
+                                    @if (l.EditClicked)
+                                    {
+                                        <input class="editing" @bind-value="@(l.Name)" />
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
+                                        </label>
+                                    }
+                                </div>
+                                <div class="col">
+                                    @if (l.EditClicked)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
 
-        </ul>
+                </ul>
+            </div>
+        </div>
     }
     else
     {
@@ -51,27 +59,38 @@
 @code {
 
     [Inject]
-    public IUserDataManager<User> UserDataManager { get; set; }
+    public IGenericRepository<User> UserDataManager { get; set; }
 
+    //[Inject]
+    //public IShoppingListDataManager ShoppingListDataManager { get; set; }
     [Inject]
-    public IShoppingListDataManager ShoppingListDataManager { get; set; }
+    public IGenericRepository<ShoppingListModel> ShoppingListDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ShopItemModel> ShopItemDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ItemCategoryModel> ShopItemCategoryDataManager { get; set; }
+
 
     private List<ShoppingListModel> _sLists;
+
     private List<ShopItemModel> _tilgjengeligeVarer;
     public string _newListName { get; set; }
 
-    private string GetItemNavLink(int listeId)
+    private string GetItemNavLink(string listeId)
     {
         return $"shoppinglist/{listeId}";
     }
     protected override async Task OnInitializedAsync()
     {
-        var res = await ShoppingListDataManager.GetAllShoppingListsAsync();
-        _sLists = res.ToList();
-        _tilgjengeligeVarer = await ShoppingListDataManager.GetAllShopItemsAsync();
-    }
+        await AddDummyValues();
 
-    
+        var shoppingLists = await ShoppingListDataManager.Get();
+        _sLists = shoppingLists.ToList(); 
+        var availableItems = await ShopItemDataManager.Get();
+        _tilgjengeligeVarer = availableItems.ToList(); 
+    }
+    private string editCssStyle = "";
+
 
 
 
@@ -82,8 +101,8 @@
     public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
     private async Task StoreChange(ShoppingListModel item)
     {
-        item.EditClicked = false; 
-        await ShoppingListDataManager.Update<ShoppingListModel>(item);
+        item.EditClicked = false;
+        await ShoppingListDataManager.Update(item);
     }
 
     [Parameter]
@@ -101,7 +120,7 @@
     {
         if (string.IsNullOrWhiteSpace(_newListName)) return;
         var newItem = new ShoppingListModel() { Name = _newListName };
-        await ShoppingListDataManager.Add<ShoppingListModel>(newItem).ContinueWith(f =>
+        await ShoppingListDataManager.Insert(newItem).ContinueWith(f =>
         {
             if (f.Result != null)
             {
@@ -127,5 +146,44 @@
         if (args.Code.Equals("Enter"))
             await AddList();
     }
+
+
+    #region Temp
+    private async Task AddDummyValues()
+    {
+
+        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Meieri" });
+        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Brød" });
+        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Drikke" });
+        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Barnemat" });
+
+        var cats = await ShopItemCategoryDataManager.Get();
+        var catArr = cats.ToArray();
+        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Melk", ItemCategory = catArr[0], Unit = "Liter" });
+        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Brød", ItemCategory = catArr[1], Unit = "Stk" });
+        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Øl", ItemCategory = catArr[2], Unit = "Stk" });
+        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Smoothi", ItemCategory = catArr[3], Unit = "Stk" });
+
+        var shopItems = await ShopItemDataManager.Get();
+        var shopItemArr = shopItems.ToArray();
+        var shopListItems = new List<ShoppingListItemModel>()
+        {
+        new ShoppingListItemModel(){Varen = shopItemArr[0], Mengde  = 2, IsDone = false},
+        new ShoppingListItemModel() { Varen = shopItemArr[1], Mengde = 1, IsDone = false },
+        new ShoppingListItemModel() { Varen = shopItemArr[2], Mengde = 12, IsDone = false },
+        new ShoppingListItemModel() { Varen = shopItemArr[3], Mengde = 2, IsDone = false }
+                };
+
+
+        await ShoppingListDataManager.Insert(
+            new ShoppingListModel()
+            {
+                Name = "Handleliste Uke 1",
+                ListId = "1",
+                IsDone = false,
+                ShoppingItems = shopListItems
+            });
+    }
+    #endregion
 
 }

@@ -40,7 +40,7 @@ namespace BlazorHomepage.Client.DataManagers
             {
                 if (!StoredShoppingLists.Contains(list))
                 {
-                    list.ListId = _nextId;
+                    list.ListId = _nextId.ToString();
                     _nextId++;
                     StoredShoppingLists.Add(list);
                 }
@@ -50,7 +50,7 @@ namespace BlazorHomepage.Client.DataManagers
             {
                 if(!AvailableItemCategories.Contains(cat))
                 {
-                    cat.Id = _nextCatId;
+                    cat.Id = _nextCatId.ToString();
                     _nextCatId++; 
                     AvailableItemCategories.Add(cat);
                     return cat as T; 
@@ -62,7 +62,7 @@ namespace BlazorHomepage.Client.DataManagers
             {
                 if (!AvailableShopItems.Contains(item))
                 {
-                    item.Id = _nextShopItemId;
+                    item.Id = _nextShopItemId.ToString();
                     _nextShopItemId++;
                     AvailableShopItems.Add(item);
                     return item as T;
@@ -127,16 +127,16 @@ namespace BlazorHomepage.Client.DataManagers
                 AvailableItemCategories = ItemCategory.GetDefaults();
                 AvailableShopItems = ShopItem.GetDefault();
 
-                var shopitemList = AvailableShopItems.Select(f => new ShoppingListItem() { Id = f.Id, IsDone = false, Mengde = 1, Varen = f });
+                var shopitemList = AvailableShopItems.Select(f => new ShoppingListItem() {IsDone = false, Mengde = 1, Varen = f });
                 StoredShoppingLists = new List<ShoppingList>()
             {
-                new ShoppingList(){Name = "Handleliste Uke 1", ListId = 1, IsDone = false,
+                new ShoppingList(){Name = "Handleliste Uke 1", ListId = "1", IsDone = false,
                     ShoppingItems = shopitemList.ToList(),
                 }
             };
-                _nextId = StoredShoppingLists.Last().ListId + 1;
-                _nextCatId = AvailableItemCategories.Last().Id + 1;
-                _nextShopItemId = AvailableShopItems.Last().Id + 1; 
+                _nextId = int.Parse(StoredShoppingLists.Last().ListId) + 1;
+                _nextCatId =int.Parse(AvailableItemCategories.Last().Id) + 1;
+                _nextShopItemId = int.Parse(AvailableShopItems.Last().Id) + 1; 
 
             }
 

@@ -21,7 +21,7 @@
                 </Field>
                 <Field>
                     <FieldLabel>Dato</FieldLabel>
-                    <DateEdit TValue="DateTime?" @bind-Date="@_tempContactDate" /> 
+                    <DateEdit TValue="DateTime?" @bind-Date="@_tempContactDate" />
                 </Field>
             </ModalBody>
             <ModalFooter>
@@ -102,14 +102,14 @@
     private OneContactModel _tempContact = new OneContactModel();
 
 
-    private User[] _availableUsers;
+    private IEnumerable<User> _availableUsers;
     private OneContactModel SelectedCovidContact;
 
     [Inject]
     public ICovidContactsDataManager _dataManager { get; set; }
 
     [Inject]
-    public IUserDataManager<User> _localUserManager { get; set; }
+    public IGenericRepository<User> _userMananger { get; set; }
 
 
     protected async override Task OnParametersSetAsync()
@@ -119,15 +119,15 @@
 
         if (_availableUsers == null)
         {
-            _availableUsers = await _localUserManager.GetAllUsersAsync();
+            _availableUsers = await _userMananger.Get();
         }
         Id = Id ?? "1";
-        SelectedUser = _availableUsers.FirstOrDefault(f => f.UserId.ToString().Equals(Id));
 
+        SelectedUser = await _userMananger.Get(Id);
 
         if (SelectedUser != null)
         {
-            
+
             Contacts = await _dataManager.GetAllContactsFromUser(SelectedUser.FirstName.ToLower());
         }
 

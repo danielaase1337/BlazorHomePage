@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Google.Cloud.Firestore;
+using System.Collections.Generic;
 
 namespace BlazorHomepage.Shared.Data.Entities
 {
+    [FirestoreData]
     public class ShelfCategory
     {
-
         public ShelfCategory()
         {
 
@@ -14,8 +15,11 @@ namespace BlazorHomepage.Shared.Data.Entities
             Name = name;
             Id = id;
         }
+        [FirestoreProperty]
         public string Name { get; set; }
+        [FirestoreProperty]
         public int Id { get; set; }
+        [FirestoreProperty]
         public string Description { get; set; }
 
         public static List<ShelfCategory> GetDefaults()

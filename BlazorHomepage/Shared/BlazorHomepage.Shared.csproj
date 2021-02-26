@@ -11,4 +11,8 @@
   <ItemGroup>
     <Folder Include="Interfaces\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Cloud.Firestore" Version="2.3.0" />
+  </ItemGroup>
 </Project>
