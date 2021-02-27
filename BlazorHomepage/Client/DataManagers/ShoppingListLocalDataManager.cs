@@ -41,7 +41,7 @@ namespace BlazorHomepage.Client.DataManagers
                 {
                     var shoppingList = Mapper.Map<ShoppingList>(list);
                     var res = StoreContext.Add(shoppingList);
-                    list.ListId = res.ListId;
+                    list.Id = res.Id;
                     return list as T;
                 }
                 if(entity is ShopItemModel item)

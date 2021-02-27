@@ -18,7 +18,7 @@ namespace BlazorHomepage.Client.DataManagers
 
         private ICollection<ShoppingList> StoredShoppingLists;
         private ICollection<ItemCategory> AvailableItemCategories;
-        private ICollection<ShopItem> AvailableShopItems; 
+        private readonly ICollection<ShopItem> AvailableShopItems; 
         private int _nextId;
         private int _nextCatId;
         private int _nextShopItemId; 
@@ -125,7 +125,6 @@ namespace BlazorHomepage.Client.DataManagers
             if (StoredShoppingLists == null)
             {
                 AvailableItemCategories = ItemCategory.GetDefaults();
-                AvailableShopItems = ShopItem.GetDefault();
 
                 var shopitemList = AvailableShopItems.Select(f => new ShoppingListItem() {IsDone = false, Mengde = 1, Varen = f });
                 StoredShoppingLists = new List<ShoppingList>()

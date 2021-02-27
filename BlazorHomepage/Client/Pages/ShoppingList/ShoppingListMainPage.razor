@@ -26,7 +26,7 @@
                                     else
                                     {
                                         <label>
-                                            <a href="@(GetItemNavLink(l.ListId))">@l.Name</a>
+                                            <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
                                         </label>
                                     }
                                 </div>
@@ -57,7 +57,7 @@
 </div>
 
 @code {
-
+    TempDataInit tempDataInit;
     [Inject]
     public IGenericRepository<User> UserDataManager { get; set; }
 
@@ -82,20 +82,20 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        await AddDummyValues();
+        if (tempDataInit == null)
+        {
+            tempDataInit = new TempDataInit();
+            await AddDummyValues();
+        }
 
         var shoppingLists = await ShoppingListDataManager.Get();
-        _sLists = shoppingLists.ToList(); 
-        var availableItems = await ShopItemDataManager.Get();
-        _tilgjengeligeVarer = availableItems.ToList(); 
+        _sLists = shoppingLists.ToList();
     }
     private string editCssStyle = "";
 
 
 
 
-    private bool _editClicked = false;
-    private bool _deleteClicked = false;
 
     [Parameter]
     public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
@@ -112,7 +112,7 @@
         await ShoppingListDataManager.Delete(l).ContinueWith(f =>
         {
             if (f.Result)
-                _sLists = _sLists.Where(f => f.ListId != l.ListId).ToList();
+                _sLists = _sLists.Where(f => f.Id != l.Id).ToList();
         });
 
     }
@@ -151,38 +151,13 @@
     #region Temp
     private async Task AddDummyValues()
     {
+        var t =await  ShoppingListDataManager.Get();
+        if (t.Any())
+            return; 
 
-        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Meieri" });
-        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Brød" });
-        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Drikke" });
-        await ShopItemCategoryDataManager.Insert(new ItemCategoryModel() { Name = "Barnemat" });
-
-        var cats = await ShopItemCategoryDataManager.Get();
-        var catArr = cats.ToArray();
-        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Melk", ItemCategory = catArr[0], Unit = "Liter" });
-        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Brød", ItemCategory = catArr[1], Unit = "Stk" });
-        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Øl", ItemCategory = catArr[2], Unit = "Stk" });
-        await ShopItemDataManager.Insert(new ShopItemModel() { Name = "Smoothi", ItemCategory = catArr[3], Unit = "Stk" });
-
-        var shopItems = await ShopItemDataManager.Get();
-        var shopItemArr = shopItems.ToArray();
-        var shopListItems = new List<ShoppingListItemModel>()
-        {
-        new ShoppingListItemModel(){Varen = shopItemArr[0], Mengde  = 2, IsDone = false},
-        new ShoppingListItemModel() { Varen = shopItemArr[1], Mengde = 1, IsDone = false },
-        new ShoppingListItemModel() { Varen = shopItemArr[2], Mengde = 12, IsDone = false },
-        new ShoppingListItemModel() { Varen = shopItemArr[3], Mengde = 2, IsDone = false }
-                };
-
-
-        await ShoppingListDataManager.Insert(
-            new ShoppingListModel()
-            {
-                Name = "Handleliste Uke 1",
-                ListId = "1",
-                IsDone = false,
-                ShoppingItems = shopListItems
-            });
+        await tempDataInit.InsertDefaultCategories(ShopItemCategoryDataManager);
+        await tempDataInit.InsertDefaultShopItems(ShopItemDataManager);
+        await tempDataInit.InsertDefaultShoppingList(ShoppingListDataManager);
     }
     #endregion
 

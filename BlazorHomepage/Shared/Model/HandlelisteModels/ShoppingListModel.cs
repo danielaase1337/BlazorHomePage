@@ -8,7 +8,6 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
     public class ShoppingListModel : ShoppingListBaseModel
     {
-        public string ListId { get; set; } //public available.. 
         public string Name { get; set; }
         public ICollection<ShoppingListItemModel> ShoppingItems { get; set; } = new List<ShoppingListItemModel>();
 

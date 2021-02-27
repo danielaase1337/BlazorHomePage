@@ -111,10 +111,10 @@ else
 }
 @code{
 
-        string activeListFiler = "all";
-        string showAddBtn = "hidden";
-        string showEditHeader = "hidden";
-        string showH2LabelStyle = "";
+    string activeListFiler = "all";
+    string showAddBtn = "hidden";
+    string showEditHeader = "hidden";
+    string showH2LabelStyle = "";
     //void handleChange(ShopItemModel value) => SelectedShopItem = value;
     private Modal _modalRef;
     ShopItemModel newVareModel = new ShopItemModel();
@@ -123,23 +123,27 @@ else
 
     [Parameter]
     public string Id { get; set; }
-    object tempSelectedItem;
     public ShopItemModel SelectedShopItem { get; set; }
     public ItemCategoryModel SelectedItemCategory { get; set; }
     public ShoppingListModel ThisShoppingList { get; set; }
-    public ICollection<ShoppingListItemModel> ThisShoppingListItems { get; set; }
-    public List<ShopItemModel> Varer { get; set; }
-    public List<ItemCategoryModel> AvailableCategories { get; set; }
+    public IEnumerable<ShoppingListItemModel> ThisShoppingListItems { get; set; }
+    public IEnumerable<ShopItemModel> Varer { get; set; }
+    public IEnumerable<ItemCategoryModel> AvailableCategories { get; set; }
 
+    //[Inject]
+    //public IShoppingListDataManager ShoppingListDataManager { get; set; }
     [Inject]
-    public IShoppingListDataManager ShoppingListDataManager { get; set; }
-
+    public IGenericRepository<ShoppingListModel> ShoppingListDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ShopItemModel> ShopItemsDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ItemCategoryModel> ItemsCategoriesDataManager { get; set; }
     protected override async Task OnParametersSetAsync()
     {
         var ok = !string.IsNullOrEmpty(Id);
         if (!ok)
             return;
-        await ShoppingListDataManager.GetOneShoppingListAsync(Id).ContinueWith(f =>
+        await ShoppingListDataManager.Get(Id).ContinueWith(f =>
         {
             if (f.Result != null)
             {
@@ -148,15 +152,15 @@ else
                 FilterList(activeListFiler);
             };
         });
-        Varer = await ShoppingListDataManager.GetAllShopItemsAsync();
-        AvailableCategories = await ShoppingListDataManager.GetAllItemCategories();
+        Varer = await ShopItemsDataManager.Get();
+        AvailableCategories = await ItemsCategoriesDataManager.Get();
     }
 
     public async Task DeleteVare(ShoppingListItemModel m)
     {
         ThisShoppingList.ShoppingItems.Remove(m);
 
-        var updated = await ShoppingListDataManager.Update<ShoppingListModel>(ThisShoppingList);
+        var updated = await ShoppingListDataManager.Update(ThisShoppingList);
         ThisShoppingList = updated;
         FilterList(activeListFiler);
     }
@@ -180,7 +184,7 @@ else
 
         var newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = SelectedShopItem };
         ThisShoppingList.ShoppingItems.Add(newItem);
-        await ShoppingListDataManager.Update<ShoppingListModel>(ThisShoppingList);
+        await ShoppingListDataManager.Update(ThisShoppingList);
         SelectedShopItem = null;
         _tempVareName = string.Empty;
         FilterList(activeListFiler);
@@ -200,9 +204,9 @@ else
             if (string.IsNullOrEmpty(_tempItemCatName)) return;
             var itemCat = new ItemCategoryModel();
             itemCat.Name = _tempItemCatName;
-            await ShoppingListDataManager.Add(itemCat).ContinueWith(f =>
+            await ItemsCategoriesDataManager.Insert(itemCat).ContinueWith(f =>
             {
-                AvailableCategories.Add(f.Result);
+                AvailableCategories.Append(f.Result);
             });
             _tempItemCatName = string.Empty;
         }
@@ -221,7 +225,7 @@ else
         {
             showH2LabelStyle = "";
             showEditHeader = "hidden";
-            await ShoppingListDataManager.Update(ThisShoppingList); 
+            await ShoppingListDataManager.Update(ThisShoppingList);
         }
     }
     void SelectedShopItemChanged(object newValue)
@@ -311,8 +315,8 @@ else
 
         if (newVareModel != null)
         {
-            await ShoppingListDataManager.Add(newVareModel);
-            Varer.Add(newVareModel);
+            await ShopItemsDataManager.Insert(newVareModel);
+            Varer.Append(newVareModel);
         }
         _modalRef.Hide();
     }
