@@ -1,20 +1,22 @@
-﻿using BlazorHomepage.Shared.Model.HandlelisteModels;
+﻿using BlazorHomepage.Shared.Model.CovidModels;
+using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BlazorHomepage.Client.DataManagers
+namespace BlazorHomepage.Shared.MockData
 {
     public class TempDataInit
     {
-        public bool doneInit = false; 
+        public bool doneInit = false;
         public IEnumerable<ItemCategoryModel> AvailableCategories { get; set; }
         public IEnumerable<ShopItemModel> AvailableShopItems { get; set; }
         public IEnumerable<ShoppingListModel> AvailabelShoppingList { get; set; }
-
+        public IEnumerable<OneContactModel> Contacts { get; set; }
         public async Task InsertDefaultCategories(IGenericRepository<ItemCategoryModel> datamanger)
         {
             await datamanger.Insert(new ItemCategoryModel() { Name = "Meieri" });
@@ -25,7 +27,7 @@ namespace BlazorHomepage.Client.DataManagers
         }
         public async Task InsertDefaultShopItems(IGenericRepository<ShopItemModel> datamanager)
         {
-            
+
             var catArr = AvailableCategories.ToArray();
             await datamanager.Insert(new ShopItemModel() { Name = "Melk", ItemCategory = catArr[0], Unit = "Liter" });
             await datamanager.Insert(new ShopItemModel() { Name = "Brød", ItemCategory = catArr[1], Unit = "Stk" });
@@ -55,6 +57,23 @@ namespace BlazorHomepage.Client.DataManagers
                     IsDone = false,
                     ShoppingItems = shopListItems
                 });
+        }
+
+        public async Task InsertCovidContacts(IGenericRepository<OneContactModel> datamanager)
+        {
+            var contacts = new List<OneContactModel>
+                {
+                    new OneContactModel() { Name = "Emilie", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 30), OwnerId = "daniel", Sted = "Hjemme" },
+                    new OneContactModel() { Name = "Greger", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 20), OwnerId = "daniel", Sted = "Hjemme" },
+                    new OneContactModel() { Name = "Una", CategoryId = "Nærkontakt", ContactDate = new DateTime(2021, 01, 25), OwnerId = "daniel", Sted = "Hjemme" },
+                    new OneContactModel() { Name = "Ukjent", CategoryId = "Kontakt", ContactDate = new DateTime(2021, 01, 28), OwnerId = "emilie", Sted = "Butikken" }
+                };
+
+            foreach (var i in contacts)
+            {
+                await datamanager.Insert(i);
+            }
+            Contacts = await datamanager.Get();
         }
 
     }

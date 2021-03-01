@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BlazorHomepage.Shared.Repository;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.CovidModels
 {
-    public class OneContactModel
+    public class OneContactModel: EntityBase
     {
-        public int Id { get; set; }
         [Required]
         public string Name { get; set; }
         [Required]

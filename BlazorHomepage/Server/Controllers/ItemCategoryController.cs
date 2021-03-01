@@ -1,4 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using BlazorHomepage.Shared.Data.Entities;
+using BlazorHomepage.Shared.Model.HandlelisteModels;
+using BlazorHomepage.Shared.Repository;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,36 +17,67 @@ namespace BlazorHomepage.Server.Controllers
     [ApiController]
     public class ItemCategoryController : ControllerBase
     {
+        private readonly IGenericRepository<ItemCategory> datamanager;
+        private readonly IMapper mapper;
+
+        public ItemCategoryController(IGenericRepository<ItemCategory> datamanager, IMapper mapper)
+        {
+            this.datamanager = datamanager;
+            this.mapper = mapper;
+        }
         // GET: api/<ItemCategoryController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var res = await datamanager.Get();
+            if (res == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Could not get any stored categories");
+            if (!res.Any())
+                return Ok(new List<ItemCategoryModel>());
+            var itemcatModels = mapper.Map<ItemCategoryModel[]>(res);
+            return Ok(itemcatModels.ToList());
         }
 
         // GET api/<ItemCategoryController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            var res = await datamanager.Get(id);
+            if (res == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(mapper.Map<ItemCategoryModel>(res));
         }
 
         // POST api/<ItemCategoryController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ItemCategoryModel value)
         {
+            var itemcategory = mapper.Map<ItemCategory>(value);
+
+            var res = await datamanager.Insert(itemcategory);
+            if (res == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(mapper.Map<ItemCategoryModel>(res));
         }
 
         // PUT api/<ItemCategoryController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut()]
+        public async Task<IActionResult> Put([FromBody] ItemCategoryModel value)
         {
+            var itemcategory = mapper.Map<ItemCategory>(value);
+            var res = await datamanager.Update(itemcategory);
+            if (res == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(mapper.Map<ItemCategoryModel>(res));
+
         }
 
         // DELETE api/<ItemCategoryController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            var res = await datamanager.Delete(id);
+            return Ok(res);
         }
     }
 }

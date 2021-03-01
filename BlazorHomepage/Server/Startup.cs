@@ -1,4 +1,3 @@
-using BlazorHomepage.Server.StorageContextHandler;
 using BlazorHomepage.Shared.Data.Entities;
 using BlazorHomepage.Shared.HandlelisteData;
 using Microsoft.AspNetCore.Builder;
@@ -12,6 +11,8 @@ using System.Linq;
 using System.Reflection;
 using Grpc.Core;
 using Grpc.Core.Logging;
+using BlazorHomepage.Shared.Repository;
+using BlazorHomepage.Shared.Model.GoogleModels;
 
 namespace BlazorHomepage.Server
 {
@@ -32,10 +33,17 @@ namespace BlazorHomepage.Server
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddScoped<IStorageContext<ShoppingList>, ShoppingListStorageHandler>();
-            services.AddScoped<IStorageContext<ShopItem>, ShopItemStorageHandler>();
-            //GoogleServices
+
+
+            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseShopItemDbContext>();
+            services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
             
+            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseShoppingListItemDbContext>();
+            services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
+            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseItemCategoryDbContext>();
+            services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
+            //GoogleServices
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -56,7 +64,7 @@ namespace BlazorHomepage.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
             app.UseStaticFiles();

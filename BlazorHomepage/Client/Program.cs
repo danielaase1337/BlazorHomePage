@@ -44,19 +44,24 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
             
             //StorageContextes Page handlers.. 
-            builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
-            builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
-            
-            //Datamangere AKA API handlers. 
-            builder.Services.AddScoped<ICovidContactsDataManager, CovidContactsLocalDataManager>();
-            
+            //builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
+            //builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
+           
+            //Local repos
+            builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
             builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, MemoryGenericRepository<ShoppingListModel>>(); 
-            builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>(); 
-            builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>(); 
+            //builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>(); 
+            builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>();
 
-            builder.Services.AddScoped<IShoppingListDataManager, ShoppingListLocalDataManager>(); 
-            
+            //ApiRepos
+            //builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
+            //builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
+            builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
+            builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
+            builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, ItemsCategoryApiDataManager<ItemCategoryModel>>();
+
+
             var host = builder.Build();
 
             host.Services

@@ -11,7 +11,7 @@ namespace BlazorHomepage.Shared.Repository
     {
         Task<bool> Delete(TEntity entityToDelete);
         Task<bool> Delete(object id);
-        Task<IEnumerable<TEntity>> Get(
+        Task<ICollection<TEntity>> Get(
             Expression<Func<TEntity, bool>> filter = null,
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");

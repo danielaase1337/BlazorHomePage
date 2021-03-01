@@ -1,4 +1,5 @@
-﻿using Google.Cloud.Firestore;
+﻿using BlazorHomepage.Shared.Repository;
+using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 namespace BlazorHomepage.Shared.Data.Entities
 {
     [FirestoreData]
-    public class ShoppingList: FireStoreCommonBase
+    public class ShoppingList: EntityBase
     {
         [FirestoreProperty]
         public string ListId { get; set; }

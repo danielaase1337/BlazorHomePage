@@ -2,6 +2,7 @@
 using BlazorHomepage.Shared.Data.Entities;
 using BlazorHomepage.Shared.HandlelisteData;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
+using BlazorHomepage.Shared.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -17,12 +18,13 @@ namespace BlazorHomepage.Server.Controllers
     [ApiController]
     public class ShoppingListController : ControllerBase
     {
-        public ShoppingListController(IStorageContext<ShoppingList> storageContext, IMapper mapper)
+        public ShoppingListController(IGenericRepository<ShoppingList> dataManager, 
+            IMapper mapper)
         {
-            storageHandler = storageContext;
+            storageHandler = dataManager;
             this.mapper = mapper;
         }
-        private IStorageContext<ShoppingList> storageHandler;
+        private IGenericRepository<ShoppingList> storageHandler;
         private readonly IMapper mapper;
 
         // GET: api/<ShoppingListController>
@@ -31,7 +33,7 @@ namespace BlazorHomepage.Server.Controllers
         {
             try
             {
-                var res = await storageHandler.GetStoredItems();
+                var res = await storageHandler.Get();
 
                 if (res == null)
                     return StatusCode(StatusCodes.Status500InternalServerError, "Could not Get any stored Lists");
@@ -39,9 +41,9 @@ namespace BlazorHomepage.Server.Controllers
                 if (!res.Any())
                     return Ok(new List<ShoppingListModel>()); 
 
-                var shoppingListModel = mapper.Map<List<ShoppingListModel>>(res);
+                var shoppingListModel = mapper.Map<ShoppingListModel[]>(res);
                
-                return Ok(shoppingListModel);
+                return Ok(shoppingListModel.ToList());
             }
             catch (Exception)
             {
@@ -52,27 +54,41 @@ namespace BlazorHomepage.Server.Controllers
 
         // GET api/<ShoppingListController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<IActionResult> Get(string id)
         {
-            return "value";
+            var res = await storageHandler.Get(id);
+            return Ok(mapper.Map<ShoppingList>(res));
         }
 
         // POST api/<ShoppingListController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ShoppingListModel shoppinglistmodel)
         {
+            var shoppinglist = mapper.Map<ShoppingList>(shoppinglistmodel);
+            var addRes = await storageHandler.Insert(shoppinglist);
+            if (addRes == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(mapper.Map<ShoppingListModel>(addRes));
         }
 
         // PUT api/<ShoppingListController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut()]
+        public async Task<IActionResult> Put([FromBody] ShoppingListModel value)
         {
+            var shoppinglist = mapper.Map<ShoppingList>(value);
+            var res = await storageHandler.Update(shoppinglist);
+            if (res == null)
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            return Ok(mapper.Map<ShoppingListModel>(res));
+
         }
 
         // DELETE api/<ShoppingListController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(string id)
         {
+            var res = await storageHandler.Delete(id);
+            return Ok(res);
         }
     }
 }

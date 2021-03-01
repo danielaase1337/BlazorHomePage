@@ -42,7 +42,7 @@ namespace BlazorHomepage.Shared.Repository
             });
         }
 
-        public async Task<IEnumerable<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
+        public async Task<ICollection<TEntity>> Get(Expression<Func<TEntity, bool>> filter = null, Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null, string includeProperties = "")
         {
             return await Task.Run(() =>
             {
@@ -123,7 +123,7 @@ namespace BlazorHomepage.Shared.Repository
             return await Task.Run(() =>
             {
                 int next = 1;
-                if (_data.Count() > 0)
+                if (_data.Count > 0)
                 {
                     var nextS = _data.Keys.Max(k => k);
                     next = int.Parse(nextS) + 1;

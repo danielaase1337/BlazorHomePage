@@ -71,7 +71,7 @@
     public IGenericRepository<ItemCategoryModel> ShopItemCategoryDataManager { get; set; }
 
 
-    private List<ShoppingListModel> _sLists;
+    private ICollection<ShoppingListModel> _sLists;
 
     private List<ShopItemModel> _tilgjengeligeVarer;
     public string _newListName { get; set; }
@@ -88,8 +88,7 @@
             await AddDummyValues();
         }
 
-        var shoppingLists = await ShoppingListDataManager.Get();
-        _sLists = shoppingLists.ToList();
+        _sLists = await ShoppingListDataManager.Get();
     }
     private string editCssStyle = "";
 
@@ -124,7 +123,7 @@
         {
             if (f.Result != null)
             {
-                _sLists.Add(f.Result);
+                _sLists.Append(f.Result);
                 _newListName = string.Empty;
             }
         });

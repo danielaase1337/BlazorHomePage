@@ -1,5 +1,6 @@
 ﻿@page "/covidcontacts"
 @page "/covidcontacts/{id}"
+@using System.Linq.Expressions;
 
 @if (_tempContact != null && _tempContactDate != null)
 {
@@ -88,14 +89,14 @@
 
 
 @code {
-
+    TempDataInit datainitier;
 
     [Parameter]
     public string Id { get; set; }
     [Parameter]
     public User SelectedUser { get; set; }
     [Parameter]
-    public List<OneContactModel> Contacts { get; set; }
+    public ICollection<OneContactModel> Contacts { get; set; }
 
     private Modal _modalRef;
     DateTime? _tempContactDate = DateTime.MinValue;
@@ -106,7 +107,7 @@
     private OneContactModel SelectedCovidContact;
 
     [Inject]
-    public ICovidContactsDataManager _dataManager { get; set; }
+    public IGenericRepository<OneContactModel> ContactDataManager { get; set; }
 
     [Inject]
     public IGenericRepository<User> _userMananger { get; set; }
@@ -114,8 +115,13 @@
 
     protected async override Task OnParametersSetAsync()
     {
-        //if (_localUserManager == null)
-        //    _localUserManager = new LocalUserDataManager();
+        if (datainitier == null)
+        {
+            datainitier = new TempDataInit();
+            var res = await ContactDataManager.Get();
+            if (!res.Any())
+                await datainitier.InsertCovidContacts(ContactDataManager);
+        }
 
         if (_availableUsers == null)
         {
@@ -127,8 +133,7 @@
 
         if (SelectedUser != null)
         {
-
-            Contacts = await _dataManager.GetAllContactsFromUser(SelectedUser.FirstName.ToLower());
+            Contacts = await ContactDataManager.Get(f => f.OwnerId.Equals(SelectedUser.FirstName.ToLower()));
         }
 
     }
@@ -138,14 +143,16 @@
     {
         if (SelectedCovidContact != null)
         {
-            _dataManager.Delete(SelectedCovidContact);
-            if (await _dataManager.SaveChangesAsync())
+            var res = await ContactDataManager.Delete(SelectedCovidContact);
+            if (res)
             {
                 Contacts.Remove(SelectedCovidContact);
                 SelectedCovidContact = null;
             }
+
         }
     }
+
     private void EditSelectedContact()
     {
         if (SelectedCovidContact != null)
@@ -163,10 +170,9 @@
         try
         {
             newContact.OwnerId = SelectedUser.FirstName.ToLower();
-            _dataManager.Add<OneContactModel>(newContact);
-            var saveResult = await _dataManager.SaveChangesAsync();
-            if (saveResult)
-                Contacts.Add(newContact); //kan også hente kontakter fra api.
+            var newItem = await ContactDataManager.Insert(newContact);
+            if (newItem != null)
+                Contacts.Add(newContact);
         }
         catch (Exception e)
         {

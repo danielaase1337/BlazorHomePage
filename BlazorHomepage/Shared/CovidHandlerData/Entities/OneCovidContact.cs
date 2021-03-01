@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using BlazorHomepage.Shared.Repository;
 
 namespace BlazorHomepage.Shared.CovidHandlerData.Entities
 {
-    public class OneCovidContact
+    public class OneCovidContact : EntityBase
     {
-        public int Id { get; set; }
         public string Name { get; set; }
         public DateTime ContactDate { get; set; }
         public string Sted { get; set; }
