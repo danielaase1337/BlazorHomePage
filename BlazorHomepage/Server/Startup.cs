@@ -12,7 +12,6 @@ using System.Reflection;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using BlazorHomepage.Shared.Repository;
-using BlazorHomepage.Shared.Model.GoogleModels;
 
 namespace BlazorHomepage.Server
 {
@@ -34,14 +33,15 @@ namespace BlazorHomepage.Server
             services.AddRazorPages();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
+           services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
 
-            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseShopItemDbContext>();
             services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
-            
-            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseShoppingListItemDbContext>();
-            services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
-            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseItemCategoryDbContext>();
+
             services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
+
+            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
+
+
             //GoogleServices
 
         }

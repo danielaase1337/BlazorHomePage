@@ -3,28 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using BlazorHomepage.Shared.Model.GoogleModels;
+using BlazorHomepage.Shared.Data.Entities;
 using Google.Cloud.Firestore;
 
 namespace BlazorHomepage.Shared.Repository
 {
-    public abstract class GoogleFireBaseDbContext  : IGoogleFireBaseDbContext
+    public  class GoogleFireBaseDbContext  : IGoogleFireBaseDbContext 
     {
         readonly string _projectId = "supergnisten-shoppinglist";
-        internal readonly string _collectionKey;
+        public string CollectionKey { get; set; }
 
-        public GoogleFireBaseDbContext(IGoogleCollectionType collectiontype)
+        public GoogleFireBaseDbContext()
         {
-            CollectionType = collectiontype; 
-            _collectionKey = CollectionType.CollectionName;
+            //CollectionKey = collectionName;
             DB = FirestoreDb.Create(_projectId);
-            Collection = DB.Collection(_collectionKey);
-            KeyDocument = DB.Collection("keycollection").Document("KeyStorage");
+            //Collection = DB.Collection(CollectionKey);
         }
         public  CollectionReference Collection { get; set; }
-        public  DocumentReference KeyDocument { get; set; }
-        public FirestoreDb DB { get;  }
-        public  IGoogleCollectionType CollectionType { get; }
+        public FirestoreDb DB { get; private set; }
 
+        //public string GetCollectionKey(object type)
+        //{
+        //    if (type is ShopItem sItem)
+        //        return "shopitems";
+        //    if (type is ItemCategory itemCat)
+        //        return "itemcategories";
+        //    if (type is ShoppingList lists)
+        //        return "shoppinglists";
+        //    return "otherDocuments"; 
+        //}
+
+        public string GetCollectionKey(Type toTypeGet)
+        {
+            if (toTypeGet == typeof(ShopItem))
+                return "shopitems";
+            if (toTypeGet == typeof(ItemCategory))
+                return "itemcategories";
+            if (toTypeGet == typeof(ShoppingList))
+                return "shoppinglists";
+
+            return "misc"; 
+        }
     }    
 }

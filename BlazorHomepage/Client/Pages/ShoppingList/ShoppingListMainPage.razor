@@ -1,13 +1,13 @@
 ﻿@page "/shoppinglist"
 <div class="container todoapp commonviews">
+    <div class="row header">
+        <div class="col">
+            <h2>Handlelister</h2>
+            <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+        </div>
+    </div>
     @if (_sLists != null)
     {
-        <div class="row header">
-            <div class="col">
-                <h2>Handlelister</h2>
-                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
-            </div>
-        </div>
         <div class="row">
             <div class="col">
                 <ul class="todo-list">
@@ -52,7 +52,7 @@
     }
     else
     {
-        <p>Ingen lister eller laster</p>
+        <p>Clean slate... Legg til en ny liste for å komme igang.</p>
     }
 </div>
 
@@ -82,12 +82,6 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        if (tempDataInit == null)
-        {
-            tempDataInit = new TempDataInit();
-            await AddDummyValues();
-        }
-
         _sLists = await ShoppingListDataManager.Get();
     }
     private string editCssStyle = "";

@@ -1,5 +1,4 @@
 ﻿using BlazorHomepage.Shared.Data.Entities;
-using BlazorHomepage.Shared.Model.GoogleModels;
 using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
@@ -16,14 +15,17 @@ namespace BlazorHomepage.Shared.Repository
         where TEntity : EntityBase
     {
         private readonly IGoogleFireBaseDbContext dbContext;
-        public GoogleFirebaseGenenricRepository()
-        {
 
-        }
         public GoogleFirebaseGenenricRepository(IGoogleFireBaseDbContext dbContext)
         {
             this.dbContext = dbContext;
+            if(this.dbContext.Collection == null)
+            {
+                dbContext.CollectionKey = dbContext.GetCollectionKey(typeof(TEntity));
+                dbContext.Collection = dbContext.DB.Collection(dbContext.CollectionKey);
+            }
         }
+
         public async Task<bool> Delete(TEntity entityToDelete)
         {
             try

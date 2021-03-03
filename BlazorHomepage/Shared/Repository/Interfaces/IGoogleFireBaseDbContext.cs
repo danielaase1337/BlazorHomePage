@@ -1,14 +1,15 @@
-﻿using BlazorHomepage.Shared.Model.GoogleModels;
-using Google.Cloud.Firestore;
+﻿using Google.Cloud.Firestore;
+using System;
 
 namespace BlazorHomepage.Shared.Repository
 {
     public interface IGoogleFireBaseDbContext
     {
-        IGoogleCollectionType CollectionType { get;  }
+        string CollectionKey { get; set; }
         CollectionReference Collection { get; set; }
-        DocumentReference KeyDocument { get; set; }
-        FirestoreDb DB { get; }
+        FirestoreDb DB { get;  }
+        //string GetCollectionKey(object toTypeGet);
+        string GetCollectionKey(Type toTypeGet);
     }
 
 }
