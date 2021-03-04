@@ -28,9 +28,11 @@ namespace BlazorHomepage.Server.Controllers
         }
         // GET: api/<ShopItemsController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public async Task<IActionResult> Get()
         {
-            return new string[] { "value1", "value2" };
+            var items = await datamanager.Get();
+            var resmodels = mapper.Map<ShopItemModel[]>(items);
+            return Ok(resmodels.ToList()); 
         }
 
         // GET api/<ShopItemsController>/5

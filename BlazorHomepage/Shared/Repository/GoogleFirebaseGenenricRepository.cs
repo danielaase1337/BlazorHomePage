@@ -95,7 +95,7 @@ namespace BlazorHomepage.Shared.Repository
                     return orderBy(query).ToList();
                 }
                 else
-                    query.ToList();
+                  return   query.ToList();
             }
             catch (Exception e)
             {
@@ -173,7 +173,7 @@ namespace BlazorHomepage.Shared.Repository
         public async Task<TEntity> Update(TEntity entityToUpdate)
         {
             var updateRef = dbContext.Collection.Document(entityToUpdate.Id);
-            entityToUpdate.TimeStamp = Timestamp.FromDateTime(DateTime.Now);
+            entityToUpdate.TimeStamp = Timestamp.GetCurrentTimestamp(); 
             await updateRef.SetAsync(entityToUpdate);
             return entityToUpdate;
         }

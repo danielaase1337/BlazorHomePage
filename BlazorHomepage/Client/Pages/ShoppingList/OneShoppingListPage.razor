@@ -46,9 +46,9 @@
 @if (ThisShoppingList != null)
 {
     <div class="container todoapp commonviews">
-        <h2 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler" >@ThisShoppingList.Name</h2>
-        <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" /> 
-        
+        <h2 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h2>
+        <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
+
         <div class="row">
             <div class="col">
                 <Autocomplete Data="@Varer"
@@ -126,9 +126,9 @@ else
     public ShopItemModel SelectedShopItem { get; set; }
     public ItemCategoryModel SelectedItemCategory { get; set; }
     public ShoppingListModel ThisShoppingList { get; set; }
-    public IEnumerable<ShoppingListItemModel> ThisShoppingListItems { get; set; }
-    public IEnumerable<ShopItemModel> Varer { get; set; }
-    public IEnumerable<ItemCategoryModel> AvailableCategories { get; set; }
+    public ICollection<ShoppingListItemModel> ThisShoppingListItems { get; set; }
+    public ICollection<ShopItemModel> Varer { get; set; }
+    public ICollection<ItemCategoryModel> AvailableCategories { get; set; }
 
     //[Inject]
     //public IShoppingListDataManager ShoppingListDataManager { get; set; }
@@ -143,15 +143,11 @@ else
         var ok = !string.IsNullOrEmpty(Id);
         if (!ok)
             return;
-        await ShoppingListDataManager.Get(Id).ContinueWith(f =>
-        {
-            if (f.Result != null)
-            {
-                ThisShoppingList = f.Result;
-                ThisShoppingListItems = ThisShoppingList.ShoppingItems;
-                FilterList(activeListFiler);
-            };
-        });
+
+        ThisShoppingList = await ShoppingListDataManager.Get(Id);
+        ThisShoppingListItems = ThisShoppingList.ShoppingItems;
+
+        FilterList(activeListFiler);
         Varer = await ShopItemsDataManager.Get();
         AvailableCategories = await ItemsCategoriesDataManager.Get();
     }
@@ -215,7 +211,7 @@ else
 
     void ListHeaderKeyUpEventHandler()
     {
-        showH2LabelStyle= "hidden";
+        showH2LabelStyle = "hidden";
         showEditHeader = "";
     }
     async Task ListHeaderClickEventHandler(KeyboardEventArgs args)

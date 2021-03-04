@@ -57,7 +57,7 @@ namespace BlazorHomepage.Server.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var res = await storageHandler.Get(id);
-            return Ok(mapper.Map<ShoppingList>(res));
+            return Ok(mapper.Map<ShoppingListModel>(res));
         }
 
         // POST api/<ShoppingListController>
