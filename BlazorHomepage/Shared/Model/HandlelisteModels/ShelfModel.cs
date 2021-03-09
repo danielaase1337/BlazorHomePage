@@ -1,4 +1,5 @@
 ﻿using BlazorHomepage.Shared.Data.Entities;
+using BlazorHomepage.Shared.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,11 +8,9 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ShelfModel
+    public class ShelfModel: EntityBase
     {
-        public string Name { get; set; }
-        public ICollection<ItemCategoryModel> ItemCateogries { get; set; }
-        public ICollection<ShopItemModel> ItemsInShelf { get; set; }
+        public ICollection<ItemCategoryModel> ItemCateogries { get; set; } = new List<ItemCategoryModel>(); 
         public int SortIndex { get; set; } //for å konfigurere en butikk
     }
 }

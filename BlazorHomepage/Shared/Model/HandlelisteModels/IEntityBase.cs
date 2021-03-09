@@ -6,8 +6,11 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ShoppingListModel : ShoppingListBaseModel
+    public interface IEntityBase
     {
-        public ICollection<ShoppingListItemModel> ShoppingItems { get; set; } = new List<ShoppingListItemModel>();
+        string Id { get; set; }
+        string Name { get; set; }
+        string CssComleteEditClassName { get; }
+        bool EditClicked { get; set; }
     }
 }

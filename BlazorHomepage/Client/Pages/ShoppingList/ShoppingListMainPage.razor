@@ -102,25 +102,18 @@
     public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
     private async Task DeleteList(ShoppingListModel l)
     {
-        await ShoppingListDataManager.Delete(l).ContinueWith(f =>
-        {
-            if (f.Result)
-                _sLists = _sLists.Where(f => f.Id != l.Id).ToList();
-        });
-
+        var res = await ShoppingListDataManager.Delete(l);
+        if (res)
+            _sLists.Remove(l); 
     }
+
     private async Task AddList()
     {
         if (string.IsNullOrWhiteSpace(_newListName)) return;
         var newItem = new ShoppingListModel() { Name = _newListName };
-        await ShoppingListDataManager.Insert(newItem).ContinueWith(f =>
-        {
-            if (f.Result != null)
-            {
-                _sLists.Append(f.Result);
-                _newListName = string.Empty;
-            }
-        });
+        var res = await ShoppingListDataManager.Insert(newItem);
+        if (res != null)
+            _sLists.Add(res);
     }
 
 
@@ -144,9 +137,9 @@
     #region Temp
     private async Task AddDummyValues()
     {
-        var t =await  ShoppingListDataManager.Get();
+        var t = await ShoppingListDataManager.Get();
         if (t.Any())
-            return; 
+            return;
 
         await tempDataInit.InsertDefaultCategories(ShopItemCategoryDataManager);
         await tempDataInit.InsertDefaultShopItems(ShopItemDataManager);

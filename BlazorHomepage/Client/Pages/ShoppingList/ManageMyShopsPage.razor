@@ -1,0 +1,177 @@
+﻿@*@page "/managemyshops/{userid}"*@
+@page "/managemyshops/"
+
+<div class="container todoapp commonviews">
+    <div class="row header">
+        <div class="col">
+            <h2>Lagrede Butikker</h2>
+            <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
+        </div>
+    </div>
+    @if (MyShops != null)
+    {
+        <div class="row">
+            <div class="col">
+                <ul class="todo-list">
+                    @foreach (var l in MyShops)
+                    {
+                        <li class="@l.CssComleteEditClassName">
+                            <div class="parent-horizontal-stack">
+                                <div class="col">
+                                    @if (l.EditClicked)
+                                    {
+                                        <input class="editing" @bind-value="@(l.Name)" />
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
+                                        </label>
+                                    }
+                                </div>
+                                <div class="col">
+                                    @if (l.EditClicked)
+                                    {
+                                        <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                        <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                    }
+                                    else
+                                    {
+                                        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+
+                </ul>
+            </div>
+        </div>
+    }
+    else
+    {
+        <p>Clean slate... Legg til en ny liste for å komme igang.</p>
+    }
+</div>
+
+
+
+@code {
+    private ShopModel newShop = new ShopModel();
+    private string _newShopName;
+
+    [Inject]
+    IGenericRepository<ShopModel> ShopModelDataManager { get; set; }
+
+    private ICollection<ShopModel> MyShops { get; set; }
+
+    private async Task StoreChange(ShopModel item)
+    {
+        item.EditClicked = false;
+        await ShopModelDataManager.Update(item);
+    }
+    private async Task DeleteList(ShopModel l)
+    {
+        var res = await ShopModelDataManager.Delete(l);
+        if (res)
+            MyShops.Remove(l);
+    }
+
+    private string GetItemNavLink(string shopId)
+    {
+        return $"oneShop/{shopId}";
+    }
+
+    private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
+    {
+        if (args.Code.Equals("Enter"))
+        {
+            await AddShop();
+        }
+    }
+
+    private async Task AddShop()
+    {
+        if (string.IsNullOrEmpty(_newShopName)) return;
+        var newShop = new ShopModel() { Name = _newShopName };
+        var res = await ShopModelDataManager.Insert(newShop);
+        if (res != null)
+        {
+            MyShops.Add(res);
+            _newShopName = string.Empty;
+        }
+    }
+
+
+    //private void CreateShopClicked()
+    //{
+    //    newShop = new ShopModel();
+    //    newShop.ShopName = "";
+    //    _modalRef.Show();
+    //}
+
+    protected override async Task OnParametersSetAsync()
+    {
+        //UserSettings = await UserSettingsDataManager.Get(UserId);
+        MyShops = await ShopModelDataManager.Get();
+        if (MyShops == null)
+            MyShops = new List<ShopModel>();
+    }
+
+    //#region Modal handling
+    //private Modal _modalRef;
+
+    //public ShopModel SelectedShop { get; set; }
+
+
+    //private string _tempItemCatName;
+
+    //private async Task OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
+    //{
+    //    if (args.Code.Equals("Enter"))
+    //    {
+    //        if (string.IsNullOrEmpty(_tempItemCatName)) return;
+    //        var itemCat = new ItemCategoryModel();
+    //        itemCat.Name = _tempItemCatName;
+    //        var newCat = await ItemsCategoriesDataManager.Insert(itemCat);
+    //        AvailableCategories.Add(newCat);
+    //        _tempItemCatName = string.Empty;
+    //    }
+    //}
+
+    //void searchChangeHandlerItemCat(string value)
+    //{
+    //    _tempItemCatName = value;
+    //}
+
+    //void SelectedShopItemChanged(object newValue)
+    //{
+    //    if (newValue is ItemCategoryModel itemCat)
+    //    {
+    //        SelectedItemCategory = itemCat;
+
+
+    //    }
+    //}
+
+    //private async Task HideModalAndSave()
+    //{
+    //    if (newShop != null)
+    //    {
+    //        var res = await ShopModelDataManager.Insert(newShop);
+    //        UserSettings = await UserSettingsDataManager.Update(UserSettings);
+    //        MyShops.Add(res);
+    //    }
+
+    //    _modalRef.Hide();
+    //}
+    //private void HideModal()
+    //{
+    //    newShop = null;
+    //    _modalRef.Hide();
+    //}
+    //#endregion
+
+
+}

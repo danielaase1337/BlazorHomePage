@@ -34,10 +34,11 @@ namespace BlazorHomepage.Client.DataManagers
         {
             if (id is string sId)
             {
-                var respons = await http.DeleteAsync(sId);
-                var result = await respons.Content.ReadAsStringAsync();
-                var resobject = JsonConvert.DeserializeObject<bool>(result);
-                return resobject;
+                var url = BaseUrl + sId; 
+                var respons = await http.DeleteAsync(url);
+                if (respons.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    return true;
+                else return false; 
             }
             return false;
 
@@ -70,6 +71,10 @@ namespace BlazorHomepage.Client.DataManagers
         {
             var jsonContent = JsonContent.Create(entity);
             var respons = await http.PostAsync(BaseUrl, jsonContent);
+            
+            if (respons.StatusCode == System.Net.HttpStatusCode.NoContent) //Existing.. tregnger ikke legge til.. 
+                return entity;
+
             var result = await respons.Content.ReadAsStringAsync();
             var resobject = JsonConvert.DeserializeObject<TEntity>(result);
             return resobject;
