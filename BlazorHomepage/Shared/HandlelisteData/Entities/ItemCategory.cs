@@ -21,7 +21,6 @@ namespace BlazorHomepage.Shared.Data.Entities
             Name = name;
             Id = id; 
         }
-        public int SortIndex { get; set; }
 
     }
 

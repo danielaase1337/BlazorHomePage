@@ -191,12 +191,13 @@
     }
     void ResetSort()
     {
+
         foreach (var shelf in ThisShop.ShelfsInShop)
         {
-            if (!AvailableSortIndexes.Contains(shelf.SortIndex))
-                AvailableSortIndexes.Add(shelf.SortIndex);
             shelf.SortIndex = 0;
         }
+        AvailableSortIndexes = GetSortIndexes(ThisShop.ShelfsInShop);
+
     }
 
     List<int> GetSortIndexes(ICollection<ShelfModel> shelfs)
@@ -214,11 +215,10 @@
 
         for (int i = 1; i <= count; i++)
         {
-            
-            if (sortIndexes.Contains(i*10)) continue;
-            sortIndexes.Add(i);
+            if (!sortIndexes.Contains(i*10))
+                sortIndexes.Add(i*10);
         }
-
+        LastAddedSortIndex = sortIndexes.Last();
         return sortIndexes;
     }
 
@@ -250,7 +250,7 @@
             foreach (var cat in selectedShelf.ItemCateogries)
             {
                 cat.SortIndex = catSortIndex + 1;
-                catSortIndex++; 
+                catSortIndex++;
             }
     }
 
