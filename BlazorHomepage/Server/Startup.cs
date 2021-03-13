@@ -38,6 +38,8 @@ namespace BlazorHomepage.Server
             services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
 
             services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
+          
+            services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
 
             services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
 

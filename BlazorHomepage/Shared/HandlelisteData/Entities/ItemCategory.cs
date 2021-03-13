@@ -21,10 +21,8 @@ namespace BlazorHomepage.Shared.Data.Entities
             Name = name;
             Id = id; 
         }
-        [FirestoreProperty]
+        public int SortIndex { get; set; }
 
-        public string Name { get; set; }
-        
     }
 
 }

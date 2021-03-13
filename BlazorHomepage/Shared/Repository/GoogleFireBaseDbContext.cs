@@ -41,7 +41,8 @@ namespace BlazorHomepage.Shared.Repository
                 return "itemcategories";
             if (toTypeGet == typeof(ShoppingList))
                 return "shoppinglists";
-
+            if (toTypeGet == typeof(Shop))
+                return "shopcollection";
             return "misc"; 
         }
     }    

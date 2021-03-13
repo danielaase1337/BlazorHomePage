@@ -54,6 +54,7 @@ namespace BlazorHomepage.Client
             //builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, MemoryGenericRepository<ShoppingListModel>>(); 
             //builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>(); 
             //builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>();
+            //builder.Services.AddScoped<IGenericRepository<ShopModel>, MemoryGenericRepository<ShopModel>>();
 
             //ApiRepos
             //builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
@@ -61,9 +62,9 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
             builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, ItemsCategoryApiDataManager<ItemCategoryModel>>();
+            builder.Services.AddScoped<IGenericRepository<ShopModel>, ShopApiDataManager<ShopModel>>(); 
 
-            builder.Services.AddScoped<IGenericRepository<ShopModel>, MemoryGenericRepository<ShopModel>>(); 
-            builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
+            //builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
             
             builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
             var host = builder.Build();

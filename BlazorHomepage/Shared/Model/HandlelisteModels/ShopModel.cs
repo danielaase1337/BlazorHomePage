@@ -10,7 +10,6 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
     public class ShopModel : EntityBase
     {
         public ICollection<ShelfModel> ShelfsInShop { get; set; }
-        public SortedList<int, ShelfModel> SortedShelf { get; set; }
 
        
     }

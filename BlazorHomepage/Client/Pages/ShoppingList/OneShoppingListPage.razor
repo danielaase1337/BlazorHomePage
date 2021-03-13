@@ -143,7 +143,7 @@ else
     ShopItemModel newVareModel = new ShopItemModel();
     string _tempVareName;
     string _tempItemCatName;
-    string dropdownText = "Velg buikk"; 
+    string dropdownText = "Velg buikk";
     [Parameter]
     public string Id { get; set; }
 
@@ -344,7 +344,7 @@ else
     void SelectedShopClicked(ShopModel selectedShop)
     {
         SelectedShop = selectedShop;
-        dropdownText = selectedShop.Name; 
+        dropdownText = selectedShop.Name;
     }
     void SortShoppingList()
     {
@@ -353,7 +353,13 @@ else
         var itemCategoriesWithShortIndex = new List<ItemCategoryModel>();
         foreach (var shelfst in SelectedShop.ShelfsInShop)
         {
-            itemCategoriesWithShortIndex.AddRange(shelfst.ItemCateogries);
+            var startSort = shelfst.SortIndex;
+            foreach (var cat in shelfst.ItemCateogries)
+            {
+                startSort += 1;
+                cat.SortIndex = startSort;
+                itemCategoriesWithShortIndex.Add(cat);
+            }
         }
 
         foreach (var item in ThisShoppingList.ShoppingItems)
@@ -361,7 +367,7 @@ else
             var cat = item.Varen.ItemCategory;
             var thisCatSort = itemCategoriesWithShortIndex.FirstOrDefault(f => f.Id.Equals(cat.Id));
             if (thisCatSort != null)
-                item.Varen.ItemCategory.SortIndex = thisCatSort.SortIndex; 
+                item.Varen.ItemCategory.SortIndex = thisCatSort.SortIndex;
         }
 
 
