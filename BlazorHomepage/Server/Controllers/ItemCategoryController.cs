@@ -4,7 +4,6 @@ using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -53,7 +52,12 @@ namespace BlazorHomepage.Server.Controllers
         public async Task<IActionResult> Post([FromBody] ItemCategoryModel value)
         {
             var itemcategory = mapper.Map<ItemCategory>(value);
-
+            if (!string.IsNullOrEmpty(value.Id))
+            {
+                var existing = await datamanager.Get(value.Id);
+                var mapped = mapper.Map<ItemCategoryModel>(existing);
+                if (mapped == value) return NoContent();
+            }
             var res = await datamanager.Insert(itemcategory);
             if (res == null)
                 return StatusCode(StatusCodes.Status500InternalServerError);

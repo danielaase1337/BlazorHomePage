@@ -21,10 +21,7 @@ namespace BlazorHomepage.Shared.Data.Entities
             Name = name;
             Id = id; 
         }
-        [FirestoreProperty]
 
-        public string Name { get; set; }
-        
     }
 
 }

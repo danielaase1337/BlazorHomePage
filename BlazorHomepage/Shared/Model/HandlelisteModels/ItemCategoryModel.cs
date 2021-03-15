@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ItemCategoryModel :EntityBase
+    public class ItemCategoryModel : EntityBase
     {
-        public string Name { get; set; } = ""; 
+        public int SortIndex { get; set; } // settes bare til id i listen som hyllen har.. 
 
     }
 }

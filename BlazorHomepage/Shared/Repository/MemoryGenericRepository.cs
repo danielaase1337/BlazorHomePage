@@ -1,4 +1,7 @@
-﻿using System;
+﻿using BlazorHomepage.Shared.Model;
+using BlazorHomepage.Shared.Model.HandlelisteModels;
+using BlazorHomepage.Shared.UserData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -14,6 +17,42 @@ namespace BlazorHomepage.Shared.Repository
         public MemoryGenericRepository()
         {
             _data = new Dictionary<string, TEntity>();
+            AddDummyValues(typeof(TEntity));
+        }
+
+        private async Task AddDummyValues(Type type)
+        {
+            if (type == typeof(UserSettingsModel))
+            {
+                await Insert(new UserSettingsModel() {Id = "1", ThisUser = new User() { FirstName = "Daniel", Id = "1", LastName = "Aase" } } as TEntity);
+            }
+            if (type == typeof(ShopModel))
+            {
+                await Insert(new ShopModel() {Id = "2", Name = "Kiwi lyngås" } as TEntity);
+            }
+            if (type == typeof(ShelfModel))
+            {
+                await Insert(new ShelfModel()
+                {
+                    Name = "Meieri",
+                    ItemCateogries = new List<ItemCategoryModel>()
+                    { new ItemCategoryModel() { Name = "Meieri"}
+
+
+                    },
+                    SortIndex = 1
+                } as TEntity);
+                await Insert(new ShelfModel()
+                {
+                    Name = "Mineralvann",
+                    ItemCateogries = new List<ItemCategoryModel>()
+                    { new ItemCategoryModel() { Name = "Drikke"}
+
+
+                    },
+                    SortIndex = 2
+                } as TEntity);
+            }
         }
 
         public async Task<bool> Delete(TEntity entityToDelete)

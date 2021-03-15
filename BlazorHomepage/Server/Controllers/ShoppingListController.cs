@@ -57,7 +57,7 @@ namespace BlazorHomepage.Server.Controllers
         public async Task<IActionResult> Get(string id)
         {
             var res = await storageHandler.Get(id);
-            return Ok(mapper.Map<ShoppingList>(res));
+            return Ok(mapper.Map<ShoppingListModel>(res));
         }
 
         // POST api/<ShoppingListController>
@@ -88,7 +88,9 @@ namespace BlazorHomepage.Server.Controllers
         public async Task<IActionResult> Delete(string id)
         {
             var res = await storageHandler.Delete(id);
-            return Ok(res);
+            if(res)
+                return NoContent();
+            return StatusCode(StatusCodes.Status500InternalServerError, "Feil under sletting av id"); 
         }
     }
 }

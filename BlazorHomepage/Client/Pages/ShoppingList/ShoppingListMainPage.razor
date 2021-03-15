@@ -1,13 +1,16 @@
 ﻿@page "/shoppinglist"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 <div class="container todoapp commonviews">
+    <div class="row header">
+        <div class="col">
+            <h2>Handlelister</h2>
+            <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+        </div>
+    </div>
     @if (_sLists != null)
     {
-        <div class="row header">
-            <div class="col">
-                <h2>Handlelister</h2>
-                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
-            </div>
-        </div>
         <div class="row">
             <div class="col">
                 <ul class="todo-list">
@@ -52,7 +55,7 @@
     }
     else
     {
-        <p>Ingen lister eller laster</p>
+        <p>Clean slate... Legg til en ny liste for å komme igang.</p>
     }
 </div>
 
@@ -82,12 +85,6 @@
     }
     protected override async Task OnInitializedAsync()
     {
-        if (tempDataInit == null)
-        {
-            tempDataInit = new TempDataInit();
-            await AddDummyValues();
-        }
-
         _sLists = await ShoppingListDataManager.Get();
     }
     private string editCssStyle = "";
@@ -108,25 +105,18 @@
     public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
     private async Task DeleteList(ShoppingListModel l)
     {
-        await ShoppingListDataManager.Delete(l).ContinueWith(f =>
-        {
-            if (f.Result)
-                _sLists = _sLists.Where(f => f.Id != l.Id).ToList();
-        });
-
+        var res = await ShoppingListDataManager.Delete(l);
+        if (res)
+            _sLists.Remove(l);
     }
+
     private async Task AddList()
     {
         if (string.IsNullOrWhiteSpace(_newListName)) return;
         var newItem = new ShoppingListModel() { Name = _newListName };
-        await ShoppingListDataManager.Insert(newItem).ContinueWith(f =>
-        {
-            if (f.Result != null)
-            {
-                _sLists.Append(f.Result);
-                _newListName = string.Empty;
-            }
-        });
+        var res = await ShoppingListDataManager.Insert(newItem);
+        if (res != null)
+            _sLists.Add(res);
     }
 
 
@@ -150,9 +140,9 @@
     #region Temp
     private async Task AddDummyValues()
     {
-        var t =await  ShoppingListDataManager.Get();
+        var t = await ShoppingListDataManager.Get();
         if (t.Any())
-            return; 
+            return;
 
         await tempDataInit.InsertDefaultCategories(ShopItemCategoryDataManager);
         await tempDataInit.InsertDefaultShopItems(ShopItemDataManager);

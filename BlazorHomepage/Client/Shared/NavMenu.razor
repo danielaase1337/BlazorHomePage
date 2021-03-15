@@ -1,4 +1,11 @@
-﻿<div class="top-row pl-4 navbar navbar-dark">
+﻿
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+
+@inject NavigationManager Navigation
+@inject SignOutSessionStateManager SignOutManager
+
+<div class="top-row pl-4 navbar navbar-dark">
     <a class="navbar-brand" href="">Aase-Broen</a>
     <button class="navbar-toggler" @onclick="ToggleNavMenu">
         <span class="navbar-toggler-icon"></span>
@@ -12,26 +19,30 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        @if (Daniel != null)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="covidcontacts/1">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Daniel
-                </NavLink>
-            </li>
-        }
-        @if (Emilie != null)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="covidcontacts/2">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Emilie
-                </NavLink>
-            </li>
-        }
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="shoppinglist">
                 <span class="oi oi-arrow-circle-right" aria-hidden="true"></span>Handlelister
             </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/managemyshops">
+                <span class="oi oi-arrow-circle-top" aria-hidden="true"></span>Håndter butikker
+            </NavLink>
+        </li>
+        <li class="nav-item px-3">
+            <AuthorizeView>
+                <Authorized>
+                    <NavLink class="nav-link" href="#" @onclick="BeginSignOut">
+                        <span @onclick="BeginSignOut" class="oi oi-account-logout"></span>Logg ut
+                    </NavLink>
+                </Authorized>
+                <NotAuthorized>
+                    <NavLink class="nav-link" href="authentication/login">
+                        <span class="oi oi-account-login"></span> Logg inn
+                    </NavLink>
+                </NotAuthorized>
+            </AuthorizeView>
+
         </li>
     </ul>
 </div>
@@ -46,27 +57,9 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    [Inject]
-    public IGenericRepository<User> _localUserManager { get; set; }
-
-    private IEnumerable<User> _availableUsers;
-    private User Emilie;
-    private User Daniel;
-    protected override async Task OnInitializedAsync()
+    private async Task BeginSignOut(MouseEventArgs args)
     {
-        if (_availableUsers == null)
-        {
-            _availableUsers = await _localUserManager.Get();
-            if (!_availableUsers.Any())//to be deleted.. only mock Data.. 
-            {
-                await _localUserManager.Insert(new User() { FirstName = "Daniel", LastName = "Aase", EMail = "aase.daniel@gmail.com", UserName = "supergnisten", Id = "1" });
-                await _localUserManager.Insert(new User() { FirstName = "Emilie", LastName = "Broen", EMail = "emilie.broen@gmail.com", UserName = "superwoman", Id = "2" });
-                _availableUsers = await _localUserManager.Get(); 
-            }
-
-            Emilie = _availableUsers.FirstOrDefault(f => f.UserName == "superwoman");
-            Daniel = _availableUsers.FirstOrDefault(f => f.UserName == "supergnisten");
-        }
+        await SignOutManager.SetSignOutState();
+        Navigation.NavigateTo("authentication/logout");
     }
-
 }

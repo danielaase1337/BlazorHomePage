@@ -7,11 +7,10 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Shared.Model.HandlelisteModels
 {
-    public class ShopItemModel : EntityBase
+    public class ShopModel : EntityBase
     {
+        public ICollection<ShelfModel> ShelfsInShop { get; set; }
 
-        public string Unit { get; set; } = "stk";
-        public ItemCategoryModel ItemCategory { get; set; } = new ItemCategoryModel();
-
+       
     }
 }

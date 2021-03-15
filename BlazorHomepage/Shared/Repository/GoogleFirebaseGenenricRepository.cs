@@ -1,5 +1,4 @@
 ﻿using BlazorHomepage.Shared.Data.Entities;
-using BlazorHomepage.Shared.Model.GoogleModels;
 using Google.Cloud.Firestore;
 using System;
 using System.Collections.Generic;
@@ -16,14 +15,17 @@ namespace BlazorHomepage.Shared.Repository
         where TEntity : EntityBase
     {
         private readonly IGoogleFireBaseDbContext dbContext;
-        public GoogleFirebaseGenenricRepository()
-        {
 
-        }
         public GoogleFirebaseGenenricRepository(IGoogleFireBaseDbContext dbContext)
         {
             this.dbContext = dbContext;
+            if(this.dbContext.Collection == null)
+            {
+                dbContext.CollectionKey = dbContext.GetCollectionKey(typeof(TEntity));
+                dbContext.Collection = dbContext.DB.Collection(dbContext.CollectionKey);
+            }
         }
+
         public async Task<bool> Delete(TEntity entityToDelete)
         {
             try
@@ -93,7 +95,7 @@ namespace BlazorHomepage.Shared.Repository
                     return orderBy(query).ToList();
                 }
                 else
-                    query.ToList();
+                  return   query.ToList();
             }
             catch (Exception e)
             {
@@ -171,7 +173,7 @@ namespace BlazorHomepage.Shared.Repository
         public async Task<TEntity> Update(TEntity entityToUpdate)
         {
             var updateRef = dbContext.Collection.Document(entityToUpdate.Id);
-            entityToUpdate.TimeStamp = Timestamp.FromDateTime(DateTime.Now);
+            entityToUpdate.TimeStamp = Timestamp.GetCurrentTimestamp(); 
             await updateRef.SetAsync(entityToUpdate);
             return entityToUpdate;
         }

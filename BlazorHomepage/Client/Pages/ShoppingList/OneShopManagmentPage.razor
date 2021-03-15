@@ -1,0 +1,360 @@
+﻿@page "/oneShop/{Id}"
+
+@if (SelectedShelf != null)
+{
+
+
+    <Modal @ref="_modalRef">
+        <ModalContent IsCentered="true">
+            <ModalHeader>
+                <ModalTitle>Oppdater hylle</ModalTitle>
+                <CloseButton Clicked="@HideModal" />
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit @bind-Text="@SelectedShelf.Name" />
+                </Field>
+                <Field>
+                    <FieldLabel>Min rekkefølge (nummer)</FieldLabel>
+                    <Select TValue="int" SelectedValue="@(SelectedShelf.SortIndex)" SelectedValueChanged="@(f => SelctedSortIndexChanged(@SelectedShelf ,f))">
+                        @foreach (var index in AvailableSortIndexes)
+                        {
+                            <SelectItem Value="@index">@index.ToString()</SelectItem>
+                        }
+                    </Select>
+                </Field>
+                <Field>
+                    <FieldLabel>Kategori</FieldLabel>
+                    <Autocomplete TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
+                                  TextField="@(f => f.Name)"
+                                  Placeholder="Kategori for Hyllen?"
+                                  ValueField="@(f => @SelectCatValue(f))"
+                                  @onkeyup="@OnItemCategoryListItemKeyUpHandler"
+                                  SearchChanged="@searchChangeHandlerItemCat"
+                                  SelectedValue="@SelectedItemCategory"
+                                  SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
+                    </Autocomplete>
+                </Field>
+                <Field>
+                    <Blazorise.FieldLabel>Valgte kategorier</Blazorise.FieldLabel>
+                    @if (SelectedShelf.ItemCateogries != null)
+                    {
+                        <ul>
+                            @foreach (var cats in SelectedShelf.ItemCateogries)
+                            {
+                                <li>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p style="margin:auto; align-content:flex-start">@cats.Name</p>
+                                        </div>
+                                        <div class="col-1">
+                                            <Button class="btn-sm" Clicked="@(f=> DeleteCategory(@cats, @SelectedShelf))"><i class="fas fa-times"></i></Button>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    }
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
+                <Button Color="Color.Primary" Clicked="@HideModalAndSave">Save Changes</Button>
+            </ModalFooter>
+        </ModalContent>
+    </Modal>
+
+}
+@if (ThisShop != null)
+{
+    <h4>@ThisShop.Name</h4>
+
+    <div class="container todoapp commonviews">
+        <h2>Hyller i butikken</h2>
+        <div class="row">
+            <div class="col">
+                <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
+            </div>
+            <div class="col-2">
+                <Button class="btn btn-outline-primary" Clicked="@(f => ResetSort())">Reset sorting</Button>
+            </div>
+        </div>
+        @if (ThisShop.ShelfsInShop != null)
+        {
+            <div class="row">
+                <div class="col">
+                    <ul class="todo-list">
+                        @foreach (var l in ThisShop.ShelfsInShop.OrderBy(f => f.SortIndex).ToList())
+                        {
+                            <li class="@l.CssComleteEditClassName">
+                                <div class="parent-horizontal-stack">
+                                    <div class="col">
+                                        @if (l.EditClicked)
+                                        {
+                                            <input class="editing" @bind-value="@(l.Name)" />
+                                        }
+                                        else
+                                        {
+                                            <label>
+                                                <a @onclick="@(f => ShelfClicked(l))">@l.Name</a>
+                                            </label>
+                                        }
+                                    </div>
+                                    <div class="col">
+                                        @if (l.EditClicked)
+                                        {
+                                            <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                            <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                        }
+                                    </div>
+                                </div>
+                            </li>
+                        }
+
+                    </ul>
+                </div>
+            </div>
+        }
+        else
+        {
+            <p>Clean slate... Legg til en ny liste for å komme igang.</p>
+        }
+    </div>
+}
+
+@code {
+    private string _newShelfName;
+    ShelfModel SelectedShelf { get; set; } = new ShelfModel();
+    int LastAddedSortIndex = 0;
+
+    List<int> AvailableSortIndexes { get; set; } = new List<int>();
+
+    public ShopModel ThisShop { get; set; }
+
+    public ICollection<ShelfModel> AvailableShelfs { get; set; }
+
+    public ICollection<ItemCategoryModel> AvailableCategories { get; set; }
+
+    [Parameter]
+    public string Id { get; set; }
+
+    [Inject]
+    public IGenericRepository<ShopModel> ShopDataManger { get; set; }
+
+    [Inject]
+    public IGenericRepository<ItemCategoryModel> ItemsCategoriesDataManager { get; set; }
+
+    protected async override Task OnParametersSetAsync()
+    {
+
+        ThisShop = await ShopDataManger.Get(Id);
+        AvailableCategories = await ItemsCategoriesDataManager.Get();
+        AvailableSortIndexes = GetSortIndexes(ThisShop.ShelfsInShop);
+
+    }
+
+    private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
+    {
+        if (args.Code.Equals("Enter"))
+        {
+            await AddShelf();
+        }
+    }
+
+    private async Task AddShelf()
+    {
+        if (string.IsNullOrEmpty(_newShelfName)) return;
+        var newShelf = new ShelfModel() { Name = _newShelfName };
+        if (ThisShop.ShelfsInShop == null)
+            ThisShop.ShelfsInShop = new List<ShelfModel>();
+
+        LastAddedSortIndex += 10;
+        ThisShop.ShelfsInShop.Add(newShelf);
+        AvailableSortIndexes.Add(LastAddedSortIndex);
+
+        var res = await ShopDataManger.Update(ThisShop);
+
+        if (res != null)
+        {
+            ThisShop = res;
+            _newShelfName = string.Empty;
+        }
+
+    }
+    async Task StoreChange(ShelfModel item)
+    {
+        item.EditClicked = false;
+        await ShopDataManger.Update(ThisShop);
+    }
+    async Task DeleteList(ShelfModel l)
+    {
+        ThisShop.ShelfsInShop.Remove(l);
+        await ShopDataManger.Update(ThisShop);
+    }
+    void ResetSort()
+    {
+
+        foreach (var shelf in ThisShop.ShelfsInShop)
+        {
+            shelf.SortIndex = 0;
+        }
+        AvailableSortIndexes = GetSortIndexes(ThisShop.ShelfsInShop);
+
+    }
+
+    List<int> GetSortIndexes(ICollection<ShelfModel> shelfs)
+    {
+        var sortIndexes = new List<int>();
+
+        if (shelfs == null || !shelfs.Any())
+            return sortIndexes;
+
+        var count = shelfs.Count;
+        var existingSortIndexes = shelfs.Select(f => f.SortIndex).Where(a => a != 0).ToList();
+
+        if (existingSortIndexes.Any())
+            sortIndexes.AddRange(existingSortIndexes);
+
+        for (int i = 1; i <= count; i++)
+        {
+            if (!sortIndexes.Contains(i * 10))
+                sortIndexes.Add(i * 10);
+        }
+        LastAddedSortIndex = sortIndexes.Last();
+        return sortIndexes;
+    }
+
+
+    #region
+    Modal _modalRef = new Modal();
+    int sortIndexToRemoveAnyWay = 0;
+
+    void DeleteCategory(ItemCategoryModel cat, ShelfModel shelf)
+    {
+        shelf.ItemCateogries.Remove(cat);
+
+    }
+
+    void ShelfClicked(ShelfModel shelf)
+    {
+        SelectedShelf = shelf;
+        if (SelectedShelf.SortIndex != 0)
+        {
+            sortIndexToRemoveAnyWay = SelectedShelf.SortIndex;
+            if (!AvailableSortIndexes.Contains(sortIndexToRemoveAnyWay))
+            {
+                AvailableSortIndexes.Add(sortIndexToRemoveAnyWay);
+                AvailableSortIndexes = AvailableSortIndexes.OrderBy(f => f).ToList();
+            }
+
+        }
+        _modalRef.Show();
+    }
+
+    void SelctedSortIndexChanged(ShelfModel selectedShelf, int value)
+    {
+        selectedShelf.SortIndex = value;
+        int catSortIndex = value;
+        if (selectedShelf.ItemCateogries != null)
+            foreach (var cat in selectedShelf.ItemCateogries)
+            {
+                cat.SortIndex = catSortIndex + 1;
+                catSortIndex++;
+            }
+    }
+
+    string _tempItemCatName;
+    private async Task OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
+    {
+        if (args.Code.Equals("Enter"))
+        {
+            if (string.IsNullOrEmpty(_tempItemCatName)) return;
+            var selectedCat = AvailableCategories.FirstOrDefault(f => f.Name.Equals(_tempItemCatName));
+            if (selectedCat == null)
+            {
+                var itemCat = new ItemCategoryModel();
+                itemCat.Name = _tempItemCatName;
+                var newCat = await ItemsCategoriesDataManager.Insert(itemCat);
+                AvailableCategories.Add(newCat);
+                selectedCat = itemCat;
+                return;
+            }
+
+
+
+            _tempItemCatName = string.Empty;
+
+        }
+    }
+
+    void SelectedShopItemChanged(object newValue)
+    {
+        if (newValue is ItemCategoryModel itemCat)
+        {
+            SelectedItemCategory = itemCat;
+            if (!SelectedShelf.ItemCateogries.Contains(itemCat))
+            {
+                if (!SelectedShelf.ItemCateogries.Any())
+                {
+                    itemCat.SortIndex = SelectedShelf.SortIndex + 1;
+                }
+                else
+                    itemCat.SortIndex = SelectedShelf.ItemCateogries.Last().SortIndex + 1;
+
+                SelectedShelf.ItemCateogries.Add(itemCat);
+            }
+        }
+    }
+
+    void searchChangeHandlerItemCat(string value)
+    {
+        _tempItemCatName = value;
+    }
+
+    ItemCategoryModel SelectedItemCategory { get; set; }
+
+    private async Task HideModalAndSave()
+    {
+
+        if (SelectedShelf != null)
+        {
+            await ShopDataManger.Update(ThisShop);
+            var toRemove = AvailableSortIndexes.FirstOrDefault(f => f == SelectedShelf.SortIndex);
+            AvailableSortIndexes.Remove(toRemove);
+        }
+        SelectedItemCategory = null;
+        _modalRef.Hide();
+    }
+    private void HideModal()
+    {
+        if (sortIndexToRemoveAnyWay != 0)
+        {
+            var res = AvailableSortIndexes.FirstOrDefault(f => f == sortIndexToRemoveAnyWay);
+            if (res != null)
+                AvailableSortIndexes.Remove(res);
+        }
+
+        SelectedShelf = null;
+        SelectedItemCategory = null;
+        _modalRef.Hide();
+    }
+
+    string showAddBtn = "";
+    private ItemCategoryModel SelectCatValue(ItemCategoryModel model)
+    {
+        if (model == null) showAddBtn = "";
+        else
+        {
+            showAddBtn = "hidden";
+        }
+        return model;
+    }
+
+    #endregion
+}

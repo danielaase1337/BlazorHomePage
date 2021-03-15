@@ -13,6 +13,8 @@ namespace BlazorHomepage.Server.MapProfiles
             CreateMap<ShopItem, ShopItemModel>().ReverseMap();
             CreateMap<ItemCategory, ItemCategoryModel>().ReverseMap();
             CreateMap<Shelf, ShelfModel>().ReverseMap();
+            CreateMap<Shop, ShopModel>().ReverseMap(); 
+
         }
     }
 }
