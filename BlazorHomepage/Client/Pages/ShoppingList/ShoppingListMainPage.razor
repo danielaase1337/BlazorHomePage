@@ -1,4 +1,7 @@
 ﻿@page "/shoppinglist"
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+
 <div class="container todoapp commonviews">
     <div class="row header">
         <div class="col">
@@ -104,7 +107,7 @@
     {
         var res = await ShoppingListDataManager.Delete(l);
         if (res)
-            _sLists.Remove(l); 
+            _sLists.Remove(l);
     }
 
     private async Task AddList()

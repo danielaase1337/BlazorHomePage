@@ -5,7 +5,6 @@
 
 
     <Modal @ref="_modalRef">
-        <ModalBackdrop />
         <ModalContent IsCentered="true">
             <ModalHeader>
                 <ModalTitle>Oppdater hylle</ModalTitle>
@@ -27,24 +26,33 @@
                 </Field>
                 <Field>
                     <FieldLabel>Kategori</FieldLabel>
-                    <Autocomplete Data="@AvailableCategories"
+                    <Autocomplete TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
                                   TextField="@(f => f.Name)"
                                   Placeholder="Kategori for Hyllen?"
                                   ValueField="@(f => @SelectCatValue(f))"
                                   @onkeyup="@OnItemCategoryListItemKeyUpHandler"
                                   SearchChanged="@searchChangeHandlerItemCat"
                                   SelectedValue="@SelectedItemCategory"
-                                  SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
+                                  SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
                     </Autocomplete>
-                    <Button class="@showAddBtn">Legg til</Button>
                 </Field>
                 <Field>
+                    <Blazorise.FieldLabel>Valgte kategorier</Blazorise.FieldLabel>
                     @if (SelectedShelf.ItemCateogries != null)
                     {
                         <ul>
                             @foreach (var cats in SelectedShelf.ItemCateogries)
                             {
-                                <li>@cats.Name</li>
+                                <li>
+                                    <div class="row">
+                                        <div class="col">
+                                            <p style="margin:auto; align-content:flex-start">@cats.Name</p>
+                                        </div>
+                                        <div class="col-1">
+                                            <Button class="btn-sm" Clicked="@(f=> DeleteCategory(@cats, @SelectedShelf))"><i class="fas fa-times"></i></Button>
+                                        </div>
+                                    </div>
+                                </li>
                             }
                         </ul>
                     }
@@ -63,9 +71,9 @@
     <h4>@ThisShop.Name</h4>
 
     <div class="container todoapp commonviews">
-        <div class="row header">
+        <h2>Hyller i butikken</h2>
+        <div class="row">
             <div class="col">
-                <h2>Hyller i butikken</h2>
                 <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
             </div>
             <div class="col-2">
@@ -215,8 +223,8 @@
 
         for (int i = 1; i <= count; i++)
         {
-            if (!sortIndexes.Contains(i*10))
-                sortIndexes.Add(i*10);
+            if (!sortIndexes.Contains(i * 10))
+                sortIndexes.Add(i * 10);
         }
         LastAddedSortIndex = sortIndexes.Last();
         return sortIndexes;
@@ -226,6 +234,13 @@
     #region
     Modal _modalRef = new Modal();
     int sortIndexToRemoveAnyWay = 0;
+
+    void DeleteCategory(ItemCategoryModel cat, ShelfModel shelf)
+    {
+        shelf.ItemCateogries.Remove(cat);
+
+    }
+
     void ShelfClicked(ShelfModel shelf)
     {
         SelectedShelf = shelf;

@@ -12,35 +12,16 @@
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
-        @if (Daniel != null)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="covidcontacts/1">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Daniel
-                </NavLink>
-            </li>
-        }
-        @if (Emilie != null)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="covidcontacts/2">
-                    <span class="oi oi-plus" aria-hidden="true"></span> Covid kontakter - Emilie
-                </NavLink>
-            </li>
-        }
         <li class="nav-item px-3">
             <NavLink class="nav-link" href="shoppinglist">
                 <span class="oi oi-arrow-circle-right" aria-hidden="true"></span>Handlelister
             </NavLink>
         </li>
-        @if(Daniel != null)
-        {
-            <li class="nav-item px-3">
-                <NavLink class="nav-link" href="/managemyshops">
-                    <span class="oi oi-arrow-circle-top" aria-hidden="true"></span>Håndter butikker
-                </NavLink>
-            </li>
-        }
+        <li class="nav-item px-3">
+            <NavLink class="nav-link" href="/managemyshops">
+                <span class="oi oi-arrow-circle-top" aria-hidden="true"></span>Håndter butikker
+            </NavLink>
+        </li>
     </ul>
 </div>
 
@@ -53,28 +34,4 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
-
-    [Inject]
-    public IGenericRepository<User> _localUserManager { get; set; }
-
-    private IEnumerable<User> _availableUsers;
-    private User Emilie;
-    private User Daniel;
-    protected override async Task OnInitializedAsync()
-    {
-        if (_availableUsers == null)
-        {
-            _availableUsers = await _localUserManager.Get();
-            if (!_availableUsers.Any())//to be deleted.. only mock Data.. 
-            {
-                await _localUserManager.Insert(new User() { FirstName = "Daniel", LastName = "Aase", EMail = "aase.daniel@gmail.com", UserName = "supergnisten", Id = "1" });
-                await _localUserManager.Insert(new User() { FirstName = "Emilie", LastName = "Broen", EMail = "emilie.broen@gmail.com", UserName = "superwoman", Id = "2" });
-                _availableUsers = await _localUserManager.Get(); 
-            }
-
-            Emilie = _availableUsers.FirstOrDefault(f => f.UserName == "superwoman");
-            Daniel = _availableUsers.FirstOrDefault(f => f.UserName == "supergnisten");
-        }
-    }
-
 }

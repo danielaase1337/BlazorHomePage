@@ -30,11 +30,18 @@ namespace BlazorHomepage.Client
     {
         public static async Task Main(string[] args)
         {
-            
+
 
 
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
+            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.Services.AddOidcAuthentication(options =>
+            {
+                builder.Configuration.Bind("Auth0", options.ProviderOptions);
+                options.ProviderOptions.ResponseType = "code";
+            });
+
             builder.Services.AddBlazorise(options =>
              {
                  options.ChangeTextOnKeyPress = true;
@@ -42,12 +49,12 @@ namespace BlazorHomepage.Client
       .AddBootstrapProviders()
       .AddFontAwesomeIcons();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-            
+            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+
             //StorageContextes Page handlers.. 
             //builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
             //builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
-           
+
             //Local repos
             builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
             builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
@@ -62,17 +69,18 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
             builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, ItemsCategoryApiDataManager<ItemCategoryModel>>();
-            builder.Services.AddScoped<IGenericRepository<ShopModel>, ShopApiDataManager<ShopModel>>(); 
+            builder.Services.AddScoped<IGenericRepository<ShopModel>, ShopApiDataManager<ShopModel>>();
+            builder.Services.AddBlazorise(options =>
+            {
+                options.ChangeTextOnKeyPress = true;
+            })
+                .AddBootstrapProviders()
+                .AddFontAwesomeIcons();
 
             //builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
-            
-            builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
-            var host = builder.Build();
 
-            host.Services
-      .UseBootstrapProviders()
-      .UseFontAwesomeIcons();
-            await host.RunAsync();
+            builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
+            await builder.Build().RunAsync();
         }
     }
 }
