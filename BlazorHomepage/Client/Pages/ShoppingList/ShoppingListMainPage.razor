@@ -55,12 +55,13 @@
     }
     else
     {
-        <p>Clean slate... Legg til en ny liste for å komme igang.</p>
+        <LoadingComponent DisplayText="@loadingListsText"> </LoadingComponent>
     }
 </div>
 
 @code {
     TempDataInit tempDataInit;
+    private string loadingListsText = "Henter handlelister "; 
     [Inject]
     public IGenericRepository<User> UserDataManager { get; set; }
 
