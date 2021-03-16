@@ -1,16 +1,34 @@
-<Router AppAssembly="@typeof(Program).Assembly">
-    <Found Context="routeData">
-        <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-            <Authorizing>
-                <p>Determining session state, please wait...</p>
-            </Authorizing>
-            <NotAuthorized>
-                <h1>Sorry</h1>
-                <p>You're not authorized to reach this page. You need to log in.</p>
-            </NotAuthorized>
-        </AuthorizeRouteView>
-    </Found>
-    <NotFound>
-        <p>Sorry, there's nothing at this address.</p>
-    </NotFound>
-</Router>
+    <Router AppAssembly="@typeof(Program).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <Authorizing>
+                    <LoadingComponent DisplayText="@LoggingInText"></LoadingComponent>
+                </Authorizing>
+                <NotAuthorized>
+                    <h1>Stop en halv..</h1>
+                    <p>Du må logge inn for å se denne resursen</p>
+                    <a href="authentication/login">Log inn her</a>
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <div class="container">
+                <div class="row">
+                    <div class="col">
+                        <img src="/img/homer_404.png" height="300" />
+                    </div>
+                    <div class="col">
+                        <h1>404!</h1>
+                        <p> Doh! her var det ingen ting gitt!</p>
+                        <a href="/">Go home..</a>
+                    </div>
+                </div>
+            </div>
+        </NotFound>
+    </Router>
+@code
+ {
+    private string LoggingInText = "Logger inn.."; 
+
+
+}

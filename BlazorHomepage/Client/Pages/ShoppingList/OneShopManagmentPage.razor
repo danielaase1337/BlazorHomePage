@@ -2,8 +2,6 @@
 
 @if (SelectedShelf != null)
 {
-
-
     <Modal @ref="_modalRef">
         <ModalContent IsCentered="true">
             <ModalHeader>
@@ -64,8 +62,9 @@
             </ModalFooter>
         </ModalContent>
     </Modal>
-
 }
+
+
 @if (ThisShop != null)
 {
     <h4>@ThisShop.Name</h4>
@@ -123,13 +122,17 @@
         }
         else
         {
-            <p>Clean slate... Legg til en ny liste for å komme igang.</p>
+            <LoadingComponent DisplayText="@loadingListsText">
+               
+            </LoadingComponent>
         }
     </div>
 }
 
 @code {
+
     private string _newShelfName;
+    private string loadingListsText = "Henter hyller "; 
     ShelfModel SelectedShelf { get; set; } = new ShelfModel();
     int LastAddedSortIndex = 0;
 
@@ -152,7 +155,6 @@
 
     protected async override Task OnParametersSetAsync()
     {
-
         ThisShop = await ShopDataManger.Get(Id);
         AvailableCategories = await ItemsCategoriesDataManager.Get();
         AvailableSortIndexes = GetSortIndexes(ThisShop.ShelfsInShop);

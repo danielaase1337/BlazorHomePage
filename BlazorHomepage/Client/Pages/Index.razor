@@ -1,81 +1,18 @@
 ﻿@page "/"
 @inject HttpClient http
 
-<h1>Daniel sin playground</h1>
-
-Her kommer siste  forsøk på å få en hjemeside som  lekeområde opp å stå.
-
-
-@*@if (_vare != null)
-{
-    <div>
-        <p>@_vare.Id</p>
-        <p>@_vare.Name</p>
-        <p>@_vare.TimeStamp</p>
-        <p>@_vare.ItemCategory.Name</p>
+<h1>Hei sveis.. </h1>
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <img src="/img/Greger.jpg" height="500" />
+        </div>
+        <div class="col">
+            <img src="/img/una.jpg" height="500" />
+        </div>
     </div>
-}
-<br />
-@if (_handleliste != null)
-{
-    <h2>Handleliste</h2>
-    <p> @_handleliste.Name </p>
-}
-@if (_itemcat != null)
-{
-    <h3>kategori</h3>
-    <p>@_itemcat.Name</p>
-    <p>@_itemcat.Id</p>
-}
-<Button class="btn-success" Clicked="@(f => AddShoppingList())">Legg til Handleliste</Button>
-<Button  class="btn-danger" Clicked="@(f => AddShopItem())">Legg til vare</Button>
-<Button class="btn-info" Clicked="@(f => AddItemCat())">Legg til Kategori</Button>*@
-
+</div>
 
 @code
 {
-
-    //[Inject]
-    //public IGenericRepository<ShopItemModel> datamanger { get; set; }
-    //[Inject]
-    //public IGenericRepository<ShoppingListModel> shoppingListsDataManager { get; set; }
-    //[Inject]
-    //public IGenericRepository<ItemCategoryModel> categoryDatamanager { get; set; }
-
-    //private List<string> valuesFromApi;
-    //private ShopItemModel _vare;
-    //private ShoppingListModel _handleliste;
-    //private ItemCategoryModel _itemcat;
-
-    protected async override Task OnInitializedAsync()
-    {
-        //valuesFromApi = await http.GetFromJsonAsync<List<string>>("api/ItemCategory");
-        //_handleliste = await shoppingListsDataManager.Get("22");
-        //_vare = await datamanger.Get("HOStZe433GJoOz7gRZQV");
-        //_itemcat = await categoryDatamanager.Get("J39OIwHYogbk2LdKPWzr");
-
-    }
-    //private async Task AddItemCat()
-    //{
-    //    var res = await categoryDatamanager.Insert(new ItemCategoryModel() { Name = "Brød" });
-    //    _itemcat = res;
-    //}
-    //private async Task AddShopItem()
-    //{
-    //    var res = await datamanger.Insert(new ShopItemModel() { ItemCategory = _itemcat, Name = "Rundstykker", Unit = "stk" });
-    //    _vare = res;
-    //}
-    //private async Task AddShoppingList()
-    //{
-    //    var shoppinglist = new ShoppingListModel()
-    //    {
-    //        Name = "handleliste Uke 1",
-    //        ShoppingItems = new List<ShoppingListItemModel>()
-    //{
-    //         new ShoppingListItemModel(){Mengde = 1, Varen  = _vare, IsDone = false }
-    //        }
-    //    };
-    //    var res = await shoppingListsDataManager.Insert(shoppinglist);
-    //}
-
 }
