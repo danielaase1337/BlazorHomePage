@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "supergnisten-shoppinglist",
+  "private_key_id": "77e0654cef456a4e96720b2d801292ebc83dafa3",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQC1Wd3j+5Ol1YWe\n4WTpSGFtPr/O7cyGWbRqjCeVtVK5Ax9IUqHzlNDYTmWgv8m0Ebe63NzhIL0W8E50\n5OT3BhSv6t09rv9JDIr6nZ1dATkSxDs/Y5wYR2iIhW61997IH/REoKC6iXujEwB8\nmMTB4XrJCWUSh6r5NgZWTYc7NzARCXq8jAtjFeTLWem6Z3hJRR8Ebxic26YKreUW\nVqEtdVSGc/UPn+KyeLN7CPjvE8AndCyhj3JR97LW7XXnLmECPHeESZ9PD6a8hOkv\nXHKDS2GzLTs6UhgoRV6ae81A535BbTItAkEz39mqCOBJv27n6vcLEYmpWHNFCbgg\ng2XfSGsBAgMBAAECggEALKDw+invK+BgAbl2G/K0By5qBYJ/0pBA1fenxi/ZK66Z\nBDNRp5/3xUOFvwlzmdzCWjoAIWbtIbgBlsK9lgzpCmHCEGwAZvmvOf2PvFOQuA2S\nhwb8Yv0vvGkZ1a4qJRW4ByuAYmdzBa6ncAIoaY4TqWWmeejpKmshJBvwK6JpMce4\nUZidsRkannFsCzKIrYlElf4zFsgMe9q3f3rglp0via5uYzF6Rxd9mmzUZNs1bVXQ\nshcdjp7HNaBVo7vCxq8P52tLGwzLAk1+cs0mzm3fOqH1AphD6HKz997Wn6BJwuF9\nNbLESTsNQkFDMagZ97zoEgz5HphKfB8u1lSJbcGsAQKBgQD4F3L8EC/3ENedIcb5\nsmgZ/JuAabcbIA/DvohZB3AVlUT1PZtksl7xG6QnnonWmewmV/OCbcT47MrAuWZ8\nMllayk5Oxbk3Hd5H19ckW1Dr5CgyoQkdg+4YgxPndqaJLeKQCAGNCAMmalRVuB99\noW+uzRMlLx/4cDvb4A/ZhAHaIwKBgQC7IcgOJ1yZi5ZzQMbIPS6CgKvU0bI0gVxM\nnBXmWNl3Ns2Z9A0q0RajGqgjUdCbMeygkyLMwLNlRfPMerYDP9ukfyMlxOUR63fj\nXnKc9NtCX0E6z+52kTA4NZVhwD1AtWULbWJStggGl9sO1whklFc4xENLZ6iW86KD\nBXonv6u+iwKBgGPT87XPwa01/rzAsbMaAd+rENtsLnzgutc2HOFOJ+DXbqcMAjJT\nv/Ze+//hQG+1AhwvudGa3+6WQcOpFr8U93WcAEScNTojb6UTCgQcJoS1CyPMPsG8\nq5r7a4/w43RBnW/9eLpKJhJYKNVRQIKp6im5ZWHKA6BRcRS5pUcOYjxnAoGAD8I9\nhauc6bVOmzAWTWCRnR3W2po6Jp/KNQ1j7r0GuzpbQB7ESRnIjT2+cRL/vUIMCk25\nvYJw2RN1/39J+qYTChxGynR1UfgBZZ1bi4o3OLSq2pgOHeAGLoWcqdm1jtB3zOmO\nQSbhMCTzpqFHLKktWzNz81KsaOHliqEYc2Z5wRcCgYBsRxuxolqDW46Kt4NpAbXR\nMtXXWLyOyMIczH7wFpvcS0ZumPKbBmYxMhkZI56t+7FoiQelyyShBoRJC+HaZCZF\nshrHT+f6/aRcsDYe3uJd4S3zyNvZkKFcOp0bRART4ABEmcMZa7wHXhKBf7AnF99q\nmydMRbjS2fLSKHktpyehxQ==\n-----END PRIVATE KEY-----\n",
+  "client_email": "supergnisten-owner@supergnisten-shoppinglist.iam.gserviceaccount.com",
+  "client_id": "114141139284345848175",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/supergnisten-owner%40supergnisten-shoppinglist.iam.gserviceaccount.com"
+}
