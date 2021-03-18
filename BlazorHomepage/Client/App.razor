@@ -2,7 +2,7 @@
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
                 <Authorizing>
-                    <LoadingComponent DisplayText="@LoggingInText"></LoadingComponent>
+                    <LoadingComponent></LoadingComponent>
                 </Authorizing>
                 <NotAuthorized>
                     <h1>Stop en halv..</h1>
@@ -28,7 +28,6 @@
     </Router>
 @code
  {
-    private string LoggingInText = "Logger inn.."; 
-
+  
 
 }
