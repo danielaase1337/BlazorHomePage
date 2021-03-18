@@ -51,7 +51,7 @@
     }
     else
     {
-        <LoadingComponent DisplayText="@loadingListsText">
+        <LoadingComponent>
 
         </LoadingComponent>
     }
@@ -62,7 +62,6 @@
 @code {
     private ShopModel newShop = new ShopModel();
     private string _newShopName;
-    private string loadingListsText = "Henter butikker ";
 
     [Inject]
     IGenericRepository<ShopModel> ShopModelDataManager { get; set; }

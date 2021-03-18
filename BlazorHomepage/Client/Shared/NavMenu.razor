@@ -14,26 +14,26 @@
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <ul class="nav flex-column">
-        <li class="nav-item px-3">
+        <li class="nav-item px">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </li>
         <AuthorizeView>
             <Authorized>
-                <li class="nav-item px-3">
+                <li class="nav-item px">
                     <NavLink class="nav-link" href="shoppinglist">
                         <span class="oi oi-arrow-circle-right" aria-hidden="true"></span>Handlelister
                     </NavLink>
                 </li>
-                <li class="nav-item px-3">
+                <li class="nav-item px">
                     <NavLink class="nav-link" href="/managemyshops">
                         <span class="oi oi-arrow-circle-top" aria-hidden="true"></span>Håndter butikker
                     </NavLink>
                 </li>
             </Authorized>
         </AuthorizeView>
-        <li class="nav-item px-3">
+        <li class="nav-item px">
             <AuthorizeView>
                 <Authorized>
                     <NavLink class="nav-link" href="#" @onclick="BeginSignOut">

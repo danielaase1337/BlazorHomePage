@@ -6,15 +6,15 @@
     <div class="row header">
         <div class="col">
             <h2>Handlelister</h2>
-            <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+            <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
         </div>
     </div>
-    @if (_sLists != null)
+    @if (ShoppingLists != null)
     {
         <div class="row">
             <div class="col">
                 <ul class="todo-list">
-                    @foreach (var l in _sLists)
+                    @foreach (var l in ShoppingLists)
                     {
                         <li class="@l.CssComleteEditClassName">
                             <div class="parent-horizontal-stack">
@@ -33,7 +33,7 @@
                                         </label>
                                     }
                                 </div>
-                                <div class="col">
+                                <div class="col-6">
                                     @if (l.EditClicked)
                                     {
                                         <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
@@ -55,40 +55,35 @@
     }
     else
     {
-        <LoadingComponent DisplayText="@loadingListsText"> </LoadingComponent>
+        <LoadingComponent > </LoadingComponent>
     }
 </div>
 
 @code {
-    TempDataInit tempDataInit;
-    private string loadingListsText = "Henter handlelister "; 
+
+    private string editCssStyle = "";
+
     [Inject]
     public IGenericRepository<User> UserDataManager { get; set; }
 
-    //[Inject]
-    //public IShoppingListDataManager ShoppingListDataManager { get; set; }
     [Inject]
     public IGenericRepository<ShoppingListModel> ShoppingListDataManager { get; set; }
-    [Inject]
-    public IGenericRepository<ShopItemModel> ShopItemDataManager { get; set; }
-    [Inject]
-    public IGenericRepository<ItemCategoryModel> ShopItemCategoryDataManager { get; set; }
 
+    private ICollection<ShoppingListModel> ShoppingLists;
 
-    private ICollection<ShoppingListModel> _sLists;
-
-    private List<ShopItemModel> _tilgjengeligeVarer;
     public string _newListName { get; set; }
 
     private string GetItemNavLink(string listeId)
     {
         return $"shoppinglist/{listeId}";
     }
+
     protected override async Task OnInitializedAsync()
     {
-        _sLists = await ShoppingListDataManager.Get();
+        ShoppingLists = await ShoppingListDataManager.Get();
+        OrderLists();
+
     }
-    private string editCssStyle = "";
 
 
 
@@ -108,7 +103,7 @@
     {
         var res = await ShoppingListDataManager.Delete(l);
         if (res)
-            _sLists.Remove(l);
+            ShoppingLists.Remove(l);
     }
 
     private async Task AddList()
@@ -117,7 +112,10 @@
         var newItem = new ShoppingListModel() { Name = _newListName };
         var res = await ShoppingListDataManager.Insert(newItem);
         if (res != null)
-            _sLists.Add(res);
+            ShoppingLists.Add(res);
+
+        OrderLists();
+
     }
 
 
@@ -126,29 +124,16 @@
         if (value?.Value != null && value.Value is bool bValue)
             l.IsDone = bValue;
     }
-    private void toogelAllClicked()
-    {
 
-    }
 
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
         if (args.Code.Equals("Enter"))
             await AddList();
     }
-
-
-    #region Temp
-    private async Task AddDummyValues()
+    private void OrderLists()
     {
-        var t = await ShoppingListDataManager.Get();
-        if (t.Any())
-            return;
-
-        await tempDataInit.InsertDefaultCategories(ShopItemCategoryDataManager);
-        await tempDataInit.InsertDefaultShopItems(ShopItemDataManager);
-        await tempDataInit.InsertDefaultShoppingList(ShoppingListDataManager);
+        ShoppingLists = ShoppingLists.OrderBy(f => f.Name).ToList();
     }
-    #endregion
 
 }

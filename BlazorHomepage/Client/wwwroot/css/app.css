@@ -38,6 +38,7 @@ a, .btn-link {
     /* for vertical aligning */
     align-items: center;
 }
+
 .parent-horizontal-stack-end {
     display: flex;
     flex-wrap: wrap;
@@ -46,6 +47,7 @@ a, .btn-link {
     /* for vertical aligning */
     align-items: center;
 }
+
 child-horizontal-stack {
     width: 100px;
 }
@@ -129,6 +131,8 @@ input[type="checkbox"] {
         float: left;
     }
 
+
+
 .app-header .btn-logout {
     float: right;
     margin: 0px 10 0px;
@@ -137,6 +141,9 @@ input[type="checkbox"] {
 .todoapp .commonviews {
     margin: 10px 0px;
     padding: 10px 0px;
+}
+.commonviews .customRowStyle {
+    margin-bottom: 4px;
 }
 
 .todoapp input::-webkit-input-placeholder {
@@ -207,7 +214,7 @@ input[type="checkbox"] {
     border: none;
     background: rgba(0, 0, 0, 0.003);
     box-shadow: inset 0 -2px 1px rgba(0,0,0,0.03);
-    width:inherit;
+    width: inherit;
 }
 
 .header .btn-add {
@@ -218,7 +225,6 @@ input[type="checkbox"] {
 .main {
     position: relative;
     z-index: 2;
-    
 }
 
 label[for='toggle-all'] {
@@ -250,11 +256,6 @@ label[for='toggle-all'] {
     list-style: none
 }
 
-
-.varePage {
-}
-
-
 .todo-list {
     margin: 0;
     padding: 0;
@@ -275,7 +276,6 @@ label[for='toggle-all'] {
         .todo-list li.editing {
             border-bottom: none;
             padding: 0;
-           
         }
 
             .todo-list li.editing .edit {
@@ -302,18 +302,18 @@ label[for='toggle-all'] {
             opacity: 0;
         }
 
-            /*.todo-list li .toggle + label {*/
-                /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
-                /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
-                /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
+        /*.todo-list li .toggle + label {*/
+        /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
+        /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
+        /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23ededed%22%20stroke-width%3D%223%22/%3E%3C/svg%3E');
                 background-repeat: no-repeat;
                 background-position: center left;
             }
 
             .todo-list li .toggle:checked + label {*/
-                /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
-                /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
-                /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
+        /*firefox only requires # to be escaped - https://bugzilla.mozilla.org/show_bug.cgi?id=922433*/
+        /* IE and Edge required _everything_ to be escaped to render, so we do that instead of just the # - https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/7157459/ */
+        /*background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2240%22%20height%3D%2240%22%20viewBox%3D%22-10%20-18%20100%20135%22%3E%3Ccircle%20cx%3D%2250%22%20cy%3D%2250%22%20r%3D%2250%22%20fill%3D%22none%22%20stroke%3D%22%23bddad5%22%20stroke-width%3D%223%22/%3E%3Cpath%20fill%3D%22%235dc2af%22%20d%3D%22M72%2025L42%2071%2027%2056l-4%204%2020%2020%2034-52z%22/%3E%3C/svg%3E');
             }*/
 
 
@@ -334,7 +334,7 @@ label[for='toggle-all'] {
             color: #d9d9d9;
             text-decoration: line-through;
         }
-        
+
 
         .todo-list li a {
             white-space: pre-line;
@@ -358,22 +358,22 @@ label[for='toggle-all'] {
             width: -webkit-fill-available; /* Mozilla-based browsers will ignore this. */
             width: fill-available;
         }
-        
-        .todo-list li checkInput{
-            align-content:flex-start;
-            
+
+        .todo-list li checkInput {
+            align-content: flex-start;
         }
+
         .todo-list li .commandBtns {
             float: right;
-            align-items:flex-start;
+            align-items: flex-start;
             top: 0;
             bottom: 0;
             margin: 2px;
-            height:30px;
-            padding:2px;
-            width:30px;
+            height: 30px;
+            padding: 2px;
+            width: 30px;
         }
-      
+
         .todo-list li .destroy {
             position: absolute;
             float: right;
