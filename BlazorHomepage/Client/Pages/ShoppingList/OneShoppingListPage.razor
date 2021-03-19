@@ -21,19 +21,23 @@
                 </Field>
                 <Field>
                     <FieldLabel>Kategori</FieldLabel>
-                    <div class="parent-horizontal-stack">
-                        <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
-                                      TextField="@(f => f.Name)"
-                                      ValueField="@(f => @SelectCatValue(f))"
-                                      Placeholder="Kategori for varen?"
-                                      @onkeyup="@OnItemCategoryListItemKeyUpHandler"
-                                      SearchChanged="@searchChangeHandlerItemCat"
-                                      SelectedValue="@SelectedItemCategory"
-                                      SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
-                        </Autocomplete>
-                        <Tooltip Text="Legg til ny kategori">
-                            <Button Clicked="@(f => AddCategory())"><i class="fas fa-plus"></i></Button>
-                        </Tooltip>
+                    <div class="row">
+                        <div class="col">
+                            <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
+                                          TextField="@(f => f.Name)"
+                                          ValueField="@(f => @SelectCatValue(f))"
+                                          Placeholder="Kategori for varen?"
+                                          @onkeyup="@OnItemCategoryListItemKeyUpHandler"
+                                          SearchChanged="@searchChangeHandlerItemCat"
+                                          SelectedValue="@SelectedItemCategory"
+                                          SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
+                            </Autocomplete>
+                        </div>
+                        <div class="col-2">
+                            <Tooltip Text="Legg til ny kategori">
+                                <Button Clicked="@(f => AddCategory())"><i class="fas fa-plus"></i></Button>
+                            </Tooltip>
+                        </div>
                     </div>
                 </Field>
                 @if (newVareModel.ItemCategory != null)
@@ -90,7 +94,7 @@
                 </Autocomplete>
             </div>
             <div class="col-2">
-                <Button Color="Color.Success" Outline="true" Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
+                <Button Color="Color.Success" Size="Size.Small" Outline="true" Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
             </div>
         </div>
         <div class="row">
@@ -266,13 +270,16 @@ else
         itemCat.Name = _tempItemCatName;
         var newCat = await ItemsCategoriesDataManager.Insert(itemCat);
         AvailableCategories.Add(newCat);
+        newVareModel.ItemCategory = newCat;
         SelectedItemCategory = newCat;
+        SelectedItemCategory = null;
+        _itemCategoriyAutoComplete.Clear();
     }
     void VareClicked(ShopItemModel varen)
     {
         newVareModel = varen;
         justUpdateVare = true;
-        SelectedItemCategory = null; 
+        SelectedItemCategory = null;
         _modalRef.Show();
 
     }
@@ -300,6 +307,8 @@ else
         {
             SelectedItemCategory = itemCat;
             newVareModel.ItemCategory = itemCat;
+            SelectedItemCategory = null;
+            _itemCategoriyAutoComplete.Clear();
         }
     }
 

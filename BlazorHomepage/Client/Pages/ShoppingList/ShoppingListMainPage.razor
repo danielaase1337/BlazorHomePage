@@ -6,7 +6,14 @@
     <div class="row header">
         <div class="col">
             <h2>Handlelister</h2>
-            <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+            <div class="row">
+                <div class="col">
+                    <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+                </div>
+                <div class="col-2">
+                    <Button Color="Color.Success" Size="Size.Small" Outline="true"><i class="fas fa-check" @onclick="@(f => AddList())"></i></Button>
+                </div>
+            </div>
         </div>
     </div>
     @if (ShoppingLists != null)
