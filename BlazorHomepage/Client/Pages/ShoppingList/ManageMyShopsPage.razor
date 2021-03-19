@@ -29,16 +29,18 @@
                                         </label>
                                     }
                                 </div>
-                                <div class="col">
+                                <div class="col-4">
                                     @if (l.EditClicked)
                                     {
-                                        <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
-                                        <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
-                                        <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                        <Buttons>
+                                            <Button Color="Color.Success" Size="Size.Small" Outline="true" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                            <Button Color="Color.Warning" Size="Size.Small" Outline="true" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                            <Button Color="Color.Danger" Size="Size.Small" Outline="true" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                        </Buttons>
                                     }
                                     else
                                     {
-                                        <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                        <Button Color="Color.Primary" Outline="true" Size="Size.Small" Class="endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
                                     }
                                 </div>
                             </div>
