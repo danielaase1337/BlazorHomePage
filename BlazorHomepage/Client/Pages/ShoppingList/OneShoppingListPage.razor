@@ -21,16 +21,20 @@
                 </Field>
                 <Field>
                     <FieldLabel>Kategori</FieldLabel>
-                    <Autocomplete TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
-                                  TextField="@(f => f.Name)"
-                                  ValueField="@(f => @SelectCatValue(f))"
-                                  Placeholder="Kategori for varen?"
-                                  @onkeyup="@OnItemCategoryListItemKeyUpHandler"
-                                  SearchChanged="@searchChangeHandlerItemCat"
-                                  SelectedValue="@SelectedItemCategory"
-                                  SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
-                    </Autocomplete>
-                    @*<Button Clicked="@(f => AddCategory())"><i class="fas fa-plus"></i></Button>*@
+                    <div class="parent-horizontal-stack">
+                        <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
+                                      TextField="@(f => f.Name)"
+                                      ValueField="@(f => @SelectCatValue(f))"
+                                      Placeholder="Kategori for varen?"
+                                      @onkeyup="@OnItemCategoryListItemKeyUpHandler"
+                                      SearchChanged="@searchChangeHandlerItemCat"
+                                      SelectedValue="@SelectedItemCategory"
+                                      SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
+                        </Autocomplete>
+                        <Tooltip Text="Legg til ny kategori">
+                            <Button Clicked="@(f => AddCategory())"><i class="fas fa-plus"></i></Button>
+                        </Tooltip>
+                    </div>
                 </Field>
                 @if (newVareModel.ItemCategory != null)
                 {
@@ -75,7 +79,7 @@
 
         <div class="row">
             <div class="col">
-                <Autocomplete TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
+                <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
                               TextField="@(f => f.Name)"
                               ValueField="@((item) => item)"
                               Placeholder="Hva skal handles?"
@@ -100,7 +104,6 @@
                                     <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
                                 </div>
                                 <div class="col">
-
                                     <a @onclick="@(f => VareClicked(vare.Varen))">
                                         @vare.Varen.Name
                                     </a>
@@ -134,7 +137,7 @@
 }
 else
 {
-   <LoadingComponent></LoadingComponent>
+    <LoadingComponent></LoadingComponent>
 }
 @code{
 
@@ -151,7 +154,8 @@ else
     [Parameter]
     public string Id { get; set; }
 
-
+    private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoriyAutoComplete;
+    private Autocomplete<ShopItemModel, ShopItemModel> _shopItemAutoComplete;
     public ShopItemModel SelectedShopItem { get; set; }
 
     public ItemCategoryModel SelectedItemCategory { get; set; }
@@ -172,6 +176,10 @@ else
 
     [Inject]
     public IGenericRepository<ShopModel> ShopDataManager { get; set; }
+
+    private void test()
+    {
+    }
 
 
     protected override async Task OnParametersSetAsync()
@@ -210,6 +218,7 @@ else
             {
                 newVareModel = new ShopItemModel();
                 newVareModel.Name = _tempVareName;
+                SelectedItemCategory = null;
                 _modalRef.Show();
                 return;
             }
@@ -222,6 +231,7 @@ else
         await ShoppingListDataManager.Update(ThisShoppingList);
         SelectedShopItem = null;
         _tempVareName = string.Empty;
+        await _shopItemAutoComplete.Clear();
 
         FilterList(activeListFiler);
     }
@@ -237,24 +247,32 @@ else
     {
         if (args.Code.Equals("Enter"))
         {
-            await AddCategory(); 
+            await AddCategory();
         }
     }
 
     private async Task AddCategory()
     {
         if (string.IsNullOrEmpty(_tempItemCatName)) return;
+        var existing = AvailableCategories.FirstOrDefault(f => f.Name.Equals(_tempItemCatName));
+        if (existing != null)
+        {
+            _tempItemCatName = string.Empty;
+            await _itemCategoriyAutoComplete.Clear();
+            return;
+        }
+
         var itemCat = new ItemCategoryModel();
         itemCat.Name = _tempItemCatName;
         var newCat = await ItemsCategoriesDataManager.Insert(itemCat);
         AvailableCategories.Add(newCat);
-        _tempItemCatName = string.Empty;
-
+        SelectedItemCategory = newCat;
     }
     void VareClicked(ShopItemModel varen)
     {
         newVareModel = varen;
         justUpdateVare = true;
+        SelectedItemCategory = null; 
         _modalRef.Show();
 
     }
@@ -407,6 +425,10 @@ else
             {
                 await ShopItemsDataManager.Insert(newVareModel);
                 Varer.Add(newVareModel);
+                SelectedShopItem = newVareModel;
+                await AddVare();
+                //newVareModel = null;
+                //SelectedShopItem = null;
             }
 
         }

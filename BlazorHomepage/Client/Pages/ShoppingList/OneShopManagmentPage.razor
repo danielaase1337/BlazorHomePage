@@ -70,12 +70,14 @@
     <h4>@ThisShop.Name</h4>
 
     <div class="container todoapp commonviews">
-        <h2>Hyller i butikken</h2>
+        <div class="row">
+            <h2>Hyller i butikken</h2>
+        </div>
         <div class="row">
             <div class="col">
                 <input class="new-todo" placeholder="Navn på hyllen?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
             </div>
-            <div class="col-5 col-sm-3">
+            <div class="col-3">
                 <Tooltip Text="Reset sortering av hyller">
                     <Button Color="Color.Primary" Outline="true" Clicked="@(f => ResetSort())"><i class="fas fa-undo-alt"></i></Button>
                 </Tooltip>
@@ -90,7 +92,8 @@
                         @foreach (var l in ThisShop.ShelfsInShop.OrderBy(f => f.SortIndex).ToList())
                         {
                             <li class="@l.CssComleteEditClassName">
-                                <div class="parent-horizontal-stack">
+                                @*                                <div class="parent-horizontal-stack">*@
+                                <div class="row">
                                     <div class="col">
                                         @if (l.EditClicked)
                                         {
@@ -103,22 +106,23 @@
                                             </label>
                                         }
                                     </div>
-                                    <div class="col">
+                                    <div class="col-4">
                                         @if (l.EditClicked)
                                         {
-                                            <button class="btn btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
-                                            <button class="btn btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
-                                            <button class="btn btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                            <Buttons>
+                                                <Button Color="Color.Success" Size="Size.Small" Outline="true"  @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                                <Button Color="Color.Warning" Size="Size.Small" Outline="true"  @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                                <Button Color="Color.Danger" Size="Size.Small" Outline="true"  @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                            </Buttons>
                                         }
                                         else
                                         {
-                                            <button class="btn btn-sm btn-outline-primary endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+                                            <Button Color="Color.Primary" Outline="true" Size="Size.Small" Class="endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
                                         }
                                     </div>
                                 </div>
                             </li>
                         }
-
                     </ul>
                 </div>
             </div>
@@ -126,7 +130,7 @@
         else
         {
             <LoadingComponent>
-               
+
             </LoadingComponent>
         }
     </div>
