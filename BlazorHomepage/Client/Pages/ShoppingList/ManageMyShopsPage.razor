@@ -1,17 +1,23 @@
 ﻿@*@page "/managemyshops/{userid}"*@
 @page "/managemyshops/"
 
-<div class="container todoapp commonviews">
-    <div class="row header">
+<div class="container">
+    <div class="row">
         <div class="col">
             <h2>Lagrede Butikker</h2>
-            <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
+            <div class="row">
+                <div class="col">
+                    <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
+                </div>
+                <div class="col-2">
+                    <Button Size="Size.Small" ><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>
+                </div>
+            </div>
         </div>
     </div>
     @if (MyShops != null)
     {
         <div class="row">
-            <div class="col">
                 <ul class="todo-list">
                     @foreach (var l in MyShops)
                     {
@@ -33,14 +39,14 @@
                                     @if (l.EditClicked)
                                     {
                                         <Buttons>
-                                            <Button Color="Color.Success" Size="Size.Small" Outline="true" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Color="Color.Warning" Size="Size.Small" Outline="true" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Color="Color.Danger" Size="Size.Small" Outline="true" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
                                         </Buttons>
                                     }
                                     else
                                     {
-                                        <Button Color="Color.Primary" Outline="true" Size="Size.Small" Class="endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
                                     }
                                 </div>
                             </div>
@@ -48,7 +54,6 @@
                     }
 
                 </ul>
-            </div>
         </div>
     }
     else

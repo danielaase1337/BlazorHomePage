@@ -2,62 +2,68 @@
 @using Microsoft.AspNetCore.Authorization
 @attribute [Authorize]
 
-<div class="container todoapp commonviews">
-    <div class="row header">
+<div class="container">
+    <div class="row">
         <div class="col">
             <h2>Handlelister</h2>
-            <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+            <div class="row">
+                <div class="col">
+                    <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+                </div>
+                <div class="col-2">
+                    <Button  Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddList())"></i></Button>
+                </div>
+            </div>
         </div>
     </div>
     @if (ShoppingLists != null)
     {
         <div class="row">
-            <div class="col">
-                <ul class="todo-list">
-                    @foreach (var l in ShoppingLists)
-                    {
-                        <li class="@l.CssComleteEditClassName">
-                            <div class="parent-horizontal-stack">
-                                <div class="col-1">
-                                    <input type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
-                                </div>
-                                <div class="col">
-                                    @if (l.EditClicked)
-                                    {
-                                        <input class="editing" @bind-value="@(l.Name)" />
-                                    }
-                                    else
-                                    {
-                                        <label>
-                                            <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
-                                        </label>
-                                    }
-                                </div>
-                                <div class="col-6">
-                                    @if (l.EditClicked)
-                                    {
-                                        <Buttons>
-                                            <Button Color="Color.Success" Size="Size.Small" Outline="true" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Color="Color.Warning" Size="Size.Small" Outline="true" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Color="Color.Danger" Size="Size.Small" Outline="true" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>
-
-                                    }
-                                    else
-                                    {
-                                        <Button Color="Color.Primary" Outline="true" Size="Size.Small" Class="endre" @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
-                                    }
-                                </div>
+            <ul class="todo-list">
+                @foreach (var l in ShoppingLists)
+                {
+                    <li class="@l.CssComleteEditClassName">
+                        <div class="parent-horizontal-stack">
+                            <div class="col-1">
+                                <input type="checkbox" value="@l.IsDone" @onchange="@(f => ListeChecked(l, f))" />
                             </div>
-                        </li>
-                    }
-                </ul>
-            </div>
+                            <div class="col">
+                                @if (l.EditClicked)
+                                {
+                                    <input class="editing" @bind-value="@(l.Name)" />
+                                }
+                                else
+                                {
+                                    <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
+                                }
+                            </div>
+
+                            @if (l.EditClicked)
+                            {
+                                <div class="col-2">
+                                    <Buttons>
+                                        <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                        <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                        <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                    </Buttons>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-6">
+                                    <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+                                </div>
+
+                            }
+                        </div>
+                    </li>
+                }
+            </ul>
         </div>
     }
     else
     {
-        <LoadingComponent > </LoadingComponent>
+        <LoadingComponent> </LoadingComponent>
     }
 </div>
 
