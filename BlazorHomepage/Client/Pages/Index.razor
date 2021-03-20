@@ -12,7 +12,11 @@
             <br />
             Med tiden kommer det sikkert mer ting på siden =)
             <br />
-            For å se listene må du logge inn =)
+            <AuthorizeView>
+                <NotAuthorized>
+                    For å se listene må du <a href="/authentication/login">logge inn her</a>
+                </NotAuthorized>
+            </AuthorizeView>
         </p>
     </div>
     <div class="row">
