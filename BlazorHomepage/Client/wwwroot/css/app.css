@@ -51,8 +51,8 @@ a, .btn-link {
     align-items: center;
 }
 .editButtonStyle {
-    margin-left: 5px;
-    margin-right: 5px;
+    margin-left: 2px;
+    margin-right: 2px;
 }
 child-horizontal-stack {
     width: 100px;
