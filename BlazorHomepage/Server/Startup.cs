@@ -43,6 +43,7 @@ namespace BlazorHomepage.Server
 
             services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
 
+            
 
             //GoogleServices
 
@@ -66,6 +67,14 @@ namespace BlazorHomepage.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+
+            var configBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+            var config = configBuilder.Build();
+            
+            
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
