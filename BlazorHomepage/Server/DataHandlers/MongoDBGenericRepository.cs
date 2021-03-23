@@ -36,7 +36,7 @@ namespace BlazorHomepage.Server.DataHandlers
             {
                 if(id is string idString)
                 {
-                   var res = await dbContext.ThisCollection.DeleteOneAsync(f => f.Id.ToString().Equals(idString));
+                   var res = await dbContext.ThisCollection.DeleteOneAsync(f => f.Id.Equals(new ObjectId(idString)));
                     if (res.IsAcknowledged)
                         return true;
                     return false; 
@@ -84,7 +84,7 @@ namespace BlazorHomepage.Server.DataHandlers
             {
                 if (id is string stringId)
                 {
-                    var res = await dbContext.ThisCollection.Find(f => f.Id.ToString().Equals(stringId)).ToListAsync();
+                    var res = await dbContext.ThisCollection.Find(f => f.Id.Equals(new ObjectId(stringId))).ToListAsync();
                     if (!res.Any())
                         return null;
                     return res.First();
@@ -117,7 +117,7 @@ namespace BlazorHomepage.Server.DataHandlers
         {
             try
             {
-                var res = await dbContext.ThisCollection.ReplaceOneAsync(f => f.Id.ToString().Equals(entityToUpdate.Id), entityToUpdate);
+                var res = await dbContext.ThisCollection.ReplaceOneAsync(f => f.Id.Equals(new ObjectId(entityToUpdate.Id)), entityToUpdate);
                 if (res.IsAcknowledged)
                     return entityToUpdate;
                 return null; 

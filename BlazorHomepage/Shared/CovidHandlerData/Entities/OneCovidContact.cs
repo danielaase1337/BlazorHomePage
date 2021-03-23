@@ -10,7 +10,6 @@ namespace BlazorHomepage.Shared.CovidHandlerData.Entities
 {
     public class OneCovidContact : EntityBase
     {
-        public string Name { get; set; }
         public DateTime ContactDate { get; set; }
         public string Sted { get; set; }
         public string CategoryId { get; set; }

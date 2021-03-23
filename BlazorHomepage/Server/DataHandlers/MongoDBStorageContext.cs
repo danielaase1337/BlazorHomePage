@@ -1,4 +1,5 @@
 ﻿using BlazorHomepage.Shared.Data.Entities;
+using BlazorHomepage.Shared.Repository;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace BlazorHomepage.Server.DataHandlers
 {
-    public class MongoDBStorageContext : IMongoDbStorageContext
+    public class MongoDBStorageContext<TEntity> : IMongoDbStorageContext<TEntity> where TEntity : EntityBase
     {
         private readonly string DatabaseName ="ShoppingListsDB"; 
 
@@ -24,7 +25,7 @@ namespace BlazorHomepage.Server.DataHandlers
 
         public MongoClient DataBaseClient { get; set; }
 
-        public IMongoCollection<BsonDocument> ThisCollection { get; set; } 
+        public IMongoCollection<TEntity> ThisCollection { get; set; } 
 
         public IMongoDatabase DB { get; private set; }
         

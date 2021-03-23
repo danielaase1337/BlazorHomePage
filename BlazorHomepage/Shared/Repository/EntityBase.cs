@@ -14,10 +14,6 @@ namespace BlazorHomepage.Shared.Repository
         [FirestoreProperty]
         public string Id { get; set; }
 
-        
-        [FirestoreProperty]
-        public Timestamp TimeStamp { get; set; }
-
         [FirestoreProperty]
         public string Name { get; set; }
 
