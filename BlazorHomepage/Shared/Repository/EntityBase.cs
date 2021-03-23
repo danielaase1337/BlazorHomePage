@@ -15,9 +15,6 @@ namespace BlazorHomepage.Shared.Repository
         public string Id { get; set; }
 
         [FirestoreProperty]
-        public Timestamp TimeStamp { get; set; }
-
-        [FirestoreProperty]
         public string Name { get; set; }
 
         public string CssComleteEditClassName

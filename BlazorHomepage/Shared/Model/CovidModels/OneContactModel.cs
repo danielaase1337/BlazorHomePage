@@ -11,8 +11,6 @@ namespace BlazorHomepage.Shared.Model.CovidModels
     public class OneContactModel: EntityBase
     {
         [Required]
-        public string Name { get; set; }
-        [Required]
         public DateTime ContactDate { get; set; }
         public string OwnerId { get; set; }
 

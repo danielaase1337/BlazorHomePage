@@ -159,7 +159,7 @@ namespace BlazorHomepage.Shared.Repository
             {
                 var addedDocRes = dbContext.Collection.Document();
                 entity.Id = addedDocRes.Id;
-                entity.TimeStamp = Timestamp.GetCurrentTimestamp();
+                //entity.TimeStamp = Timestamp.GetCurrentTimestamp();
                 await addedDocRes.SetAsync(entity);
                 return entity;
             }
@@ -173,7 +173,7 @@ namespace BlazorHomepage.Shared.Repository
         public async Task<TEntity> Update(TEntity entityToUpdate)
         {
             var updateRef = dbContext.Collection.Document(entityToUpdate.Id);
-            entityToUpdate.TimeStamp = Timestamp.GetCurrentTimestamp(); 
+            //entityToUpdate.TimeStamp = Timestamp.GetCurrentTimestamp(); 
             await updateRef.SetAsync(entityToUpdate);
             return entityToUpdate;
         }

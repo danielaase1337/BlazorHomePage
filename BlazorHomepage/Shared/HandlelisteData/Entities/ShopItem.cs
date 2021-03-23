@@ -12,8 +12,6 @@ namespace BlazorHomepage.Shared.Data.Entities
     public class ShopItem : EntityBase
     {
         [FirestoreProperty]
-        public string Name { get; set; }
-        [FirestoreProperty]
         public string Unit { get; set; } //Stk, vekt osv.. 
         [FirestoreProperty]
         public ItemCategory ItemCategory { get; set; }

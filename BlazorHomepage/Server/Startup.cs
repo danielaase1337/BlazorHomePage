@@ -12,6 +12,7 @@ using System.Reflection;
 using Grpc.Core;
 using Grpc.Core.Logging;
 using BlazorHomepage.Shared.Repository;
+using BlazorHomepage.Server.DataHandlers;
 
 namespace BlazorHomepage.Server
 {
@@ -33,15 +34,24 @@ namespace BlazorHomepage.Server
             services.AddRazorPages();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-           services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
-
-            services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
-
-            services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
-          
-            services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
+           //services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
+           // services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
+           // services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
+           // services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
 
             services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
+
+
+            services.AddScoped<IGenericRepository<ShoppingList>, MongoDBGenericRepository<ShoppingList>>();
+            services.AddScoped<IGenericRepository<ShopItem>, MongoDBGenericRepository<ShopItem>>();
+            services.AddScoped<IGenericRepository<ItemCategory>, MongoDBGenericRepository<ItemCategory>>();
+            services.AddScoped<IGenericRepository<Shop>, MongoDBGenericRepository<Shop>>();
+
+
+            services.AddScoped<IMongoDbStorageContext<ShoppingList>, MongoDBStorageContext<ShoppingList>>(); 
+            services.AddScoped<IMongoDbStorageContext<ShopItem>, MongoDBStorageContext<ShopItem>>(); 
+            services.AddScoped<IMongoDbStorageContext<ItemCategory>, MongoDBStorageContext<ItemCategory>>(); 
+            services.AddScoped<IMongoDbStorageContext<Shop>, MongoDBStorageContext<Shop>>();
 
 
             //GoogleServices
@@ -66,6 +76,14 @@ namespace BlazorHomepage.Server
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+
+            var configBuilder = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+            var config = configBuilder.Build();
+            
+            
 
             app.UseHttpsRedirection();
             app.UseBlazorFrameworkFiles();
