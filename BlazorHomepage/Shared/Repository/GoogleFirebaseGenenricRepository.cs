@@ -1,9 +1,11 @@
 ﻿using BlazorHomepage.Shared.Data.Entities;
 using Google.Cloud.Firestore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -95,7 +97,10 @@ namespace BlazorHomepage.Shared.Repository
                     return orderBy(query).ToList();
                 }
                 else
-                  return   query.ToList();
+                {
+                    //WriteToDisk(query); 
+                    return query.ToList();
+                }
             }
             catch (Exception e)
             {
@@ -103,6 +108,20 @@ namespace BlazorHomepage.Shared.Repository
             }
             return null;
         }
+
+        //private void WriteToDisk(IQueryable<TEntity> query)
+        //{
+        //    var path = Path.Combine(Path.GetTempPath(), $"{dbContext.CollectionKey}.json");
+        //    if (!File.Exists(path))
+        //    {
+        //        using (File.Create(path)) { };  
+        //    }
+        //    using (StreamWriter writetext = new StreamWriter(path))
+        //    {
+        //        var jsonString = JsonConvert.SerializeObject(query);
+        //        writetext.Write(jsonString);
+        //    }
+        //}
 
         public async Task<TEntity> Get(object id)
         {

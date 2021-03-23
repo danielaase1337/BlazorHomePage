@@ -1,0 +1,145 @@
+﻿
+@page "/admin/"
+@using System.IO;
+@using Newtonsoft.Json;
+
+
+<h3>Last opp eksisterende data til databaser..</h3>
+<p>ItemCategories</p>
+<FileEdit Changed="@OnChanged" Written="@OnWritten" Progressed="@OnProgressed" />
+<br />
+<p>Shops</p>
+<FileEdit Changed="@OnChangedShops" Written="@OnWrittenShops" Progressed="@OnProgressedShops" />
+
+@code {
+
+    [Inject]
+    public IGenericRepository<ShoppingListModel> ShoppingListDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ShopItemModel> ShopItemsDataManager { get; set; }
+    [Inject]
+    public IGenericRepository<ItemCategoryModel> ItemsCategoriesDataManager { get; set; }
+
+    [Inject]
+    public IGenericRepository<ShopModel> ShopDataManager { get; set; }
+
+
+    async Task OnChanged(FileChangedEventArgs e)
+    {
+        var res = new List<ItemCategoryModel>();
+
+        try
+        {
+            foreach (var file in e.Files)
+            {
+
+                using (var stream = new MemoryStream())
+                {
+                    await file.WriteToStreamAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    using (var sr = new StreamReader(stream))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        ItemCategoryModel itemCatmodel;
+                        using (JsonReader reader = new JsonTextReader(sr))
+                        {
+                            while (reader.Read())
+                            {
+                                // deserialize only when there's "{" character in the stream
+                                if (reader.TokenType == JsonToken.StartObject)
+                                {
+                                    itemCatmodel = serializer.Deserialize<ItemCategoryModel>(reader);
+                                    if (itemCatmodel != null)
+                                        res.Add(itemCatmodel);
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach (var cat in res)
+                {
+                    await ItemsCategoriesDataManager.Insert(cat);
+                }
+            }
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine(exc.Message);
+        }
+        finally
+        {
+            this.StateHasChanged();
+        }
+    }
+
+    void OnWritten(FileWrittenEventArgs e)
+    {
+        Console.WriteLine($"File: {e.File.Name} Position: {e.Position} Data: {Convert.ToBase64String(e.Data)}");
+    }
+
+    void OnProgressed(FileProgressedEventArgs e)
+    {
+        Console.WriteLine($"File: {e.File.Name} Progress: {e.Percentage}");
+    }
+
+
+
+
+
+    async Task OnChangedShops(FileChangedEventArgs e)
+    {
+        try
+        {
+            var res = new List<ShopModel>();
+            foreach (var file in e.Files)
+            {
+                using (var stream = new MemoryStream())
+                {
+                    await file.WriteToStreamAsync(stream);
+                    stream.Seek(0, SeekOrigin.Begin);
+                    using (var sr = new StreamReader(stream))
+                    {
+                        JsonSerializer serializer = new JsonSerializer();
+                        ShopModel shopModel;
+                        using (JsonReader reader = new JsonTextReader(sr))
+                        {
+                            while (reader.Read())
+                            {
+                                // deserialize only when there's "{" character in the stream
+                                if (reader.TokenType == JsonToken.StartObject)
+                                {
+                                    shopModel = serializer.Deserialize<ShopModel>(reader);
+                                    if (shopModel != null)
+                                        res.Add(shopModel);
+                                }
+                            }
+                        }
+                    }
+                }
+                foreach (var shop in res)
+                {
+                    await ShopDataManager.Insert(shop); 
+                }
+            }
+        }
+        catch (Exception exc)
+        {
+            Console.WriteLine(exc.Message);
+        }
+        finally
+        {
+            this.StateHasChanged();
+        }
+    }
+
+    void OnWrittenShops(FileWrittenEventArgs e)
+    {
+        Console.WriteLine($"File: {e.File.Name} Position: {e.Position} Data: {Convert.ToBase64String(e.Data)}");
+    }
+
+    void OnProgressedShops(FileProgressedEventArgs e)
+    {
+        Console.WriteLine($"File: {e.File.Name} Progress: {e.Percentage}");
+    }
+
+}
