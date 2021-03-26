@@ -34,24 +34,24 @@ namespace BlazorHomepage.Server
             services.AddRazorPages();
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
-            //services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
-            //services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
-            //services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
-            //services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
+            services.AddScoped<IGenericRepository<ShoppingList>, GoogleFirebaseGenenricRepository<ShoppingList>>();
+            services.AddScoped<IGenericRepository<ShopItem>, GoogleFirebaseGenenricRepository<ShopItem>>();
+            services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
+            services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
 
-            //services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
-
-
-            services.AddScoped<IGenericRepository<ShoppingList>, MongoDBGenericRepository<ShoppingList>>();
-            services.AddScoped<IGenericRepository<ShopItem>, MongoDBGenericRepository<ShopItem>>();
-            services.AddScoped<IGenericRepository<ItemCategory>, MongoDBGenericRepository<ItemCategory>>();
-            services.AddScoped<IGenericRepository<Shop>, MongoDBGenericRepository<Shop>>();
+            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
 
 
-            services.AddScoped<IMongoDbStorageContext<ShoppingList>, MongoDBStorageContext<ShoppingList>>();
-            services.AddScoped<IMongoDbStorageContext<ShopItem>, MongoDBStorageContext<ShopItem>>();
-            services.AddScoped<IMongoDbStorageContext<ItemCategory>, MongoDBStorageContext<ItemCategory>>();
-            services.AddScoped<IMongoDbStorageContext<Shop>, MongoDBStorageContext<Shop>>();
+            //services.AddScoped<IGenericRepository<ShoppingList>, MongoDBGenericRepository<ShoppingList>>();
+            //services.AddScoped<IGenericRepository<ShopItem>, MongoDBGenericRepository<ShopItem>>();
+            //services.AddScoped<IGenericRepository<ItemCategory>, MongoDBGenericRepository<ItemCategory>>();
+            //services.AddScoped<IGenericRepository<Shop>, MongoDBGenericRepository<Shop>>();
+
+
+            //services.AddScoped<IMongoDbStorageContext<ShoppingList>, MongoDBStorageContext<ShoppingList>>();
+            //services.AddScoped<IMongoDbStorageContext<ShopItem>, MongoDBStorageContext<ShopItem>>();
+            //services.AddScoped<IMongoDbStorageContext<ItemCategory>, MongoDBStorageContext<ItemCategory>>();
+            //services.AddScoped<IMongoDbStorageContext<Shop>, MongoDBStorageContext<Shop>>();
 
 
             //GoogleServices
