@@ -19,7 +19,8 @@ namespace BlazorHomepage.Server.DataHandlers
         public MongoDBStorageContext(IConfiguration appConfig)
         {
             connectionString = appConfig.GetConnectionString("MongoDB");
-            DataBaseClient = new MongoClient(connectionString);
+            var test  = Environment.GetEnvironmentVariable("ConnectionString__MongoDB");
+            DataBaseClient = new MongoClient(test);
             DB = DataBaseClient.GetDatabase(DatabaseName); 
         }
 

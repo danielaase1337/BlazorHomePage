@@ -80,7 +80,7 @@ namespace BlazorHomepage.Server
 
             var configBuilder = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables(prefix: "MyEnvVars_");
             var config = configBuilder.Build();
             
             
