@@ -39,7 +39,7 @@ namespace BlazorHomepage.Server
            // services.AddScoped<IGenericRepository<ItemCategory>, GoogleFirebaseGenenricRepository<ItemCategory>>();
            // services.AddScoped<IGenericRepository<Shop>, GoogleFirebaseGenenricRepository<Shop>>();
 
-            services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
+            //services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
 
 
             services.AddScoped<IGenericRepository<ShoppingList>, MongoDBGenericRepository<ShoppingList>>();
