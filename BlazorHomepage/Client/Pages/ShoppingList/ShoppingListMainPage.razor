@@ -69,8 +69,6 @@
 
 @code {
 
-    private string editCssStyle = "";
-
     [Inject]
     public IGenericRepository<User> UserDataManager { get; set; }
 
@@ -127,12 +125,13 @@
     }
 
 
-    private void ListeChecked(ShoppingListModel l, ChangeEventArgs value)
+    private async Task ListeChecked(ShoppingListModel l, ChangeEventArgs value)
     {
         if (value?.Value != null && value.Value is bool bValue)
-            l.IsDone = bValue;
+        { l.IsDone = bValue;
+            await ShoppingListDataManager.Update(l);
+        }
     }
-
 
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
