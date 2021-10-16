@@ -25,7 +25,7 @@
                         <div class="col">
                             <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
                                           TextField="@(f => f.Name)"
-                                          ValueField="@(f => @SelectCatValue(f))"
+                                         ValueField="@(f => f)"
                                           Placeholder="Kategori for varen?"
                                           @onkeyup="@OnItemCategoryListItemKeyUpHandler"
                                           SearchChanged="@searchChangeHandlerItemCat"
@@ -145,7 +145,6 @@ else
 @code{
 
     string activeListFiler = "all";
-    string showAddBtn = "hidden";
     string showEditHeader = "hidden";
     string showH2LabelStyle = "";
     //void handleChange(ShopItemModel value) => SelectedShopItem = value;
@@ -248,7 +247,7 @@ else
     }
     private async Task OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
     {
-        if (args.Code.Equals("Enter"))
+       if (args.Code.Equals("Enter"))
         {
             await AddCategory();
         }
@@ -272,7 +271,7 @@ else
         newVareModel.ItemCategory = newCat;
         SelectedItemCategory = newCat;
         SelectedItemCategory = null;
-        _itemCategoriyAutoComplete.Clear();
+        await _itemCategoriyAutoComplete.Clear();
     }
     void VareClicked(ShopItemModel varen)
     {
@@ -300,6 +299,8 @@ else
     }
     void SelectedShopItemChanged(object newValue)
     {
+        if (newValue == null) return; 
+
         if (newValue is ShopItemModel item)
             SelectedShopItem = item;
         else if (newValue is ItemCategoryModel itemCat)
@@ -412,15 +413,6 @@ else
     }
     #region Modal handling
     bool justUpdateVare = false;
-    private ItemCategoryModel SelectCatValue(ItemCategoryModel model)
-    {
-        if (model == null) showAddBtn = "";
-        else
-        {
-            showAddBtn = "hidden";
-        }
-        return model;
-    }
 
     private async Task HideModalAndSave()
     {

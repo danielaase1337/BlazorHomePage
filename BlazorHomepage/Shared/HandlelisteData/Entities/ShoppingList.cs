@@ -13,8 +13,10 @@ namespace BlazorHomepage.Shared.Data.Entities
     {
         [FirestoreProperty]
         public string ListId { get; set; }
+        
         [FirestoreProperty] 
         public ICollection<ShoppingListItem> ShoppingItems { get; set; }
+        
         [FirestoreProperty] 
         public bool IsDone { get; set; }
     }

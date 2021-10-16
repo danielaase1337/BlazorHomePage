@@ -10,6 +10,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\favicon.ico" />
     <Content Remove="wwwroot\img\Greger.jpg" />
     <Content Remove="wwwroot\img\una.jpg" />
   </ItemGroup>
@@ -42,6 +43,10 @@
 
   <ItemGroup>
     <Folder Include="Helpers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\favicon.ico" />
   </ItemGroup>
 
 </Project>

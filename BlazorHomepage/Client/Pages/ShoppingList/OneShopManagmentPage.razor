@@ -29,7 +29,7 @@
                             <Autocomplete @ref="_itemCategoryAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
                                           TextField="@(f => f.Name)"
                                           Placeholder="Kategori for Hyllen?"
-                                          ValueField="@(f => @SelectCatValue(f))"
+                                          ValueField="@(f => f)"
                                           @onkeyup="@OnItemCategoryListItemKeyUpHandler"
                                           SearchChanged="@searchChangeHandlerItemCat"
                                           SelectedValue="@SelectedItemCategory"
@@ -76,82 +76,82 @@
 @if (ThisShop != null)
 {
 
-<div class="container">
-    <div class="row">
-        <h4>@ThisShop.Name</h4>
-    </div>
-    <div class="row">
-        <div class="col">
-            <h2>Hyller i butikken</h2>
+    <div class="container">
+        <div class="row">
+            <h4>@ThisShop.Name</h4>
         </div>
-        <div class="col-2">
-            <Tooltip Text="Reset sortering av hyller">
-                <Button Clicked="@(f => ResetSort())"><i class="fas fa-undo-alt"></i></Button>
-            </Tooltip>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col">
-            <input class="new-todo" placeholder="Navn på hyllen?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
-        </div>
-        <div class="col-2">
-            <Tooltip Text="Legg til hylle">
-                <Button Size="Size.Small" Clicked="@(f => AddShelf())"><i class="fas fa-check"></i></Button>
-            </Tooltip>
-        </div>
-    </div>
-
-    @if (ThisShop.ShelfsInShop != null)
-    {
         <div class="row">
             <div class="col">
-
-                <ul class="todo-list">
-                    @foreach (var l in ThisShop.ShelfsInShop.OrderBy(f => f.SortIndex).ToList())
-                    {
-                        <li class="@l.CssComleteEditClassName">
-                            <div class="row">
-                                <div class="col">
-                                    @if (l.EditClicked)
-                                    {
-                                        <input class="editing" @bind-value="@(l.Name)" />
-                                    }
-                                    else
-                                    {
-                                        <label>
-                                            <a @onclick="@(f => ShelfClicked(l))">@l.Name</a>
-                                        </label>
-                                    }
-                                </div>
-                                <div class="col-4">
-                                    @if (l.EditClicked)
-                                    {
-                                        <Buttons>
-                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>
-                                    }
-                                    else
-                                    {
-                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
-                                    }
-                                </div>
-                            </div>
-                        </li>
-                    }
-                </ul>
+                <h2>Hyller i butikken</h2>
+            </div>
+            <div class="col-2">
+                <Tooltip Text="Reset sortering av hyller">
+                    <Button Clicked="@(f => ResetSort())"><i class="fas fa-undo-alt"></i></Button>
+                </Tooltip>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <input class="new-todo" placeholder="Navn på hyllen?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
+            </div>
+            <div class="col-2">
+                <Tooltip Text="Legg til hylle">
+                    <Button Size="Size.Small" Clicked="@(f => AddShelf())"><i class="fas fa-check"></i></Button>
+                </Tooltip>
             </div>
         </div>
 
-    }
-    else
-    {
-        <LoadingComponent>
+        @if (ThisShop.ShelfsInShop != null)
+        {
+            <div class="row">
+                <div class="col">
 
-        </LoadingComponent>
-    }
-</div>
+                    <ul class="todo-list">
+                        @foreach (var l in ThisShop.ShelfsInShop.OrderBy(f => f.SortIndex).ToList())
+                        {
+                            <li class="@l.CssComleteEditClassName">
+                                <div class="row">
+                                    <div class="col">
+                                        @if (l.EditClicked)
+                                        {
+                                            <input class="editing" @bind-value="@(l.Name)" />
+                                        }
+                                        else
+                                        {
+                                            <label>
+                                                <a @onclick="@(f => ShelfClicked(l))">@l.Name</a>
+                                            </label>
+                                        }
+                                    </div>
+                                    <div class="col-4">
+                                        @if (l.EditClicked)
+                                        {
+                                            <Buttons>
+                                                <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                                <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                                <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                            </Buttons>
+                                        }
+                                        else
+                                        {
+                                            <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+                                        }
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+
+        }
+        else
+        {
+            <LoadingComponent>
+
+            </LoadingComponent>
+        }
+    </div>
 }
 
 @code {
@@ -370,8 +370,7 @@
         if (sortIndexToRemoveAnyWay != 0)
         {
             var res = AvailableSortIndexes.FirstOrDefault(f => f == sortIndexToRemoveAnyWay);
-            if (res != null)
-                AvailableSortIndexes.Remove(res);
+            AvailableSortIndexes.Remove(res);
         }
 
         SelectedShelf = null;
@@ -379,16 +378,16 @@
         _modalRef.Hide();
     }
 
-    string showAddBtn = "";
-    private ItemCategoryModel SelectCatValue(ItemCategoryModel model)
-    {
-        if (model == null) showAddBtn = "";
-        else
-        {
-            showAddBtn = "hidden";
-        }
-        return model;
-    }
+    //string showAddBtn = "";
+    //private ItemCategoryModel SelectCatValue(ItemCategoryModel model)
+    //{
+    //    if (model == null) showAddBtn = "";
+    //    else
+    //    {
+    //        showAddBtn = "hidden";
+    //    }
+    //    return model;
+    //}
 
     #endregion
 }
