@@ -4,7 +4,7 @@
 
 @if (newVareModel != null)
 {
-    <Modal @ref="_modalRef">
+   @* <Modal @ref="_modalRef">
         <ModalContent IsCentered="true">
             <ModalHeader>
                 <ModalTitle>Legg til vare</ModalTitle>
@@ -24,13 +24,13 @@
                     <div class="row">
                         <div class="col">
                             <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
-                                          TextField="@(f => f.Name)"
-                                         ValueField="@(f => f)"
-                                          Placeholder="Kategori for varen?"
-                                          @onkeyup="@OnItemCategoryListItemKeyUpHandler"
-                                          SearchChanged="@searchChangeHandlerItemCat"
-                                          SelectedValue="@SelectedItemCategory"
-                                          SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
+                                      TextField="@(f => f.Name)"
+                                      ValueField="@(f => f)"
+                                      Placeholder="Kategori for varen?"
+                                      @onkeyup="@OnItemCategoryListItemKeyUpHandler"
+                                      SearchChanged="@searchChangeHandlerItemCat"
+                                      SelectedValue="@SelectedItemCategory"
+                                      SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
                             </Autocomplete>
                         </div>
                         <div class="col-2">
@@ -51,7 +51,7 @@
                 <Button Color="Color.Primary" Clicked="@HideModalAndSave">Lagre og lukk</Button>
             </ModalFooter>
         </ModalContent>
-    </Modal>
+    </Modal>*@
 }
 
 
@@ -64,18 +64,18 @@
                 <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
             </div>
             <div class="col-5">
-                <Button Size="Size.Small" Color="Color.Info" Outline="true" Clicked="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></Button>
-                <Dropdown>
-                    <DropdownToggle Color="Color.Info" Size="Size.Small" Outline="true">
-                        @dropdownText
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        @foreach (var shop in AvailableShops)
-                        {
-                            <DropdownItem Clicked="@(f => SelectedShopClicked(shop))">@shop.Name</DropdownItem>
-                        }
-                    </DropdownMenu>
-                </Dropdown>
+                <MudButton Size="Size.Small" Color="Color.Info" Outline="true" Clicked="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></MudButton>
+                <MudSelect T="ShopModel" 
+                    Label="@dropdownText" 
+                    Variant="Variant.Text" 
+                    OffsetY="true" Margin="Margin.Dense" 
+                    Dense="true" MultiSelection="false"
+                    ToStringFunc="@(f=> f.Name)"> 
+                    @foreach(var shop in AvailableShops)
+                    {
+                            <MudSelectItem  OnClick="@(f => SelectedShopClicked(shop))" Value="@shop" />
+                    }
+                </MudSelect>
             </div>
 
 
@@ -83,55 +83,71 @@
 
         <div class="row">
             <div class="col">
-                <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
-                              TextField="@(f => f.Name)"
-                              ValueField="@((item) => item)"
-                              Placeholder="Hva skal handles?"
-                              @onkeyup="OnKeyUpNewListItemHandler"
-                              SelectedValue="@SelectedShopItem"
-                              SearchChanged="@searchChangeHandler"
-                              SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
-                </Autocomplete>
+                
+                 <MudAutocomplete 
+                 T="ShopItemModel" 
+                 Value=@SelectedShopItem
+                 SearchFunc="@VareSearch"
+                 ToStringFunc="@(e=> e==null?null : $"{e.Name}")"
+                 ResetValueOnEmptyText="true"
+                 Label="Hva skal handles?"
+                 OnKeyUp="@OnKeyUpNewListItemHandler"
+                 CoerceValue="true"
+                 CoerceText="true"
+                 > 
+                 </MudAutocomplete>
+                
+                
+                
+             @*   <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
+                          TextField="@(f => f.Name)"
+                          ValueField="@((item) => item)"
+                          Placeholder="Hva skal handles?"
+                          @onkeyup="OnKeyUpNewListItemHandler"
+                          SelectedValue="@SelectedShopItem"
+                          SearchChanged="@searchChangeHandler"
+                          SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
+                </Autocomplete>*@
             </div>
             <div class="col-2 contenAlignCenter">
-                <Button  Size="Size.Small"  Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
+                <MudButton Size="Size.Small"  OnClick="@(AddVare())"><i class="fas fa-plus"></i></MudButton>
             </div>
         </div>
         <div class="row">
-                <ul class="todo-list">
-                    @foreach (var vare in ThisShoppingListItems)
-                    {
-                        <li class="@vare.CssComleteEditClassName">
-                            <div class="parent-horizontal-stack">
-                                <div class="col-1">
-                                    <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
-                                </div>
-                                <div class="col">
-                                    <a @onclick="@(f => VareClicked(vare.Varen))">
-                                        @vare.Varen.Name
-                                    </a>
-                                </div>
-                                <div class="col-3">
-                                    <input class="vareInputEdit" @bind-value="vare.Mengde" @onfocusout="(f=> VareMengdeFocusLost())" />
-                                </div>
-                                <div class="col-2">
-                                    <button class="commandBtns"
-                                            @onclick="@(e => DeleteVare(vare))">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
+            <ul class="todo-list">
+                @foreach (var vare in ThisShoppingListItems)
+                {
+                    <li class="@vare.CssComleteEditClassName">
+                        <div class="parent-horizontal-stack">
+                            <div class="col-1">
+                                <MudCheckBox T="bool" Checked="vare.IsDone" ></MudCheckBox>@*@bind-Checked="@(f => VareCheckChanged(f, vare))"*@
                             </div>
+                            <div class="col">
+                                @*<a @onclick="@(f => VareClicked(vare.Varen))">
+                                    @vare.Varen.Name
+                                </a>*@
+                            </div>
+                            <div class="col-3">
+                                <input class="vareInputEdit" @bind-value="vare.Mengde" @onfocusout="(f=> VareMengdeFocusLost())" />
+                            </div>
+                            <div class="col-2">
+                                <button class="commandBtns"
+                                @onclick="@(e => DeleteVare(vare))">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
 
-                        </li>
-                    }
-                </ul>
-            </div>
+                    </li>
+                }
+            </ul>
+        </div>
 
         <div class="row">
             <ListSummaryFooter NItems="@ThisShoppingList.ShoppingItems.Where(f => !f.IsDone).Count()"
-                               DeleteAllCompletedClikced="@(f => DeleteAllClicked())"
-                               FilterList="@(f=> FilterList(f))"
-                               ShowDeleteAll="@(ThisShoppingList.ShoppingItems.Where(f=>f.IsDone).Any())">
+                           DeleteAllCompletedClikced="@(f => DeleteAllClicked())"
+                           FilterList="@(f=> FilterList(f))"
+                           ShowDeleteAll="@(ThisShoppingList.ShoppingItems.Where(f=>f.IsDone).Any())">
             </ListSummaryFooter>
         </div>
     </div>
@@ -142,13 +158,12 @@ else
 {
     <LoadingComponent></LoadingComponent>
 }
-@code{
+@code {
 
     string activeListFiler = "all";
     string showEditHeader = "hidden";
     string showH2LabelStyle = "";
     //void handleChange(ShopItemModel value) => SelectedShopItem = value;
-    private Modal _modalRef;
     ShopItemModel newVareModel = new ShopItemModel();
     string _tempVareName;
     string _tempItemCatName;
@@ -156,8 +171,6 @@ else
     [Parameter]
     public string Id { get; set; }
 
-    private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoriyAutoComplete;
-    private Autocomplete<ShopItemModel, ShopItemModel> _shopItemAutoComplete;
     public ShopItemModel SelectedShopItem { get; set; }
 
     public ItemCategoryModel SelectedItemCategory { get; set; }
@@ -182,7 +195,7 @@ else
     private void test()
     {
     }
-
+     
 
     protected override async Task OnParametersSetAsync()
     {
@@ -212,7 +225,7 @@ else
 
     private string NewVareName { get; set; }
 
-    private async Task AddVare()
+    private  EventCallback<MouseEventArgs> AddVare()
     {
         if (SelectedShopItem == null)
         {
@@ -221,46 +234,44 @@ else
                 newVareModel = new ShopItemModel();
                 newVareModel.Name = _tempVareName;
                 SelectedItemCategory = null;
-                _modalRef.Show();
-                return;
+                return new EventCallback<MouseEventArgs>();
             }
             else
-                return;
+                return new EventCallback<MouseEventArgs>();
         }
 
         var newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = SelectedShopItem };
         ThisShoppingList.ShoppingItems.Add(newItem);
-        await ShoppingListDataManager.Update(ThisShoppingList);
+        ShoppingListDataManager.Update(ThisShoppingList).ConfigureAwait(false);
         SelectedShopItem = null;
         _tempVareName = string.Empty;
-        await _shopItemAutoComplete.Clear();
 
         FilterList(activeListFiler);
+        return new EventCallback<MouseEventArgs>();
     }
 
 
 
-    private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
+    private void OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
         if (args.Code.Equals("Enter"))
-            await AddVare();
+             AddVare();
     }
-    private async Task OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
+    private void OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
     {
-       if (args.Code.Equals("Enter"))
+        if (args.Code.Equals("Enter"))
         {
-            await AddCategory();
+            AddCategory();
         }
     }
 
-    private async Task AddCategory()
+    private  async Task AddCategory()
     {
         if (string.IsNullOrEmpty(_tempItemCatName)) return;
         var existing = AvailableCategories.FirstOrDefault(f => f.Name.Equals(_tempItemCatName));
         if (existing != null)
         {
             _tempItemCatName = string.Empty;
-            await _itemCategoriyAutoComplete.Clear();
             return;
         }
 
@@ -271,14 +282,12 @@ else
         newVareModel.ItemCategory = newCat;
         SelectedItemCategory = newCat;
         SelectedItemCategory = null;
-        await _itemCategoriyAutoComplete.Clear();
     }
     void VareClicked(ShopItemModel varen)
     {
         newVareModel = varen;
         justUpdateVare = true;
         SelectedItemCategory = null;
-        _modalRef.Show();
 
     }
 
@@ -299,7 +308,7 @@ else
     }
     void SelectedShopItemChanged(object newValue)
     {
-        if (newValue == null) return; 
+        if (newValue == null) return;
 
         if (newValue is ShopItemModel item)
             SelectedShopItem = item;
@@ -308,7 +317,6 @@ else
             SelectedItemCategory = itemCat;
             newVareModel.ItemCategory = itemCat;
             SelectedItemCategory = null;
-            _itemCategoriyAutoComplete.Clear();
         }
     }
 
@@ -323,6 +331,23 @@ else
         _tempVareName = value;
     }
 
+    private async Task<IEnumerable<ShopItemModel>> VareSearch(string value)
+    {
+
+        if (string.IsNullOrEmpty(value))
+            return Varer as IEnumerable<ShopItemModel>;
+
+        var res  = Varer.Where(f => f.Name.Contains(value,StringComparison.InvariantCultureIgnoreCase)) as IEnumerable<ShopItemModel>;
+        if (res.Any()) return res;
+        else
+        {
+            _tempVareName = value;
+            return res;
+        } 
+
+
+    }
+
     private async Task CheckAllItems(bool f)
     {
         foreach (var vare in ThisShoppingList.ShoppingItems)
@@ -332,14 +357,16 @@ else
         await ShoppingListDataManager.Update(ThisShoppingList);
 
     }
-    private async Task VareCheckChanged(object f, ShoppingListItemModel vare)
+    private EventCallback<bool> VareCheckChanged(object f, ShoppingListItemModel vare)
     {
         if (f is bool bValue)
         {
             vare.IsDone = bValue;
             FilterList(activeListFiler);
-            await ShoppingListDataManager.Update(ThisShoppingList);
+            ShoppingListDataManager.Update(ThisShoppingList).ConfigureAwait(false);
+        
         }
+        return new EventCallback<bool>(); 
     }
 
     public async Task VareMengdeFocusLost()
@@ -378,10 +405,11 @@ else
     }
 
     ShopModel SelectedShop { get; set; }
-    void SelectedShopClicked(ShopModel selectedShop)
+    EventCallback SelectedShopClicked(ShopModel selectedShop)
     {
         SelectedShop = selectedShop;
         dropdownText = selectedShop.Name;
+        return new EventCallback();
     }
     void SortShoppingList()
     {
@@ -414,34 +442,32 @@ else
     #region Modal handling
     bool justUpdateVare = false;
 
-    private async Task HideModalAndSave()
-    {
+    //private async Task HideModalAndSave()
+    //{
 
-        if (newVareModel != null)
-        {
-            if (justUpdateVare)
-                await ShopItemsDataManager.Update(newVareModel);
-            else
-            {
-                await ShopItemsDataManager.Insert(newVareModel);
-                Varer.Add(newVareModel);
-                SelectedShopItem = newVareModel;
-                await AddVare();
-                //newVareModel = null;
-                //SelectedShopItem = null;
-            }
+    //    if (newVareModel != null)
+    //    {
+    //        if (justUpdateVare)
+    //            await ShopItemsDataManager.Update(newVareModel);
+    //        else
+    //        {
+    //            await ShopItemsDataManager.Insert(newVareModel);
+    //            Varer.Add(newVareModel);
+    //            SelectedShopItem = newVareModel;
+    //            await AddVare();
+    //            //newVareModel = null;
+    //            //SelectedShopItem = null;
+    //        }
 
-        }
-        _modalRef.Hide();
-        justUpdateVare = false;
-    }
-    private void HideModal()
-    {
-        newVareModel = null;
-        _modalRef.Hide();
-        justUpdateVare = false;
+    //    }
+    //    justUpdateVare = false;
+    //}
+    //private void HideModal()
+    //{
+    //    newVareModel = null;
+    //    justUpdateVare = false;
 
-    }
+    //}
     #endregion
 
 }

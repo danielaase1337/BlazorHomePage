@@ -53,6 +53,12 @@ namespace BlazorHomepage.Shared.Repository
                     SortIndex = 2
                 } as TEntity);
             }
+            if(type == typeof(ShoppingListModel))
+            {
+                await Insert(new ShoppingListModel() { Id = "1", Name = "Liste 1", IsDone = false} as TEntity); 
+                
+            }
+            
         }
 
         public async Task<bool> Delete(TEntity entityToDelete)

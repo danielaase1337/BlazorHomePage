@@ -8,10 +8,10 @@
             <h2>Handlelister</h2>
             <div class="row">
                 <div class="col">
-                    <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
+                    <MudTextField Label="Navn på listen?"  Variant="Variant.Text" @bind-Value="@_newListName" @onkeyup="OnKeyUpNewListItemHandler"/>
                 </div>
                 <div class="col-2">
-                    <Button  Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddList())"></i></Button>
+                    <MudButton  Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddList())"></i></MudButton>
                 </div>
             </div>
         </div>
@@ -41,11 +41,11 @@
                             @if (l.EditClicked)
                             {
                                 <div class="col-6">
-                                    <Buttons>
-                                        <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                        <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                        <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                    </Buttons>
+                                    <MudButtonGroup>
+                                        <MudButton Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></MudButton>
+                                        <MudButton Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></MudButton>
+                                        <MudButton Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></MudButton>
+                                    </MudButtonGroup>
                                 </div>
                             }
                             else
