@@ -1,28 +1,18 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using BlazorHomepage.Client.DataManagers;
-using BlazorHomepage.Shared.DataManagerModels;
-using System.Reflection;
 using BlazorHomepage.Shared.Model;
-using BlazorHomepage.Shared.CovidHandlerData.Entities;
-using BlazorHomepage.Shared.CovidHandlerData;
-using BlazorHomepage.Shared.HandlelisteData;
-using BlazorHomepage.Shared.Data.Entities;
-using AutoMapper;
-using BlazorHomepage.Shared.Model.CovidModels;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using BlazorHomepage.Shared.UserData;
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using System;
+using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
 
 namespace BlazorHomepage.Client
 {
@@ -60,12 +50,7 @@ namespace BlazorHomepage.Client
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
-            //StorageContextes Page handlers.. 
-            //builder.Services.AddScoped<ICovidStorageContext<OneCovidContact> , CovidContactStorageContext>();
-            //builder.Services.AddScoped<IStorageContext, ShoppingListLocalStorageContext>(); 
-
             //Local repos
-            builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
             builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
 
 
@@ -76,9 +61,6 @@ namespace BlazorHomepage.Client
 
 
             //ApiRepos
-            //builder.Services.AddScoped<IGenericRepository<OneContactModel>, MemoryGenericRepository<OneContactModel>>();
-            //builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
-
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
             builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, ItemsCategoryApiDataManager<ItemCategoryModel>>();
