@@ -41,21 +41,6 @@ namespace BlazorHomepage.Server
 
             services.AddScoped<IGoogleFireBaseDbContext, GoogleFireBaseDbContext>();
 
-
-            //services.AddScoped<IGenericRepository<ShoppingList>, MongoDBGenericRepository<ShoppingList>>();
-            //services.AddScoped<IGenericRepository<ShopItem>, MongoDBGenericRepository<ShopItem>>();
-            //services.AddScoped<IGenericRepository<ItemCategory>, MongoDBGenericRepository<ItemCategory>>();
-            //services.AddScoped<IGenericRepository<Shop>, MongoDBGenericRepository<Shop>>();
-
-
-            //services.AddScoped<IMongoDbStorageContext<ShoppingList>, MongoDBStorageContext<ShoppingList>>();
-            //services.AddScoped<IMongoDbStorageContext<ShopItem>, MongoDBStorageContext<ShopItem>>();
-            //services.AddScoped<IMongoDbStorageContext<ItemCategory>, MongoDBStorageContext<ItemCategory>>();
-            //services.AddScoped<IMongoDbStorageContext<Shop>, MongoDBStorageContext<Shop>>();
-
-
-            //GoogleServices
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
