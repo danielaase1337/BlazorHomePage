@@ -10,6 +10,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Helpers\**" />
+    <Compile Remove="Pages\CovidContacts\**" />
+    <Content Remove="Helpers\**" />
+    <Content Remove="Pages\CovidContacts\**" />
+    <EmbeddedResource Remove="Helpers\**" />
+    <EmbeddedResource Remove="Pages\CovidContacts\**" />
+    <None Remove="Helpers\**" />
+    <None Remove="Pages\CovidContacts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Remove="wwwroot\favicon.ico" />
     <Content Remove="wwwroot\img\Greger.jpg" />
     <Content Remove="wwwroot\img\una.jpg" />
@@ -39,11 +50,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Shared\BlazorHomepage.Shared.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Helpers\" />
-    <Folder Include="Pages\CovidContacts\" />
   </ItemGroup>
 
   <ItemGroup>

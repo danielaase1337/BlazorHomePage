@@ -3,7 +3,9 @@
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
-
+.main {
+    background-color: darkslategray;
+}
 a, .btn-link {
     color: #0366d6;
 }
@@ -162,10 +164,52 @@ input[type="checkbox"] {
     width: inherit;
 }
 
+.card {
+    margin-top: 25px;
+    margin-bottom:10px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.6);
+    transition: 0.3s;
+    border-radius: 8px; /* 5px rounded corners */
+    background-color: whitesmoke;
+    padding:1.3rem;
+}
+
+    /* On mouse-over, add a deeper shadow */
+    .card:hover {
+        box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+
+
+/* Add some padding inside the card container */
+.card-maincontainer {
+    padding:1.3rem;
+}
+.card-container {
+    padding: 10px 8px;
+}
+
+.card-last {
+    margin-bottom: 100px;
+}
+
+.artical-card {
+    padding: 10px 8px;
+}
+
+.card-horizontal-line {
+    display: block;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    margin-left: 1px;
+    margin-right: 10px;
+    border-style: inset;
+    border-width: 1px;
+}
 
 .main {
     position: relative;
     z-index: 2;
+    
 }
 
 label[for='toggle-all'] {
@@ -255,7 +299,7 @@ label[for='toggle-all'] {
 }
 
 .footer {
-    color: #777;
+    color: white;
     padding: 10px 15px;
     text-align: center;
     border-top: 1px solid #e6e6e6;
@@ -270,6 +314,7 @@ label[for='toggle-all'] {
 .todo-count {
     float: left;
     text-align: left;
+    line-height:20px;
 }
 
     .todo-count strong {

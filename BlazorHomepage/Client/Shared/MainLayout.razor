@@ -1,13 +1,23 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+
+@*<div class="page">
     <div class="sidebar">
-        <NavMenu />
+    <NavMenu />
     </div>
     <div class="main">
-        <div class="content px">
-            @Body
-        </div>
+    <div class="content px">
+    @Body
     </div>
-</div>
+    </div>
+    </div>
 
+*@
+<div Class="main">
+    <NewNavComponent></NewNavComponent>
+    <main>
+        <article class="content">
+            @Body
+        </article>
+    </main>
+</div>

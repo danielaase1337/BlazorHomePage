@@ -1,3 +1,6 @@
+
+<CascadingAuthenticationState>
+
     <Router AppAssembly="@typeof(Program).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -6,7 +9,7 @@
                 </Authorizing>
                 <NotAuthorized>
                     <h1>Stop en halv..</h1>
-                    <p>Du må logge inn for å se denne resursen</p>
+                    <p>For å kunne se handlelistene må du logge inn.</p><br />
                     <a href="authentication/login">Log inn her</a>
                 </NotAuthorized>
             </AuthorizeRouteView>
@@ -20,14 +23,16 @@
                     <div class="col">
                         <h1>404!</h1>
                         <p> Doh! her var det ingen ting gitt!</p>
-                        <a href="/">Go home..</a>
+                        <a href="/">Go home(er)..</a>
                     </div>
                 </div>
             </div>
         </NotFound>
     </Router>
+</CascadingAuthenticationState>
+
 @code
- {
-  
+{
+
 
 }

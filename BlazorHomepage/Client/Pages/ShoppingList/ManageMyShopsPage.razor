@@ -1,62 +1,66 @@
 ﻿@*@page "/managemyshops/{userid}"*@
 @page "/managemyshops/"
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            <h2>Lagrede Butikker</h2>
-            <div class="row">
-                <div class="col">
-                    <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
-                </div>
-                <div class="col-2">
-                    <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>
+<div class="card-maincontainer container-sm">
+    <div class="card">
+        <div class="row">
+            <div class="col">
+                <h2>Lagrede Butikker</h2>
+                <div class="row">
+                    <div class="col">
+                        <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
+                    </div>
+                    <div class="col-2">
+                        <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     @if (MyShops != null)
     {
-        <div class="row">
-            <ul class="todo-list">
-                @foreach (var l in MyShops)
-                {
-                    <li class="@l.CssComleteEditClassName">
-                        <div class="parent-horizontal-stack">
-                            <div class="col">
+        <div class="card">
+            <div class="row">
+                <ul class="todo-list">
+                    @foreach (var l in MyShops)
+                    {
+                        <li class="@l.CssComleteEditClassName">
+                            <div class="parent-horizontal-stack">
+                                <div class="col">
+                                    @if (l.EditClicked)
+                                    {
+                                        <input class="editing" @bind-value="@(l.Name)" />
+                                    }
+                                    else
+                                    {
+                                        <label>
+                                            <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
+                                        </label>
+                                    }
+                                </div>
                                 @if (l.EditClicked)
                                 {
-                                    <input class="editing" @bind-value="@(l.Name)" />
+                                    <div class="col-6">
+                                        <Buttons>
+                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                        </Buttons>
+                                    </div>
                                 }
                                 else
                                 {
-                                    <label>
-                                        <a href="@(GetItemNavLink(l.Id))">@l.Name</a>
-                                    </label>
+                                    <div class="col-2">
+                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+
+                                    </div>
                                 }
                             </div>
-                            @if (l.EditClicked)
-                            {
-                                <div class="col-6">
-                                    <Buttons>
-                                        <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                        <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                        <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                    </Buttons>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col-2">
-                                    <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+                        </li>
+                    }
 
-                                </div>
-                            }
-                        </div>
-                    </li>
-                }
-
-            </ul>
+                </ul>
+            </div>
         </div>
     }
     else
@@ -184,5 +188,5 @@
     //    _modalRef.Hide();
     //}
     //#endregion
-   
+
 }

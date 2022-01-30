@@ -53,6 +53,7 @@ namespace BlazorHomepage.Shared.Repository
                     SortIndex = 2
                 } as TEntity);
             }
+           
         }
 
         public async Task<bool> Delete(TEntity entityToDelete)

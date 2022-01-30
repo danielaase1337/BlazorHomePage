@@ -24,13 +24,13 @@
                     <div class="row">
                         <div class="col">
                             <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
-                                          TextField="@(f => f.Name)"
-                                         ValueField="@(f => f)"
-                                          Placeholder="Kategori for varen?"
-                                          @onkeyup="@OnItemCategoryListItemKeyUpHandler"
-                                          SearchChanged="@searchChangeHandlerItemCat"
-                                          SelectedValue="@SelectedItemCategory"
-                                          SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
+                                      TextField="@(f => f.Name)"
+                                      ValueField="@(f => f)"
+                                      Placeholder="Kategori for varen?"
+                                      @onkeyup="@OnItemCategoryListItemKeyUpHandler"
+                                      SearchChanged="@searchChangeHandlerItemCat"
+                                      SelectedValue="@SelectedItemCategory"
+                                      SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
                             </Autocomplete>
                         </div>
                         <div class="col-2">
@@ -57,33 +57,35 @@
 
 @if (ThisShoppingList != null)
 {
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <h4 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h4>
-                <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
+
+    <div class="card-maincontainer container-sm">
+        <div class="card">
+            <div class="row">
+                <div class="col">
+                    <h5 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h5>
+                    <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
+                </div>
+                <div class="col">
+                    <Button Size="Size.Small" Color="Color.Info" Outline="true" Clicked="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></Button>
+                    <Dropdown>
+                        <DropdownToggle Color="Color.Info" Size="Size.Small" Outline="true">
+                            @dropdownText
+                        </DropdownToggle>
+                        <DropdownMenu>
+                            @foreach (var shop in AvailableShops)
+                            {
+                                <DropdownItem Clicked="@(f => SelectedShopClicked(shop))">@shop.Name</DropdownItem>
+                            }
+                        </DropdownMenu>
+                    </Dropdown>
+                </div>
+
+
             </div>
-            <div class="col-5">
-                <Button Size="Size.Small" Color="Color.Info" Outline="true" Clicked="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></Button>
-                <Dropdown>
-                    <DropdownToggle Color="Color.Info" Size="Size.Small" Outline="true">
-                        @dropdownText
-                    </DropdownToggle>
-                    <DropdownMenu>
-                        @foreach (var shop in AvailableShops)
-                        {
-                            <DropdownItem Clicked="@(f => SelectedShopClicked(shop))">@shop.Name</DropdownItem>
-                        }
-                    </DropdownMenu>
-                </Dropdown>
-            </div>
 
-
-        </div>
-
-        <div class="row">
-            <div class="col">
-                <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
+            <div class="row">
+                <div class="col">
+                    <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
                               TextField="@(f => f.Name)"
                               ValueField="@((item) => item)"
                               Placeholder="Hva skal handles?"
@@ -91,47 +93,62 @@
                               SelectedValue="@SelectedShopItem"
                               SearchChanged="@searchChangeHandler"
                               SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
-                </Autocomplete>
-            </div>
-            <div class="col-2 contenAlignCenter">
-                <Button  Size="Size.Small"  Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
+                    </Autocomplete>
+                </div>
+                <div class="col-2 contenAlignCenter">
+                    <Button Size="Size.Small" Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
+                </div>
             </div>
         </div>
-        <div class="row">
-                <ul class="todo-list">
-                    @foreach (var vare in ThisShoppingListItems)
-                    {
-                        <li class="@vare.CssComleteEditClassName">
-                            <div class="parent-horizontal-stack">
-                                <div class="col-1">
-                                    <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
-                                </div>
-                                <div class="col">
-                                    <a @onclick="@(f => VareClicked(vare.Varen))">
-                                        @vare.Varen.Name
-                                    </a>
-                                </div>
-                                <div class="col-3">
-                                    <input class="vareInputEdit" @bind-value="vare.Mengde" @onfocusout="(f=> VareMengdeFocusLost())" />
-                                </div>
-                                <div class="col-2">
-                                    <button class="commandBtns"
-                                            @onclick="@(e => DeleteVare(vare))">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
 
-                        </li>
-                    }
-                </ul>
+        @if (!ThisShoppingListItems.Any())
+        {
+            <div class="card">
+                <div class="row">
+                    <h6>Handelisten er tom, legg til varer for å komme igang.</h6>
+                </div>
             </div>
 
+        }
+        else
+        {
+            <div class="card">
+                <div class="row">
+                    <ul class="todo-list">
+                        @foreach (var vare in ThisShoppingListItems)
+                        {
+                            <li class="@vare.CssComleteEditClassName">
+                                <div class="parent-horizontal-stack">
+                                    <div class="col-1">
+                                        <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
+                                    </div>
+                                    <div class="col">
+                                        <a @onclick="@(f => VareClicked(vare.Varen))">
+                                            @vare.Varen.Name
+                                        </a>
+                                    </div>
+                                    <div class="col-3">
+                                        <input class="vareInputEdit" @bind-value="vare.Mengde" @onfocusout="(f=> VareMengdeFocusLost())" />
+                                    </div>
+                                    <div class="col-2">
+                                        <button class="commandBtns"
+                                    @onclick="@(e => DeleteVare(vare))">
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </div>
+
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        }
         <div class="row">
             <ListSummaryFooter NItems="@ThisShoppingList.ShoppingItems.Where(f => !f.IsDone).Count()"
-                               DeleteAllCompletedClikced="@(f => DeleteAllClicked())"
-                               FilterList="@(f=> FilterList(f))"
-                               ShowDeleteAll="@(ThisShoppingList.ShoppingItems.Where(f=>f.IsDone).Any())">
+                           DeleteAllCompletedClikced="@(f => DeleteAllClicked())"
+                           FilterList="@(f=> FilterList(f))"
+                           ShowDeleteAll="@(ThisShoppingList.ShoppingItems.Where(f=>f.IsDone).Any())">
             </ListSummaryFooter>
         </div>
     </div>
@@ -142,7 +159,7 @@ else
 {
     <LoadingComponent></LoadingComponent>
 }
-@code{
+@code {
 
     string activeListFiler = "all";
     string showEditHeader = "hidden";
@@ -247,7 +264,7 @@ else
     }
     private async Task OnItemCategoryListItemKeyUpHandler(KeyboardEventArgs args)
     {
-       if (args.Code.Equals("Enter"))
+        if (args.Code.Equals("Enter"))
         {
             await AddCategory();
         }
@@ -299,7 +316,7 @@ else
     }
     void SelectedShopItemChanged(object newValue)
     {
-        if (newValue == null) return; 
+        if (newValue == null) return;
 
         if (newValue is ShopItemModel item)
             SelectedShopItem = item;
