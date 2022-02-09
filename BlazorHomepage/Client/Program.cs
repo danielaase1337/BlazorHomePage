@@ -1,18 +1,9 @@
-using BlazorHomepage.Client.DataManagers;
 using BlazorHomepage.Shared.Model;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using BlazorHomepage.Shared.UserData;
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace BlazorHomepage.Client
 {
@@ -20,9 +11,6 @@ namespace BlazorHomepage.Client
     {
         public static async Task Main(string[] args)
         {
-
-
-
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
@@ -32,7 +20,7 @@ namespace BlazorHomepage.Client
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
 #else
-                                         builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
+            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
 #endif
 
             builder.Services.AddOidcAuthentication(options =>
@@ -41,12 +29,6 @@ namespace BlazorHomepage.Client
                 options.ProviderOptions.ResponseType = "code";
             });
 
-            builder.Services.AddBlazorise(options =>
-             {
-                 options.ChangeTextOnKeyPress = true;
-             })
-      .AddBootstrapProviders()
-      .AddFontAwesomeIcons();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
             //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 
@@ -69,12 +51,6 @@ namespace BlazorHomepage.Client
 #endif
             //ApiRepos
 
-            builder.Services.AddBlazorise(options =>
-            {
-                options.ChangeTextOnKeyPress = true;
-            })
-                .AddBootstrapProviders()
-                .AddFontAwesomeIcons();
 
             //builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
 
