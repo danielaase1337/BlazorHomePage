@@ -11,7 +11,7 @@
                         <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
                     </div>
                     <div class="col-2">
-                        <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>
+                        @*<Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>*@
                     </div>
                 </div>
             </div>
@@ -41,11 +41,11 @@
                                 @if (l.EditClicked)
                                 {
                                     <div class="col-6">
-                                        <Buttons>
+                                      @*  <Buttons>
                                             <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
                                             <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
                                             <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>
+                                        </Buttons>*@
                                     </div>
                                 }
                                 else

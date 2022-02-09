@@ -4,8 +4,8 @@
 
 @if (newVareModel != null)
 {
-    <Modal @ref="_modalRef">
-        <ModalContent IsCentered="true">
+    @*<Modal @ref="_modalRef">*@
+       @* <ModalContent IsCentered="true">
             <ModalHeader>
                 <ModalTitle>Legg til vare</ModalTitle>
                 <CloseButton Clicked="@HideModal" />
@@ -50,8 +50,8 @@
                 <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
                 <Button Color="Color.Primary" Clicked="@HideModalAndSave">Lagre og lukk</Button>
             </ModalFooter>
-        </ModalContent>
-    </Modal>
+        </ModalContent>*@
+    @*</Modal>*@
 }
 
 
@@ -66,8 +66,8 @@
                     <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
                 </div>
                 <div class="col">
-                    <Button Size="Size.Small" Color="Color.Info" Outline="true" Clicked="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></Button>
-                    <Dropdown>
+                    <button class="btn btn-sm btn-outline-info"  onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
+                    @*<Dropdown>
                         <DropdownToggle Color="Color.Info" Size="Size.Small" Outline="true">
                             @dropdownText
                         </DropdownToggle>
@@ -77,7 +77,7 @@
                                 <DropdownItem Clicked="@(f => SelectedShopClicked(shop))">@shop.Name</DropdownItem>
                             }
                         </DropdownMenu>
-                    </Dropdown>
+                    </Dropdown>*@
                 </div>
 
 
@@ -85,7 +85,7 @@
 
             <div class="row">
                 <div class="col">
-                    <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
+                  @*  <Autocomplete @ref="_shopItemAutoComplete" TValue="ShopItemModel" TItem="ShopItemModel" Data="@Varer"
                               TextField="@(f => f.Name)"
                               ValueField="@((item) => item)"
                               Placeholder="Hva skal handles?"
@@ -93,10 +93,10 @@
                               SelectedValue="@SelectedShopItem"
                               SearchChanged="@searchChangeHandler"
                               SelectedValueChanged="@((item) => SelectedShopItemChanged(item))">
-                    </Autocomplete>
+                    </Autocomplete>*@
                 </div>
                 <div class="col-2 contenAlignCenter">
-                    <Button Size="Size.Small" Clicked="@(f => AddVare())"><i class="fas fa-plus"></i></Button>
+                    <button class="btn btn-sm" onclick="AddVare"><i class="fas fa-plus"></i></button>
                 </div>
             </div>
         </div>
@@ -120,7 +120,8 @@
                             <li class="@vare.CssComleteEditClassName">
                                 <div class="parent-horizontal-stack">
                                     <div class="col-1">
-                                        <Check TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></Check>
+                                        <p>check</p>
+                                        @*<InputCheckbox TValue="bool" Checked="vare.IsDone" CheckedChanged="@(f => VareCheckChanged(f, vare))"></InputCheckbox>*@
                                     </div>
                                     <div class="col">
                                         <a @onclick="@(f => VareClicked(vare.Varen))">
@@ -165,7 +166,7 @@ else
     string showEditHeader = "hidden";
     string showH2LabelStyle = "";
     //void handleChange(ShopItemModel value) => SelectedShopItem = value;
-    private Modal _modalRef;
+    //private Modal _modalRef;
     ShopItemModel newVareModel = new ShopItemModel();
     string _tempVareName;
     string _tempItemCatName;
@@ -173,8 +174,8 @@ else
     [Parameter]
     public string Id { get; set; }
 
-    private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoriyAutoComplete;
-    private Autocomplete<ShopItemModel, ShopItemModel> _shopItemAutoComplete;
+    //private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoriyAutoComplete;
+    //private Autocomplete<ShopItemModel, ShopItemModel> _shopItemAutoComplete;
     public ShopItemModel SelectedShopItem { get; set; }
 
     public ItemCategoryModel SelectedItemCategory { get; set; }
@@ -238,7 +239,7 @@ else
                 newVareModel = new ShopItemModel();
                 newVareModel.Name = _tempVareName;
                 SelectedItemCategory = null;
-                _modalRef.Show();
+                //_modalRef.Show();
                 return;
             }
             else
@@ -250,7 +251,7 @@ else
         await ShoppingListDataManager.Update(ThisShoppingList);
         SelectedShopItem = null;
         _tempVareName = string.Empty;
-        await _shopItemAutoComplete.Clear();
+        //await _shopItemAutoComplete.Clear();
 
         FilterList(activeListFiler);
     }
@@ -277,7 +278,7 @@ else
         if (existing != null)
         {
             _tempItemCatName = string.Empty;
-            await _itemCategoriyAutoComplete.Clear();
+            //await _itemCategoriyAutoComplete.Clear();
             return;
         }
 
@@ -288,14 +289,14 @@ else
         newVareModel.ItemCategory = newCat;
         SelectedItemCategory = newCat;
         SelectedItemCategory = null;
-        await _itemCategoriyAutoComplete.Clear();
+        //await _itemCategoriyAutoComplete.Clear();
     }
     void VareClicked(ShopItemModel varen)
     {
         newVareModel = varen;
         justUpdateVare = true;
         SelectedItemCategory = null;
-        _modalRef.Show();
+        //_modalRef.Show();
 
     }
 
@@ -325,7 +326,7 @@ else
             SelectedItemCategory = itemCat;
             newVareModel.ItemCategory = itemCat;
             SelectedItemCategory = null;
-            _itemCategoriyAutoComplete.Clear();
+            //_itemCategoriyAutoComplete.Clear();
         }
     }
 
@@ -449,13 +450,13 @@ else
             }
 
         }
-        _modalRef.Hide();
+        //_modalRef.Hide();
         justUpdateVare = false;
     }
     private void HideModal()
     {
         newVareModel = null;
-        _modalRef.Hide();
+        //_modalRef.Hide();
         justUpdateVare = false;
 
     }
