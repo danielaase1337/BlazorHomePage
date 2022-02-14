@@ -53,6 +53,14 @@ namespace BlazorHomepage.Shared.Repository
                     SortIndex = 2
                 } as TEntity);
             }
+            if(type == typeof(ItemCategoryModel))
+            {
+                await Insert(new ItemCategoryModel() { Name = "Meieri" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Brød" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Drikke" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Barnemat" } as TEntity);
+            }
+            
            
         }
 

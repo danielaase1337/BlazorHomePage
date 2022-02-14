@@ -41,18 +41,18 @@
                                 @if (l.EditClicked)
                                 {
                                     <div class="col-6">
-                                      @*  <Buttons>
-                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>*@
+                                        @*<SfButtonGroup>
+                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></ButtonGroupButton>
+                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></ButtonGroupButton>
+                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></ButtonGroupButton>
+                                        </SfButtonGroup>*@
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-2">
-                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
-
+                                      
+                                        @*<button onclick="@({ l.EditClicked = true; })"><i class="fas fa-edit"></i></button>*@
                                     </div>
                                 }
                             </div>

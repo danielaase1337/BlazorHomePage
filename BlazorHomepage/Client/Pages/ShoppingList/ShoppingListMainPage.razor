@@ -50,13 +50,13 @@
 
                                 @if (l.EditClicked)
                                 {
-                                    <div class="col-6">
+                                    @* <div class="col-6">
                                         <Buttons>
-                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
+                                        <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
+                                        <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
+                                        <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
                                         </Buttons>
-                                    </div>
+                                        </div>*@
                                 }
                                 else
                                 {
@@ -98,6 +98,7 @@
     protected override async Task OnInitializedAsync()
     {
         ShoppingLists = await ShoppingListDataManager.Get();
+
         OrderLists();
 
     }
@@ -131,7 +132,7 @@
         if (res != null)
             ShoppingLists.Add(res);
 
-            _newListName = string.Empty; 
+        _newListName = string.Empty;
 
         OrderLists();
 
@@ -149,8 +150,10 @@
 
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
-        if (args.Code.Equals("Enter"))
-            await AddList();
+        if (args.Code == null && string.IsNullOrEmpty(_newListName)) return;
+        if ((args.Code == null && !string.IsNullOrEmpty(_newListName)) ||
+            (args.Code != null && args.Code.Equals("Enter")))
+                await AddList();
     }
     private void OrderLists()
     {

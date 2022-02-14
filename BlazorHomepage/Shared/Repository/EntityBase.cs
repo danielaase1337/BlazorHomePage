@@ -28,5 +28,9 @@ namespace BlazorHomepage.Shared.Repository
         }
 
         public bool EditClicked { get; set; }
+        public virtual bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Name);
+        }
     }
 }

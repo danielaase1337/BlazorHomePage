@@ -1,8 +1,12 @@
+using BlazorHomepage.Client.DataManagers;
+using BlazorHomepage.Shared.MockData;
 using BlazorHomepage.Shared.Model;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using BlazorHomepage.Shared.UserData;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Syncfusion.Blazor;
 using System.Reflection;
 
 namespace BlazorHomepage.Client
@@ -13,15 +17,15 @@ namespace BlazorHomepage.Client
         {
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
-            //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
-            //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.RootComponents.Add<HeadOutlet>("head::after");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTgwMTcwQDMxMzkyZTM0MmUzMENXbHRQelV1ZUNXdTlCZTVxbEQyZjR2VWdGcXIxT1VWZml1b2xOMnpXaUU9");
 
 #if Debug
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
 #else
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
 #endif
+
 
             builder.Services.AddOidcAuthentication(options =>
             {
@@ -30,8 +34,6 @@ namespace BlazorHomepage.Client
             });
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
             //Local repos
             builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
 
@@ -43,6 +45,9 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>();
             builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopModel>, MemoryGenericRepository<ShopModel>>();
+            
+            
+
 #else
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
@@ -51,10 +56,9 @@ namespace BlazorHomepage.Client
 #endif
             //ApiRepos
 
-
-            //builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
-
+            builder.Services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; } );
             builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
+            
             await builder.Build().RunAsync();
         }
     }
