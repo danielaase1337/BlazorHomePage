@@ -11,13 +11,14 @@
             <AutoCompleteFieldSettings Value="Name" Text="Name" />
             <AutoCompleteEvents TValue="string" TItem="Countries" ValueChange="@onChange"></AutoCompleteEvents>
         </SfAutoComplete>
+        <input type="text" />
     </div>
-    <div class="row">
+    @*<div class="row">
         <div class="col">
             <SfButton @ref="ToggleBtn" @onclick="onToggleClick" CssClass="e-flat" IsToggle="true" IsPrimary="true" Content="@Content"></SfButton>
         </div>
 
-    </div>
+    </div>*@
     <div class="row">
         @if (SelectedCountri != null)
         {
