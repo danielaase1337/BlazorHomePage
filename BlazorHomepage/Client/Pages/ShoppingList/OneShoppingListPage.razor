@@ -128,14 +128,15 @@
                     <SfAutoComplete TValue="string"
                                 TItem="ShopItemModel"
                                 DataSource="@Varer"
-                                Placeholder="Hva skal handles?">
+                                Placeholder="Hva skal handles?"
+                    @bind-Value="@autoValue">
                         <AutoCompleteFieldSettings Value="Name" Text="Name" />
                         <AutoCompleteEvents TItem="ShopItemModel" TValue="string"
                                         ValueChange="@SelectedShopItemChanged"></AutoCompleteEvents>
                     </SfAutoComplete>
                 </div>
                 <div class="col-2 contenAlignCenter">
-                    @*<button class="btn btn-sm" @onclick="@AddVare"><i class="fas fa-plus"></i></button>*@
+                    <button class="btn btn-sm" ><i class="fas fa-plus"></i></button>
                     @*<SfButton class="btn btn-sm" @onclick="@AddVare"><i class="fas fa-plus"></i></SfButton>*@
                     @* <SfButton @onclick="@(()=> AddVare(@SelectedShopItem))" CssClass="e-flat" IsPrimary="true">
                         <content>
@@ -211,7 +212,7 @@ else
     string showH2LabelStyle = "";
     string dropdownText = "Velg buikk";
 
-
+    string autoValue;
     [Parameter]
     public string Id { get; set; }
 
@@ -316,7 +317,10 @@ else
         if (newValue.ItemData is ShopItemModel item)
         {
             if (item.IsValid())
-                await AddVare(item);
+                await AddVare(item).ContinueWith(f =>
+                {
+                    autoValue = null;
+                });
             else
             {
                 newVareModel = new ShopItemModel();
@@ -438,14 +442,14 @@ else
             if (!newVareModel.IsValid()) return;
 
             if (justUpdateVare)
-                await ShopItemsDataManager.Update(newVareModel);
+                await ShopItemsDataManager.Update(newVareModel).ContinueWith(f => { autoValue = null; });
             else
             {
                 if (newVareModel.IsValid())
                 {
                     await ShopItemsDataManager.Insert(newVareModel);
                     Varer.Add(newVareModel);
-                    await AddVare(newVareModel);
+                    await AddVare(newVareModel).ContinueWith( f =>{ autoValue = null; });
                 }
             }
 
