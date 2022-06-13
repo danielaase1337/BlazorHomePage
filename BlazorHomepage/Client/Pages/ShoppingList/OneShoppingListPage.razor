@@ -4,55 +4,6 @@
 
 @if (newVareModel != null)
 {
-    @*<Modal @ref="_modalRef">*@
-    @* <ModalContent IsCentered="true">
-        <ModalHeader>
-        <ModalTitle>Legg til vare</ModalTitle>
-        <CloseButton Clicked="@HideModal" />
-        </ModalHeader>
-        <ModalBody>
-        <Field>
-        <FieldLabel>Name</FieldLabel>
-        <TextEdit @bind-Text="@newVareModel.Name" />
-        </Field>
-        <Field>
-        <FieldLabel>Enhet</FieldLabel>
-        <TextEdit @bind-Text="@newVareModel.Unit" />
-        </Field>
-        <Field>
-        <FieldLabel>Kategori</FieldLabel>
-        <div class="row">
-        <div class="col">
-        <Autocomplete @ref="_itemCategoriyAutoComplete" TValue="ItemCategoryModel" TItem="ItemCategoryModel" Data="@AvailableCategories"
-        TextField="@(f => f.Name)"
-        ValueField="@(f => f)"
-        Placeholder="Kategori for varen?"
-        @onkeyup="@OnItemCategoryListItemKeyUpHandler"
-        SearchChanged="@searchChangeHandlerItemCat"
-        SelectedValue="@SelectedItemCategory"
-        SelectedValueChanged="@(item => SelectedShopItemChanged(item))">
-        </Autocomplete>
-        </div>
-        <div class="col-2">
-        <Tooltip Text="Legg til ny kategori">
-        <Button Clicked="@(f => AddCategory())"><i class="fas fa-plus"></i></Button>
-        </Tooltip>
-        </div>
-        </div>
-        </Field>
-        @if (newVareModel.ItemCategory != null)
-        {
-        <FieldLabel>Valgt kategori: </FieldLabel>
-        <FieldLabel><b>@newVareModel.ItemCategory.Name</b></FieldLabel>
-        }
-        </ModalBody>
-        <ModalFooter>
-        <Button Color="Color.Secondary" Clicked="@HideModal">Close</Button>
-        <Button Color="Color.Primary" Clicked="@HideModalAndSave">Lagre og lukk</Button>
-        </ModalFooter>
-        </ModalContent>*@
-    @*</Modal>*@
-
     <SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsVisible">
         <DialogTemplates>
             <Header> Legg til vare </Header>
@@ -60,8 +11,8 @@
                 <div class="container">
 
                     <div class="row">
-                        <SfTextBox Placeholder='Vare navn' FloatLabelType='@FloatLabelType.Auto' 
-                        @bind-Value=@newVareModel.Name></SfTextBox>
+                        <SfTextBox Placeholder='Vare navn' FloatLabelType='@FloatLabelType.Auto'
+                               @bind-Value=@newVareModel.Name></SfTextBox>
                     </div>
                     <div class="row" style="padding:2px">
                         <SfAutoComplete TValue="string"
@@ -74,7 +25,7 @@
                                             ValueChange="@SelectedItemCategoryChanged"></AutoCompleteEvents>
                         </SfAutoComplete>
                     </div>
-                    <div class="row">
+                    <div class="row" style="padding:2px">
                         <p>Valgt kategori: </p>
                         @if (newVareModel.ItemCategory != null)
                         {
@@ -99,28 +50,19 @@
 
     <div class="card-maincontainer container-sm">
         <div class="card">
-            <div class="row">
+            <div class="row align-items-start">
                 <div class="col">
                     <h5 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h5>
                     <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
                 </div>
+
                 <div class="col">
-                    <button class="btn btn-sm btn-outline-info" @onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
-
-                    @*<Dropdown>
-                        <DropdownToggle Color="Color.Info" Size="Size.Small" Outline="true">
-                        @dropdownText
-                        </DropdownToggle>
-                        <DropdownMenu>
-                        @foreach (var shop in AvailableShops)
-                        {
-                        <DropdownItem Clicked="@(f => SelectedShopClicked(shop))">@shop.Name</DropdownItem>
-                        }
-                        </DropdownMenu>
-                        </Dropdown>*@
+                    
+                            <SfDropDownList TValue="string" TItem="ShopModel" Placeholder="Velg butikk" DataSource="@AvailableShops" @bind-Index="@shopIndex" Width="100">
+                                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                            </SfDropDownList>
+                            <button class="btn btn-sm btn-outline-info" @onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
                 </div>
-
-
             </div>
 
             <div class="row">
@@ -129,14 +71,14 @@
                                 TItem="ShopItemModel"
                                 DataSource="@Varer"
                                 Placeholder="Hva skal handles?"
-                    @bind-Value="@autoValue">
+                                @bind-Value="@autoValue">
                         <AutoCompleteFieldSettings Value="Name" Text="Name" />
                         <AutoCompleteEvents TItem="ShopItemModel" TValue="string"
                                         ValueChange="@SelectedShopItemChanged"></AutoCompleteEvents>
                     </SfAutoComplete>
                 </div>
                 <div class="col-2 contenAlignCenter">
-                    <button class="btn btn-sm" ><i class="fas fa-plus"></i></button>
+                    <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
                     @*<SfButton class="btn btn-sm" @onclick="@AddVare"><i class="fas fa-plus"></i></SfButton>*@
                     @* <SfButton @onclick="@(()=> AddVare(@SelectedShopItem))" CssClass="e-flat" IsPrimary="true">
                         <content>
@@ -350,12 +292,12 @@ else
     }
     private async Task VareCheckChanged(Microsoft.AspNetCore.Components.ChangeEventArgs f, ShoppingListItemModel vare)
     {
-        if(f.Value is bool bValue)
+        if (f.Value is bool bValue)
         {
             Console.WriteLine("bvalue");
             vare.IsDone = bValue;
             FilterList(activeListFiler);
-            await ShoppingListDataManager.Update(ThisShoppingList);            
+            await ShoppingListDataManager.Update(ThisShoppingList);
         }
 
 
@@ -396,17 +338,23 @@ else
         }
     }
 
+    private int? shopIndex { get; set; } = -1;
     ShopModel SelectedShop { get; set; }
-    void SelectedShopClicked(ShopModel selectedShop)
-    {
-        SelectedShop = selectedShop;
-        dropdownText = selectedShop.Name;
-    }
+    //void SelectedShopClicked(ShopModel selectedShop)
+    //{
+    //    SelectedShop = selectedShop;
+    //    dropdownText = selectedShop.Name;
+    //}
     void SortShoppingList()
     {
-        if (SelectedShop == null) return; //TODO - lag notifikasjon..
-                                          //Insert Sort index on itemCats.
+        if (shopIndex == null || shopIndex == -1) return; //TODO - lag notifikasjon..
+                                                          //Insert Sort index on itemCats.
+
+
+        SelectedShop = AvailableShops.ToArray()[shopIndex.Value];
+
         var itemCategoriesWithShortIndex = new List<ItemCategoryModel>();
+        if (SelectedShop.ShelfsInShop == null) return;
         foreach (var shelfst in SelectedShop.ShelfsInShop)
         {
             var startSort = shelfst.SortIndex;
@@ -449,7 +397,7 @@ else
                 {
                     await ShopItemsDataManager.Insert(newVareModel);
                     Varer.Add(newVareModel);
-                    await AddVare(newVareModel).ContinueWith( f =>{ autoValue = null; });
+                    await AddVare(newVareModel).ContinueWith(f => { autoValue = null; });
                 }
             }
 
