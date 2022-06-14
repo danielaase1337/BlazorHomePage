@@ -51,16 +51,18 @@
     <div class="card-maincontainer container-sm">
         <div class="card">
             <div class="row align-items-start">
+              
                 <div class="col">
                     <h5 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h5>
                     <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
                 </div>
 
-                <div class="col">
-                    
+                <div class="col-5">
                             <SfDropDownList TValue="string" TItem="ShopModel" Placeholder="Velg butikk" DataSource="@AvailableShops" @bind-Index="@shopIndex" Width="100">
                                 <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
                             </SfDropDownList>
+                </div>
+                <div class="col-2">
                             <button class="btn btn-sm btn-outline-info" @onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
                 </div>
             </div>
