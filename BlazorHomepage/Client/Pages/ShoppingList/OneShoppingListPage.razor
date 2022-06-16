@@ -6,15 +6,15 @@
 {
     <SfDialog Width="250px" ShowCloseIcon="true" IsModal="true" @bind-Visible="@IsVisible">
         <DialogTemplates>
-            <Header> Legg til vare </Header>
+            <Header> Legg til vare</Header>
             <Content>
                 <div class="container">
 
-                    <div class="row">
+                    <div class="row" style="padding-top:6px">
                         <SfTextBox Placeholder='Vare navn' FloatLabelType='@FloatLabelType.Auto'
                                @bind-Value=@newVareModel.Name></SfTextBox>
                     </div>
-                    <div class="row" style="padding:2px">
+                    <div class="row" style="padding-top:4px" >
                         <SfAutoComplete TValue="string"
                                     TItem="ItemCategoryModel"
                                     DataSource="@AvailableCategories"
@@ -25,11 +25,11 @@
                                             ValueChange="@SelectedItemCategoryChanged"></AutoCompleteEvents>
                         </SfAutoComplete>
                     </div>
-                    <div class="row" style="padding:2px">
+                    <div class="row" style="padding-top:4px">
                         <p>Valgt kategori: </p>
                         @if (newVareModel.ItemCategory != null)
                         {
-                            <p>@newVareModel.ItemCategory.Name</p>
+                            <p style="padding-top:4px">@newVareModel.ItemCategory.Name</p>
                         }
                     </div>
 
