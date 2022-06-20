@@ -1,4 +1,5 @@
 ﻿@page "/oneShop/{Id}"
+@using Syncfusion.Blazor.Buttons
 
 @if (SelectedShelf != null)
 {
@@ -126,7 +127,9 @@
                                     <div class="col-4">
                                         @if (l.EditClicked)
                                         {
-                                           @* <Buttons>
+                                           @* <SfButton CssClass="editButtonStyle" IconCss="fas fa-check" OnClick="@StoreChange(l)"></SfButton>
+
+                                            <Buttons>
                                                 <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
                                                 <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
                                                 <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
