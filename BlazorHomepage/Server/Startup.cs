@@ -1,17 +1,11 @@
 using BlazorHomepage.Shared.Data.Entities;
-using BlazorHomepage.Shared.HandlelisteData;
+using BlazorHomepage.Shared.Repository;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.Linq;
 using System.Reflection;
-using Grpc.Core;
-using Grpc.Core.Logging;
-using BlazorHomepage.Shared.Repository;
 
 namespace BlazorHomepage.Server
 {
@@ -74,7 +68,6 @@ namespace BlazorHomepage.Server
             app.UseStaticFiles();
 
             app.UseRouting();
-
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

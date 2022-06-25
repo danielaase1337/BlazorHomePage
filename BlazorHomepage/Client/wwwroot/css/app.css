@@ -5,6 +5,7 @@ html, body {
 }
 .main {
     background-color: darkslategray;
+    /*background-color: lightblue;*/
 }
 a, .btn-link {
     color: #0366d6;
@@ -385,6 +386,7 @@ html .clear-completed:active {
         .info a:hover {
             text-decoration: underline;
         }
+
 
 
 

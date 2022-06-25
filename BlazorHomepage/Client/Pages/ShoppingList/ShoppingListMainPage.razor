@@ -12,7 +12,7 @@
                 <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
             </div>
             <div class="col-2">
-                <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddList())"></i></Button>
+                <button type="button" class="btn-sm btn-outline-link"><i class="fas fa-check" @onclick="@(f => AddList())"></i></button>
             </div>
         </div>
     </div>
@@ -106,35 +106,12 @@
 
 
 
-    [Parameter]
-    public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
     private async Task StoreChange(ShoppingListModel item)
     {
         item.EditClicked = false;
         await ShoppingListDataManager.Update(item);
     }
-     SfButton ToggleBtn;
-    public string Content = "Play";
-    private void onToggleClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
-    {
-        if (ToggleBtn.Content == "Play")
-        {
-            this.Content = "Pause";
-        }
-        else
-        {
-            this.Content = "Play";
-        }
-    }
 
-    private  EventCallback toggleEdit(ShoppingListModel item, bool state)
-    {
-
-        item.EditClicked = state;
-        return EventCallback.Empty; 
-    }
-    [Parameter]
-    public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
     private async Task DeleteList(ShoppingListModel l)
     {
         var res = await ShoppingListDataManager.Delete(l);
@@ -158,7 +135,7 @@
     }
 
 
-    private async Task ListeChecked(ShoppingListModel l, ChangeEventArgs value)
+    private async Task ListeChecked(ShoppingListModel l, Microsoft.AspNetCore.Components.ChangeEventArgs value)
     {
         if (value?.Value != null && value.Value is bool bValue)
         {

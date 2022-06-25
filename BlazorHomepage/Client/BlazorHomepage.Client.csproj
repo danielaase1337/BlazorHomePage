@@ -9,6 +9,13 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <DefineConstants>TRACE;Debug</DefineConstants>
+    <RunAOTCompilation>False</RunAOTCompilation>
+    <WarningLevel>7</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <RunAOTCompilation>False</RunAOTCompilation>
+    <WarningLevel>7</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -39,12 +46,15 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.2" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.2" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="6.0.6" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="6.0.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.Extensions.Http" Version="6.0.0" />
-    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="19.4.0.50" />
-    <PackageReference Include="Syncfusion.Blazor.Popups" Version="19.4.0.50" />
+    <PackageReference Include="Syncfusion.Blazor.Core" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.DropDowns" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.Navigations" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.Popups" Version="20.1.0.61" />
+    <PackageReference Include="Syncfusion.Blazor.Themes" Version="20.1.0.61" />
     <PackageReference Include="System.Net.Http.Json" Version="6.0.0" />
   </ItemGroup>
 

@@ -18,7 +18,7 @@ namespace BlazorHomepage.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
             builder.RootComponents.Add<HeadOutlet>("head::after");
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NTgwMTcwQDMxMzkyZTM0MmUzMENXbHRQelV1ZUNXdTlCZTVxbEQyZjR2VWdGcXIxT1VWZml1b2xOMnpXaUU9");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjYyMDgyQDMyMzAyZTMxMmUzMENBMmRUakJJSmVsWS81VXZrVVN3VXpvRnRjQllUV1ZiVUs1aXhYUVdlK289");
 
 #if Debug
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
@@ -55,8 +55,8 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShopModel>, ShopApiDataManager<ShopModel>>();
 #endif
             //ApiRepos
-
-            builder.Services.AddSyncfusionBlazor(options => { options.IgnoreScriptIsolation = true; } );
+            
+            builder.Services.AddSyncfusionBlazor();
             builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
             
             await builder.Build().RunAsync();

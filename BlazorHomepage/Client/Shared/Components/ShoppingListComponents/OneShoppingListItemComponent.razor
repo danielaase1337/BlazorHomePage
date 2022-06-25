@@ -27,7 +27,7 @@
 
 
 
-    private void VareCheckd(ShoppingListItemModel l, ChangeEventArgs value)
+    private void VareCheckd(ShoppingListItemModel l, Microsoft.AspNetCore.Components.ChangeEventArgs value)
     {
         if (value?.Value != null && value.Value is bool bValue)
             l.IsDone = bValue;

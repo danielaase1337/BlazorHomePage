@@ -14,15 +14,19 @@
                         <SfTextBox Placeholder='Vare navn' FloatLabelType='@FloatLabelType.Auto'
                                @bind-Value=@newVareModel.Name></SfTextBox>
                     </div>
-                    <div class="row" style="padding-top:4px" >
+                    <div class="row" style="padding-top:4px">
                         <SfAutoComplete TValue="string"
                                     TItem="ItemCategoryModel"
                                     DataSource="@AvailableCategories"
                                     Placeholder="Velg kategori?"
-                                    AllowFiltering="true">
+                                    AllowFiltering="true"
+                                    FilterType="FilterType.Contains"
+                                    Highlight>
                             <AutoCompleteFieldSettings Value="Name" Text="Name" />
                             <AutoCompleteEvents TItem="ItemCategoryModel" TValue="string"
-                                            ValueChange="@SelectedItemCategoryChanged"></AutoCompleteEvents>
+                                            ValueChange="@SelectedItemCategoryChanged">
+
+                            </AutoCompleteEvents>
                         </SfAutoComplete>
                     </div>
                     <div class="row" style="padding-top:4px">
@@ -51,19 +55,19 @@
     <div class="card-maincontainer container-sm">
         <div class="card">
             <div class="row align-items-start">
-              
+
                 <div class="col">
                     <h5 class="@showH2LabelStyle" @ondblclick="@ListHeaderKeyUpEventHandler">@ThisShoppingList.Name</h5>
                     <input class="@showEditHeader" @bind-value="@ThisShoppingList.Name" @onkeyup="@(f => ListHeaderClickEventHandler(f))" />
                 </div>
 
                 <div class="col-5">
-                            <SfDropDownList TValue="string" TItem="ShopModel" Placeholder="Velg butikk" DataSource="@AvailableShops" @bind-Index="@shopIndex" Width="100">
-                                <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
-                            </SfDropDownList>
+                    <SfDropDownList TValue="string" TItem="ShopModel" Placeholder="Velg butikk" DataSource="@AvailableShops" @bind-Index="@shopIndex" Width="100">
+                        <DropDownListFieldSettings Value="Id" Text="Name"></DropDownListFieldSettings>
+                    </SfDropDownList>
                 </div>
                 <div class="col-2">
-                            <button class="btn btn-sm btn-outline-info" @onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
+                    <button class="btn btn-sm btn-outline-info" @onclick="SortShoppingList"><i class="fas fa-sort-amount-down-alt"></i></button>
                 </div>
             </div>
 
@@ -73,20 +77,18 @@
                                 TItem="ShopItemModel"
                                 DataSource="@Varer"
                                 Placeholder="Hva skal handles?"
-                                @bind-Value="@autoValue">
+                                @bind-Value="@autoValue"
+                                FilterType="FilterType.Contains"
+                                Highlight>
                         <AutoCompleteFieldSettings Value="Name" Text="Name" />
                         <AutoCompleteEvents TItem="ShopItemModel" TValue="string"
                                         ValueChange="@SelectedShopItemChanged"></AutoCompleteEvents>
+                       
                     </SfAutoComplete>
                 </div>
                 <div class="col-2 contenAlignCenter">
                     <button class="btn btn-sm"><i class="fas fa-plus"></i></button>
-                    @*<SfButton class="btn btn-sm" @onclick="@AddVare"><i class="fas fa-plus"></i></SfButton>*@
-                    @* <SfButton @onclick="@(()=> AddVare(@SelectedShopItem))" CssClass="e-flat" IsPrimary="true">
-                        <content>
-                        <i class="fas fa-plus"></i>
-                        </content>
-                        </SfButton>*@
+                  
                 </div>
             </div>
         </div>
@@ -149,6 +151,9 @@ else
 {
     <LoadingComponent></LoadingComponent>
 }
+
+
+
 @code {
 
     string activeListFiler = "all";
@@ -177,6 +182,7 @@ else
     [Inject]
     public IGenericRepository<ShopModel> ShopDataManager { get; set; }
 
+    
 
     protected override async Task OnParametersSetAsync()
     {
