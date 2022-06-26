@@ -1,5 +1,126 @@
-﻿<h3>ShoppingLists</h3>
+﻿@page "/test"
+
+@using Syncfusion.Blazor.Buttons
+@using Syncfusion.Blazor.DropDowns
+
+<div class="container">
+
+    <div class="col">
+        <SfAutoComplete TValue="string" TItem="Countries" Placeholder="e.g. Australia" AllowFiltering=true Highlight=true
+                        DataSource="@LocalData">
+            <AutoCompleteFieldSettings Value="Name" Text="Name" />
+            <AutoCompleteEvents TValue="string" TItem="Countries" ValueChange="@onChange"></AutoCompleteEvents>
+        </SfAutoComplete>
+        <input type="text" />
+    </div>
+  @*  <div class="row">
+        <div class="col">
+            <SfButton @ref="ToggleBtn" @onclick="onToggleClick" CssClass="e-flat" IsToggle="true" IsPrimary="true" Content="@Content"></SfButton>
+        </div>
+
+    </div>*@
+    <div class="row">
+        @if (SelectedCountri != null)
+        {
+            <p style="color:white">@SelectedCountri.Name</p>
+        }
+        @if (!AddedCountries.Any())
+        {
+            <p style="color:white">Ingen valgte enda</p>
+        }
+        else
+        {
+            <ul>
+                @foreach (var t in AddedCountries)
+                {
+                    <li>
+                        <p style="color:white">@t.Name</p>
+                    </li>
+                }
+            </ul>
+        }
+
+    </div>
+
+</div>
+
 
 @code {
 
+    public class Countries
+    {
+        public string Name { get; set; }
+        public string Code { get; set; }
+        public bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Code);
+        }
+    }
+
+    List<Countries> LocalData = new List<Countries> {
+        new Countries() { Name = "Australia", Code = "AU" },
+        new Countries() { Name = "Bermuda", Code = "BM" },
+        new Countries() { Name = "Canada", Code = "CA" },
+        new Countries() { Name = "Cameroon", Code = "CM" },
+        new Countries() { Name = "Denmark", Code = "DK" }
+    };
+    List<Countries> AddedCountries = new List<Countries>();
+    SfButton ToggleBtn;
+    public string Content = "Play";
+    private Countries SelectedCountri;
+
+    private void OnValueSelecthandler(SelectEventArgs<Countries> args)
+    {
+        if (args.ItemData is Countries s)
+            SelectedCountri = s;
+    }
+
+    private void onChange(Syncfusion.Blazor.DropDowns.ChangeEventArgs<string, Countries> args)
+    {
+        if (args.ItemData is Countries countri)
+        {
+            if (countri.IsValid())
+                AddNewItemToList(countri);
+            else
+            {
+                var newEntry = new Countries() { Name = countri.Name, Code = countri.Name }; 
+                LocalData.Add(newEntry);
+                AddNewItemToList(newEntry);
+            }
+        }
+    }
+
+
+    private bool AddNewItemToList(Countries thisCountri)
+    {
+        if (AddedCountries.Contains(thisCountri))
+            return false;
+
+        if (thisCountri != null)
+        {
+            AddedCountries.Add(thisCountri);
+            SelectedCountri = null;
+            return true;
+        }
+        else
+        {
+
+        }
+        return true; 
+    }
+   
+
+    private void onToggleClick(Microsoft.AspNetCore.Components.Web.MouseEventArgs args)
+    {
+        if (SelectedCountri != null)
+            AddedCountries.Add(SelectedCountri);
+        if (ToggleBtn.Content == "Play")
+        {
+            this.Content = "Pause";
+        }
+        else
+        {
+            this.Content = "Play";
+        }
+    }
 }

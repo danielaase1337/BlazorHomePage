@@ -12,6 +12,10 @@ namespace BlazorHomepage.Shared.Model.HandlelisteModels
 
         public string Unit { get; set; } = "stk";
         public ItemCategoryModel ItemCategory { get; set; } = new ItemCategoryModel();
-
+        public override bool IsValid()
+        {
+            return !string.IsNullOrEmpty(Name)
+                && ItemCategory.IsValid();
+        }
     }
 }

@@ -1,17 +1,48 @@
 ﻿
-@page "/admin/"
-@using System.IO;
-@using Newtonsoft.Json;
+@page "/admin"
 
 
-<h3>Last opp eksisterende data til databaser..</h3>
-<p>ItemCategories</p>
-<FileEdit Changed="@OnChanged" Written="@OnWritten" Progressed="@OnProgressed" />
-<br />
-<p>Shops</p>
-<FileEdit Changed="@OnChangedShops" Written="@OnWrittenShops" Progressed="@OnProgressedShops" />
 
+<SfTab >
+    <TabItems>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="HTML"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <div>HyperText Markup Language, commonly referred to as HTML, is the standard markup language used to create web pages. Along with CSS, and JavaScript, HTML is a cornerstone technology, used by most websites to create visually engaging web pages, user interfaces for web applications, and user interfaces for many mobile applications.[1] Web browsers can read HTML files and render them into visible or audible web pages. HTML describes the structure of a website semantically along with cues for presentation, making it a markup language, rather than a programming language.</div>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="Java"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>
+                <div>Java is a set of computer software and specifications developed by Sun Microsystems, later acquired by Oracle Corporation, that provides a system for developing application software and deploying it in a cross-platform computing environment. Java is used in a wide variety of computing platforms from embedded devices and mobile phones to enterprise servers and supercomputers. While less common, Java applets run in secure, sandboxed environments to provide many features of native applications and can be embedded in HTML pages.</div>
+            </ContentTemplate>
+        </TabItem>
+        <TabItem>
+            <ChildContent>
+                <TabHeader Text="JavaScript"></TabHeader>
+            </ChildContent>
+            <ContentTemplate>@DynamicContent</ContentTemplate>
+        </TabItem>
+    </TabItems>
+</SfTab>
+
+
+@code{
+    public RenderFragment DynamicContent = builder =>
+    {
+        builder.AddContent(1, "JavaScript (JS) is an interpreted computer programming language. It was originally implemented as part of web browsers so that client-side scripts could interact with the user, control the browser, communicate asynchronously, and alter the document content that was displayed.[5] More recently, however, it has become common in both game development and the creation of desktop applications.");
+    };
+}
+
+@*
 @code {
+ 
+    private int SelectedTab = 0;
+
 
     [Inject]
     public IGenericRepository<ShoppingListModel> ShoppingListDataManager { get; set; }
@@ -19,127 +50,9 @@
     public IGenericRepository<ShopItemModel> ShopItemsDataManager { get; set; }
     [Inject]
     public IGenericRepository<ItemCategoryModel> ItemsCategoriesDataManager { get; set; }
-
     [Inject]
     public IGenericRepository<ShopModel> ShopDataManager { get; set; }
 
 
-    async Task OnChanged(FileChangedEventArgs e)
-    {
-        var res = new List<ItemCategoryModel>();
 
-        try
-        {
-            foreach (var file in e.Files)
-            {
-
-                using (var stream = new MemoryStream())
-                {
-                    await file.WriteToStreamAsync(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    using (var sr = new StreamReader(stream))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        ItemCategoryModel itemCatmodel;
-                        using (JsonReader reader = new JsonTextReader(sr))
-                        {
-                            while (reader.Read())
-                            {
-                                // deserialize only when there's "{" character in the stream
-                                if (reader.TokenType == JsonToken.StartObject)
-                                {
-                                    itemCatmodel = serializer.Deserialize<ItemCategoryModel>(reader);
-                                    if (itemCatmodel != null)
-                                        res.Add(itemCatmodel);
-                                }
-                            }
-                        }
-                    }
-                }
-                foreach (var cat in res)
-                {
-                    await ItemsCategoriesDataManager.Insert(cat);
-                }
-            }
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-        }
-        finally
-        {
-            this.StateHasChanged();
-        }
-    }
-
-    void OnWritten(FileWrittenEventArgs e)
-    {
-        Console.WriteLine($"File: {e.File.Name} Position: {e.Position} Data: {Convert.ToBase64String(e.Data)}");
-    }
-
-    void OnProgressed(FileProgressedEventArgs e)
-    {
-        Console.WriteLine($"File: {e.File.Name} Progress: {e.Percentage}");
-    }
-
-
-
-
-
-    async Task OnChangedShops(FileChangedEventArgs e)
-    {
-        try
-        {
-            var res = new List<ShopModel>();
-            foreach (var file in e.Files)
-            {
-                using (var stream = new MemoryStream())
-                {
-                    await file.WriteToStreamAsync(stream);
-                    stream.Seek(0, SeekOrigin.Begin);
-                    using (var sr = new StreamReader(stream))
-                    {
-                        JsonSerializer serializer = new JsonSerializer();
-                        ShopModel shopModel;
-                        using (JsonReader reader = new JsonTextReader(sr))
-                        {
-                            while (reader.Read())
-                            {
-                                // deserialize only when there's "{" character in the stream
-                                if (reader.TokenType == JsonToken.StartObject)
-                                {
-                                    shopModel = serializer.Deserialize<ShopModel>(reader);
-                                    if (shopModel != null)
-                                        res.Add(shopModel);
-                                }
-                            }
-                        }
-                    }
-                }
-                foreach (var shop in res)
-                {
-                    await ShopDataManager.Insert(shop); 
-                }
-            }
-        }
-        catch (Exception exc)
-        {
-            Console.WriteLine(exc.Message);
-        }
-        finally
-        {
-            this.StateHasChanged();
-        }
-    }
-
-    void OnWrittenShops(FileWrittenEventArgs e)
-    {
-        Console.WriteLine($"File: {e.File.Name} Position: {e.Position} Data: {Convert.ToBase64String(e.Data)}");
-    }
-
-    void OnProgressedShops(FileProgressedEventArgs e)
-    {
-        Console.WriteLine($"File: {e.File.Name} Progress: {e.Percentage}");
-    }
-
-}
+}*@

@@ -28,7 +28,9 @@ namespace BlazorHomepage.Shared.Repository
             }
             if (type == typeof(ShopModel))
             {
-                await Insert(new ShopModel() {Id = "2", Name = "Kiwi lyngås" } as TEntity);
+              
+
+                await Insert(new ShopModel() { Id = "2", Name = "Kiwi lyngås" } as TEntity);
             }
             if (type == typeof(ShelfModel))
             {
@@ -53,6 +55,14 @@ namespace BlazorHomepage.Shared.Repository
                     SortIndex = 2
                 } as TEntity);
             }
+            if(type == typeof(ItemCategoryModel))
+            {
+                await Insert(new ItemCategoryModel() { Name = "Meieri" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Brød" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Drikke" } as TEntity);
+                await Insert(new ItemCategoryModel() { Name = "Barnemat" } as TEntity);
+            }
+            
            
         }
 

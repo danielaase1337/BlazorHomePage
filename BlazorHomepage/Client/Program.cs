@@ -1,18 +1,13 @@
 using BlazorHomepage.Client.DataManagers;
+using BlazorHomepage.Shared.MockData;
 using BlazorHomepage.Shared.Model;
 using BlazorHomepage.Shared.Model.HandlelisteModels;
 using BlazorHomepage.Shared.Repository;
 using BlazorHomepage.Shared.UserData;
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Net.Http;
+using Syncfusion.Blazor;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace BlazorHomepage.Client
 {
@@ -20,20 +15,17 @@ namespace BlazorHomepage.Client
     {
         public static async Task Main(string[] args)
         {
-
-
-
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
-            //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
-            //builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+            builder.RootComponents.Add<HeadOutlet>("head::after");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NjYyMDgyQDMyMzAyZTMxMmUzMENBMmRUakJJSmVsWS81VXZrVVN3VXpvRnRjQllUV1ZiVUs1aXhYUVdlK289");
 
 #if Debug
             builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
 #else
-                                         builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
+            builder.Services.AddTransient(sp => new HttpClient { BaseAddress = new Uri("https://blazor-supergnisten-api.azurewebsites.net/") });
 #endif
+
 
             builder.Services.AddOidcAuthentication(options =>
             {
@@ -41,15 +33,7 @@ namespace BlazorHomepage.Client
                 options.ProviderOptions.ResponseType = "code";
             });
 
-            builder.Services.AddBlazorise(options =>
-             {
-                 options.ChangeTextOnKeyPress = true;
-             })
-      .AddBootstrapProviders()
-      .AddFontAwesomeIcons();
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            //builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
-
             //Local repos
             builder.Services.AddScoped<IGenericRepository<User>, MemoryGenericRepository<User>>();
 
@@ -61,6 +45,9 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, MemoryGenericRepository<ShopItemModel>>();
             builder.Services.AddScoped<IGenericRepository<ItemCategoryModel>, MemoryGenericRepository<ItemCategoryModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopModel>, MemoryGenericRepository<ShopModel>>();
+            
+            
+
 #else
             builder.Services.AddScoped<IGenericRepository<ShoppingListModel>, ShoppingListApiDataManager<ShoppingListModel>>();
             builder.Services.AddScoped<IGenericRepository<ShopItemModel>, ShopItemApiDataManagery<ShopItemModel>>();
@@ -68,17 +55,10 @@ namespace BlazorHomepage.Client
             builder.Services.AddScoped<IGenericRepository<ShopModel>, ShopApiDataManager<ShopModel>>();
 #endif
             //ApiRepos
-
-            builder.Services.AddBlazorise(options =>
-            {
-                options.ChangeTextOnKeyPress = true;
-            })
-                .AddBootstrapProviders()
-                .AddFontAwesomeIcons();
-
-            //builder.Services.AddScoped<IGenericRepository<ShelfModel>, MemoryGenericRepository<ShelfModel>>();
-
+            
+            builder.Services.AddSyncfusionBlazor();
             builder.Services.AddScoped<IGenericRepository<UserSettingsModel>, MemoryGenericRepository<UserSettingsModel>>();
+            
             await builder.Build().RunAsync();
         }
     }

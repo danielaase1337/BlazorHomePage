@@ -1,8 +1,9 @@
 ﻿@page "/oneShop/{Id}"
+@using Syncfusion.Blazor.Buttons
 
 @if (SelectedShelf != null)
 {
-    <Modal @ref="_modalRef">
+    @*<Modal @ref="_modalRef">
         <ModalContent IsCentered="true">
             <ModalHeader>
                 <ModalTitle>Oppdater hylle</ModalTitle>
@@ -69,24 +70,45 @@
                 <Button Color="Color.Primary" Clicked="@HideModalAndSave">Save Changes</Button>
             </ModalFooter>
         </ModalContent>
-    </Modal>
+    </Modal>*@
 }
-
+@if (ConfirmDelete)
+{
+    <ConfirmDelete ShowConfirm=@ConfirmDelete ConfirmedDelete="@DeleteConfirmResult"
+    ConfirmedDeleteChanged="@ConfirmDeleteChangedResult"
+    ModelContent="Er du sikker på at du vil sltette denne hullen i butikken?" />
+    @*<div class="modal" tabindex="-1" role="dialog" style="display: @(ConfirmDelete ? "block" : "none")">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Bekreft sletting</h5>
+                </div>
+                <div class="modal-body">
+                    <p>Er du sikker på at du vil slette denne hyllen i butikken?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @onclick="@(()=> this.ConfirmDelete=false)">Ok</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@(()=> this.ConfirmDelete=false)">Avbryt</button>
+                </div>
+            </div>
+        </div>
+    </div>*@
+}
 
 @if (ThisShop != null)
 {
 
     <div class="card-maincontainer container-sm">
-        <h4>@ThisShop.Name</h4>
+        <h4 style="color:black">@ThisShop.Name</h4>
         <div class="card">
             <div class="row">
                 <div class="col">
                     <h2>Hyller i butikken</h2>
                 </div>
                 <div class="col-2 contenAlignCenter">
-                    <Tooltip Text="Reset sortering av hyller">
-                        <Button Clicked="@(f => ResetSort())"><i class="fas fa-undo-alt"></i></Button>
-                    </Tooltip>
+                    <SfTooltip Text="Reset sortering av hyller">
+                        <button @onclick="@(f => ResetSort())"><i class="fas fa-undo-alt"></i></button>
+                    </SfTooltip>
                 </div>
             </div>
             <div class="row">
@@ -94,9 +116,9 @@
                     <input class="new-todo" placeholder="Navn på hyllen?" name="newVare" @bind="@_newShelfName" @onkeyup="OnKeyUpNewListItemHandler">
                 </div>
                 <div class="col-2 contenAlignCenter">
-                    <Tooltip Text="Legg til hylle">
-                        <Button Size="Size.Small" Clicked="@(f => AddShelf())"><i class="fas fa-check"></i></Button>
-                    </Tooltip>
+                    <SfTooltip Text="Legg til hylle">
+                        <button class="btn btn-sm" @onclick="@(f => AddShelf())"><i class="fas fa-check"></i></button>
+                    </SfTooltip>
                 </div>
             </div>
         </div>
@@ -110,7 +132,7 @@
                         @foreach (var l in ThisShop.ShelfsInShop.OrderBy(f => f.SortIndex).ToList())
                         {
                             <li class="@l.CssComleteEditClassName">
-                                <div class="row">
+                                <div class="parent-horizontal-stack">
                                     <div class="col">
                                         @if (l.EditClicked)
                                         {
@@ -118,25 +140,24 @@
                                         }
                                         else
                                         {
-                                            <label>
-                                                <a @onclick="@(f => ShelfClicked(l))">@l.Name</a>
-                                            </label>
+                                            <a @onclick="@(f => ShelfClicked(l))">@l.Name</a>
                                         }
                                     </div>
-                                    <div class="col-4">
-                                        @if (l.EditClicked)
-                                        {
-                                            <Buttons>
-                                                <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                                <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                                <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                            </Buttons>
-                                        }
-                                        else
-                                        {
-                                            <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
-                                        }
-                                    </div>
+                                    @if (l.EditClicked)
+                                    {
+                                        <div class="btn-group" role="group">
+                                            <button type="button" class="editButtonStyle btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                            <button type="button" class="editButtonStyle btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                            <button type="button" class="editButtonStyle btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-2">
+                                            <button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
+
+                                        </div>
+                                    }
                                 </div>
                             </li>
                         }
@@ -155,6 +176,7 @@
 }
 
 @code {
+    public bool ConfirmDelete { get; set; } = false;
 
     private string _newShelfName;
     ShelfModel SelectedShelf { get; set; } = new ShelfModel();
@@ -167,7 +189,7 @@
     public ICollection<ShelfModel> AvailableShelfs { get; set; }
 
     public ICollection<ItemCategoryModel> AvailableCategories { get; set; }
-    private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoryAutoComplete;
+    //private Autocomplete<ItemCategoryModel, ItemCategoryModel> _itemCategoryAutoComplete;
     [Parameter]
     public string Id { get; set; }
 
@@ -218,10 +240,24 @@
         item.EditClicked = false;
         await ShopDataManger.Update(ThisShop);
     }
-    async Task DeleteList(ShelfModel l)
+
+    public bool DeleteConfirmResult { get; set; }
+
+    public async Task ConfirmDeleteChangedResult(bool res)
     {
-        ThisShop.ShelfsInShop.Remove(l);
-        await ShopDataManger.Update(ThisShop);
+        if (res == true && selectedShelf != null)
+        {
+            ThisShop.ShelfsInShop.Remove(selectedShelf);
+            await ShopDataManger.Update(ThisShop);
+            selectedShelf = null; 
+        };
+        ConfirmDelete = false; //hide modal
+    }
+    private ShelfModel? selectedShelf;
+    void DeleteList(ShelfModel l)
+    {
+        ConfirmDelete = true;
+        selectedShelf = l; 
     }
     void ResetSort()
     {
@@ -258,7 +294,7 @@
 
 
     #region
-    Modal _modalRef = new Modal();
+    //Modal _modalRef = new Modal();
     int sortIndexToRemoveAnyWay = 0;
 
     void DeleteCategory(ItemCategoryModel cat, ShelfModel shelf)
@@ -280,7 +316,7 @@
             }
 
         }
-        _modalRef.Show();
+        //_modalRef.Show();
     }
 
     void SelctedSortIndexChanged(ShelfModel selectedShelf, int value)
@@ -339,11 +375,11 @@
                 itemCat.SortIndex = SelectedShelf.ItemCateogries.Last().SortIndex + 1;
 
             SelectedShelf.ItemCateogries.Add(itemCat);
-            _itemCategoryAutoComplete.Clear();
+            //_itemCategoryAutoComplete.Clear();
         }
         _tempItemCatName = string.Empty;
         SelectedItemCategory = null;
-        _itemCategoryAutoComplete.Clear();
+        //_itemCategoryAutoComplete.Clear();
 
     }
     void searchChangeHandlerItemCat(string value)
@@ -363,7 +399,7 @@
             AvailableSortIndexes.Remove(toRemove);
         }
         SelectedItemCategory = null;
-        _modalRef.Hide();
+        //_modalRef.Hide();
     }
     private void HideModal()
     {
@@ -375,7 +411,7 @@
 
         SelectedShelf = null;
         SelectedItemCategory = null;
-        _modalRef.Hide();
+        //_modalRef.Hide();
     }
 
     //string showAddBtn = "";

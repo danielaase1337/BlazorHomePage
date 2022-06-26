@@ -1,5 +1,6 @@
 ﻿@page "/shoppinglist"
-@using Microsoft.AspNetCore.Authorization
+@using Syncfusion.Blazor.Buttons
+
 @attribute [Authorize]
 
 <div class="card-maincontainer container-sm">
@@ -11,7 +12,7 @@
                 <input class="new-todo" placeholder="Navn på listen?" name="newVare" @bind="@_newListName" @onkeyup="OnKeyUpNewListItemHandler">
             </div>
             <div class="col-2">
-                <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddList())"></i></Button>
+                <button type="button" class="btn-sm btn-outline-link"><i class="fas fa-check" @onclick="@(f => AddList())"></i></button>
             </div>
         </div>
     </div>
@@ -50,18 +51,16 @@
 
                                 @if (l.EditClicked)
                                 {
-                                    <div class="col-6">
-                                        <Buttons>
-                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>    
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-2">
-                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
+                                        <button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></button>
                                     </div>
 
                                 }
@@ -98,6 +97,7 @@
     protected override async Task OnInitializedAsync()
     {
         ShoppingLists = await ShoppingListDataManager.Get();
+
         OrderLists();
 
     }
@@ -106,21 +106,18 @@
 
 
 
-    [Parameter]
-    public EventCallback<ShoppingListItemModel> StoreChangeCallback { get; set; }
     private async Task StoreChange(ShoppingListModel item)
     {
         item.EditClicked = false;
         await ShoppingListDataManager.Update(item);
     }
 
-    [Parameter]
-    public EventCallback<ShoppingListModel> DeleteEventCallback { get; set; }
     private async Task DeleteList(ShoppingListModel l)
     {
         var res = await ShoppingListDataManager.Delete(l);
         if (res)
             ShoppingLists.Remove(l);
+
     }
 
     private async Task AddList()
@@ -131,14 +128,14 @@
         if (res != null)
             ShoppingLists.Add(res);
 
-            _newListName = string.Empty; 
+        _newListName = string.Empty;
 
         OrderLists();
 
     }
 
 
-    private async Task ListeChecked(ShoppingListModel l, ChangeEventArgs value)
+    private async Task ListeChecked(ShoppingListModel l, Microsoft.AspNetCore.Components.ChangeEventArgs value)
     {
         if (value?.Value != null && value.Value is bool bValue)
         {
@@ -149,8 +146,10 @@
 
     private async Task OnKeyUpNewListItemHandler(KeyboardEventArgs args)
     {
-        if (args.Code.Equals("Enter"))
-            await AddList();
+        if (args.Code == null && string.IsNullOrEmpty(_newListName)) return;
+        if ((args.Code == null && !string.IsNullOrEmpty(_newListName)) ||
+            (args.Code != null && args.Code.Equals("Enter")))
+                await AddList();
     }
     private void OrderLists()
     {

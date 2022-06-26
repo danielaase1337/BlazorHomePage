@@ -11,7 +11,7 @@
                         <input class="new-todo" placeholder="Navn?" name="newVare" @bind="@_newShopName" @onkeyup="OnKeyUpNewListItemHandler">
                     </div>
                     <div class="col-2">
-                        <Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>
+                        @*<Button Size="Size.Small"><i class="fas fa-check" @onclick="@(f => AddShop())"></i></Button>*@
                     </div>
                 </div>
             </div>
@@ -40,19 +40,16 @@
                                 </div>
                                 @if (l.EditClicked)
                                 {
-                                    <div class="col-6">
-                                        <Buttons>
-                                            <Button Class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></Button>
-                                            <Button Class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></Button>
-                                        </Buttons>
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                        @*<button type="button" class="editButtonStyle btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>    *@
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-2">
                                         <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
-
                                     </div>
                                 }
                             </div>
