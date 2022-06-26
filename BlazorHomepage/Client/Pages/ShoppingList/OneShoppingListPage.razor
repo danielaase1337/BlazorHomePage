@@ -78,8 +78,8 @@
                                 DataSource="@Varer"
                                 Placeholder="Hva skal handles?"
                                 @bind-Value="@autoValue"
-                                FilterType="FilterType.Contains"
-                                Highlight>
+                                FilterType="FilterType.Contains" Highlight
+                                >
                         <AutoCompleteFieldSettings Value="Name" Text="Name" />
                         <AutoCompleteEvents TItem="ShopItemModel" TValue="string"
                                         ValueChange="@SelectedShopItemChanged"></AutoCompleteEvents>
@@ -161,7 +161,8 @@ else
     string showH2LabelStyle = "";
     string dropdownText = "Velg buikk";
 
-    string autoValue;
+    string? autoValue;
+
     [Parameter]
     public string Id { get; set; }
 
@@ -182,7 +183,7 @@ else
     [Inject]
     public IGenericRepository<ShopModel> ShopDataManager { get; set; }
 
-    
+
 
     protected override async Task OnParametersSetAsync()
     {
@@ -212,8 +213,11 @@ else
 
     private async Task AddVare(ShopItemModel shopItem)
     {
+        autoValue = null; //nullstill her i stede for contiuewith;
+
         ShoppingListItemModel newItem = new ShoppingListItemModel() { Mengde = 1, IsDone = false, Varen = shopItem };
         ThisShoppingList.ShoppingItems.Add(newItem);
+        //ThisShoppingList.ShoppingItems.Add(newItem);
         await ShoppingListDataManager.Update(ThisShoppingList);
         FilterList(activeListFiler);
     }
@@ -267,10 +271,7 @@ else
         if (newValue.ItemData is ShopItemModel item)
         {
             if (item.IsValid())
-                await AddVare(item).ContinueWith(f =>
-                {
-                    autoValue = null;
-                });
+                await AddVare(item);
             else
             {
                 newVareModel = new ShopItemModel();
@@ -347,12 +348,8 @@ else
     }
 
     private int? shopIndex { get; set; } = -1;
-    ShopModel SelectedShop { get; set; }
-    //void SelectedShopClicked(ShopModel selectedShop)
-    //{
-    //    SelectedShop = selectedShop;
-    //    dropdownText = selectedShop.Name;
-    //}
+    ShopModel? SelectedShop { get; set; }
+
     void SortShoppingList()
     {
         if (shopIndex == null || shopIndex == -1) return; //TODO - lag notifikasjon..
@@ -360,6 +357,7 @@ else
 
 
         SelectedShop = AvailableShops.ToArray()[shopIndex.Value];
+        if (SelectedShop == null) return;
 
         var itemCategoriesWithShortIndex = new List<ItemCategoryModel>();
         if (SelectedShop.ShelfsInShop == null) return;
@@ -398,14 +396,18 @@ else
             if (!newVareModel.IsValid()) return;
 
             if (justUpdateVare)
-                await ShopItemsDataManager.Update(newVareModel).ContinueWith(f => { autoValue = null; });
+            {
+                autoValue = null;
+                await ShopItemsDataManager.Update(newVareModel); 
+            }
             else
             {
                 if (newVareModel.IsValid())
                 {
+                    autoValue = null;
                     await ShopItemsDataManager.Insert(newVareModel);
                     Varer.Add(newVareModel);
-                    await AddVare(newVareModel).ContinueWith(f => { autoValue = null; });
+                    await AddVare(newVareModel);
                 }
             }
 
