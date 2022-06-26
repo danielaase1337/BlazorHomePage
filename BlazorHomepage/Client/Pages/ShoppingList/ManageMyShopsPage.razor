@@ -40,19 +40,16 @@
                                 </div>
                                 @if (l.EditClicked)
                                 {
-                                    <div class="col-6">
-                                        @*<SfButtonGroup>
-                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></ButtonGroupButton>
-                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></ButtonGroupButton>
-                                            <ButtonGroupButton class="editButtonStyle" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></ButtonGroupButton>
-                                        </SfButtonGroup>*@
+                                    <div class="btn-group" role="group" aria-label="Basic example">
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-success" @onclick="@(e => StoreChange(l))"><i class="fas fa-check"></i></button>
+                                        <button type="button" class="editButtonStyle btn-sm btn-outline-warning" @onclick="@(e => { l.EditClicked= false;  })"><i class="fas fa-times"> </i></button>
+                                        @*<button type="button" class="editButtonStyle btn-sm btn-outline-danger" @onclick="@(e => DeleteList(l))"><i class="fas fa-ban"> </i></button>    *@
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="col-2">
-                                      
-                                        @*<button onclick="@({ l.EditClicked = true; })"><i class="fas fa-edit"></i></button>*@
+                                        <Button @onclick="@(e => { l.EditClicked = true;  })"><i class="fas fa-edit"></i></Button>
                                     </div>
                                 }
                             </div>

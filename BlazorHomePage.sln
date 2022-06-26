@@ -9,8 +9,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHomepage.Client", "Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHomepage.Shared", "BlazorHomepage\Shared\BlazorHomepage.Shared.csproj", "{DEB44E33-BD73-48CB-82F4-07C0915BD26B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShoppingListApp", "ShoppingListApp\ShoppingListApp.csproj", "{23F92E4D-8B74-42C6-B2A6-0ABD8FE9A79D}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,10 +27,6 @@ Global
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{23F92E4D-8B74-42C6-B2A6-0ABD8FE9A79D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{23F92E4D-8B74-42C6-B2A6-0ABD8FE9A79D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{23F92E4D-8B74-42C6-B2A6-0ABD8FE9A79D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{23F92E4D-8B74-42C6-B2A6-0ABD8FE9A79D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
