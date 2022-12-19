@@ -9,6 +9,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHomepage.Client", "Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorHomepage.Shared", "BlazorHomepage\Shared\BlazorHomepage.Shared.csproj", "{DEB44E33-BD73-48CB-82F4-07C0915BD26B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WASM", "WASM", "{8F13DB1B-0C14-4869-9E9A-1C23A157A557}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Static", "Static", "{A4A8EF05-C03B-44EA-8DD9-5272FF24C462}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shoppinglist", "Shoppinglist\Shoppinglist.csproj", "{032B646B-4822-4BBD-BDAA-83F572396274}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,9 +33,19 @@ Global
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DEB44E33-BD73-48CB-82F4-07C0915BD26B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{032B646B-4822-4BBD-BDAA-83F572396274}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{032B646B-4822-4BBD-BDAA-83F572396274}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{032B646B-4822-4BBD-BDAA-83F572396274}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{032B646B-4822-4BBD-BDAA-83F572396274}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{ED8EFD36-29C0-4861-9E84-5DD070F88E77} = {8F13DB1B-0C14-4869-9E9A-1C23A157A557}
+		{47AD8E61-BF99-439A-9E5C-571AD77A3AEF} = {8F13DB1B-0C14-4869-9E9A-1C23A157A557}
+		{DEB44E33-BD73-48CB-82F4-07C0915BD26B} = {8F13DB1B-0C14-4869-9E9A-1C23A157A557}
+		{032B646B-4822-4BBD-BDAA-83F572396274} = {A4A8EF05-C03B-44EA-8DD9-5272FF24C462}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {22991F39-2A25-4CF3-8FB1-7BED3AF064DC}
